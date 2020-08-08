@@ -10,6 +10,21 @@ Plugins developed for a better TiddlyGit.
 
 This plugin enables TiddlyWiki to watch the change in your disk, and if you edit one of your tiddler using editor likes VSCode and save it on the disk, the change will immediately reflected in the browser.
 
+This by default monitor `./tiddlers` folder, if you have a different setup like my [linonetwo/wiki](https://github.com/linonetwo/wiki), add a `watchFolder` config to your `tiddlywiki.info`:
+
+```json
+{
+  ...
+  "themes": [
+    "tiddlywiki/vanilla",
+    "linonetwo/itonnote"
+  ],
+  ...
+  "config": {
+    "watchFolder": "./Meme-of-LinOnetwo/tiddlers"
+  },
+```
+
 See [Jermolene/TiddlyWiki5/issues/3060](https://github.com/Jermolene/TiddlyWiki5/issues/3060) for related discussions.
 
 Server side only. But also change the `SyncPollingInterval.tid` in the client side.
