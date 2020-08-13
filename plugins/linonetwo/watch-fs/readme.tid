@@ -6,7 +6,7 @@ type: text/vnd.tiddlywiki
 
 This plugin enables TiddlyWiki to watch the change in your disk, and if you edit one of your tiddler using editor likes VSCode and save it on the disk, the change will immediately reflected in the browser.
 
-See https://github.com/Jermolene/TiddlyWiki5/issues/3060 for related discussions.
+See [[https://github.com/Jermolene/TiddlyWiki5/issues/3060]] for related discussions.
 
 !! [[FileSystemMonitor.js|$:/plugins/linonetwo/watch-fs/FileSystemMonitor.js]]
 
@@ -22,9 +22,9 @@ This plugin will cause trouble if you build wiki with it enabled,
 so you have to remove it from your `tiddlywiki.info`, and add it to your wiki start arguments:
 
 ```shell
-+plugins/tiddlywiki/filesystem +plugins/tiddlywiki/tiddlyweb +plugins/linonetwo/watch-fs
- ```
- 
+tiddlywiki +plugins/tiddlywiki/filesystem +plugins/tiddlywiki/tiddlyweb +plugins/linonetwo/watch-fs <path-to-wiki-folder> --listen
+```
+
 (why `+plugins/tiddlywiki/filesystem +plugins/tiddlywiki/tiddlyweb` here? See [[https://github.com/Jermolene/TiddlyWiki5/issues/4484#issuecomment-613200370]] for details)
 
 !!! Liminitation
