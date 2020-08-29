@@ -8,10 +8,14 @@
   This file is modified based on $:/plugins/OokTech/Bob/FileSystemMonitor.js
 \ */
 
-const isNotNonTiddlerFiles = (filePath) => !filePath.includes('$__StoryList') && !filePath.endsWith('.DS_Store') && !filePath.includes('.git');
+const isNotNonTiddlerFiles = (filePath) =>
+  !filePath.includes('$__StoryList') &&
+  !filePath.includes('/subwiki/') &&
+  !filePath.endsWith('.DS_Store') &&
+  !filePath.includes('.git');
 
 function FileSystemMonitor() {
-  const isDebug = false;
+  const isDebug = true;
   const debugLog = isDebug ? console.log : () => {};
 
   exports.name = 'watch-fs_FileSystemMonitor';
@@ -169,7 +173,14 @@ function FileSystemMonitor() {
        *    "hasMetaFile": false
        *  }
        */
-      const tiddlersDescriptor = $tw.loadTiddlersFromFile(fileAbsolutePath, { title: fileAbsolutePath });
+      let tiddlersDescriptor;
+      // sometimes this file get removed by wiki before we can get it, for example, Draft tiddler done editing, it get removed, and we got ENOENT here
+      try {
+        tiddlersDescriptor = $tw.loadTiddlersFromFile(fileAbsolutePath, { title: fileAbsolutePath });
+      } catch (error) {
+        debugLog(error);
+        return;
+      }
       debugLog(`tiddlersDescriptor`, JSON.stringify(tiddlersDescriptor, undefined, '  '));
       const { tiddlers, ...fileDescriptor } = tiddlersDescriptor;
       // if user is using git or VSCode to create new file in the disk, that is not yet exist in the wiki
@@ -210,9 +221,17 @@ function FileSystemMonitor() {
             debugLog('updating existed tiddler', tiddler.title);
             const { fields: tiddlerInWiki } = $tw.wiki.getTiddler(tiddler.title);
             if (deepEqual(tiddler, tiddlerInWiki)) {
-              debugLog('Ignore update due to change from the Browser', tiddler.title);
+              debugLog('Ignore update due to detect this is a change from the Browser', tiddler.title);
               return false;
             }
+            // if user is continuously editing, after last trigger of listener, we have waste too many time in fs, and now $tw.wiki.getTiddler get a new tiddler that is just updated by user from the wiki
+            // then our $tw.loadTiddlersFromFile's tiddler will have an old timestamp than it, ignore this case, since it means we are editing from the wiki
+            // if both are created before, and just modified now
+            if (tiddler.modified && tiddlerInWiki.modified && tiddlerInWiki.modified > tiddler.modified) {
+              debugLog('Ignore update due to there is latest change from the Browser', tiddler.title);
+              return false;
+            }
+
             debugLog('Saving updated', tiddler.title);
             return true;
           })
