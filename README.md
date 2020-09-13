@@ -1,6 +1,6 @@
 # plugins
 
-Plugins developed for a better TiddlyGit.
+Plugins developed for a better [TiddlyGit](https://github.com/tiddly-gittly/TiddlyGit-Desktop).
 
 ## About
 
