@@ -1,0 +1,21 @@
+{
+  "description": "",
+  "license": "MIT",
+  "name": "test",
+  "version": "0.6.4",
+  "url": "https://github.com/linonetwo/tiddlywiki-plugins/blob/master/plugins/linonetwo/watch-fs/",
+  "author": "",
+  "scripts": {
+    "bundle": "rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "rollup": "^2.27.1",
+    "rollup-plugin-disable-packages": "^4.0.1"
+  },
+  "dependencies": {
+    "chokidar": "^3.4.2"
+  }
+}
