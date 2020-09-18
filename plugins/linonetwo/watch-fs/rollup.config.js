@@ -10,10 +10,23 @@ export default {
     format: 'cjs',
     exports: 'named'
   },
+  external: [
+    'events',
+    'fs',
+    'fsevents',
+    'util',
+    'path',
+    'os',
+    'stream'
+  ],
   plugins: [
     nodeResolve(),
     json(),
     commonjs(),
+
+    // We are not able to bundle in fsevents since it is a native osx lib.
+    // It will give us errors if we don't disable (replace it with noop) it.
+    // We must also use `useFsEvents: false` when calling chokidar.watch.
     disablePackages('fsevents')
   ]
 };
