@@ -8,16 +8,6 @@
   This file is modified based on $:/plugins/OokTech/Bob/FileSystemMonitor.js
 \ */
 
-const isNotNonTiddlerFiles = filePath =>
-  !filePath.includes('$__StoryList') &&
-  // sometimes sync logic bug will resulted in file ends with _1, which will cause lots of trouble
-  !filePath.includes('_1.') &&
-  !filePath.includes('/subwiki/') &&
-  !filePath.endsWith('.DS_Store') &&
-  // TODO: deal with field change in meta file
-  !filePath.endsWith('.meta') &&
-  !filePath.includes('.git');
-
 function FileSystemMonitor() {
   const isDebug = true;
   const debugLog = isDebug ? console.log : () => {};
@@ -78,7 +68,7 @@ function FileSystemMonitor() {
   }
 
   // Helpers to maintain our cached index for file path and tiddler title
-  const updateInverseIndex = (filePath, fileDescriptor) => {
+  const updateInverseIndex = (filePath, fileDescriptor) => { 
     if (fileDescriptor) {
       inverseFilesIndex[filePath] = fileDescriptor;
     } else {
@@ -161,7 +151,7 @@ function FileSystemMonitor() {
       return;
     }
     // on create or modify
-    if (changeType === 'update') {
+    if (changeType === 'add' || changeType === 'change') {
       // get tiddler from the disk
       /**
        * tiddlersDescriptor:
@@ -247,8 +237,7 @@ function FileSystemMonitor() {
     }
 
     // on delete
-    if (changeType === 'remove') {
-      debugLog('handle remove', fileRelativePath);
+    if (changeType === 'unlink') {
       const tiddlerTitle = getTitleByPath(fileRelativePath);
 
       // if this tiddler is not existed in the wiki, this means this deletion is triggered by wiki
@@ -294,8 +283,23 @@ function FileSystemMonitor() {
     refreshCanSyncState();
   };
 
-  // use node-watch
-  const watch = require('./watch');
-  const watcher = watch(watchPathBase, { recursive: true, delay: 200, filter: isNotNonTiddlerFiles }, listener);
+  const ext = require('./3rds');
+  const watcher = ext.chokidar.watch(watchPathBase, {
+    ignoreInitial: true,
+    ignored: [
+      '**/*.meta', // TODO: deal with field change in meta file
+      '**/$__StoryList*',
+      '**/*_1.*',  // sometimes sync logic bug will resulted in file ends with _1, which will cause lots of trouble
+      '**/subwiki/**',
+      '**/.DS_Store',
+      '**/.git'
+    ],
+    atomic: true,
+    useFsEvents: false   // fsevents is not bundled with 3rds.js
+    //usePolling: true,  // CHOKIDAR_USEPOLLING=1
+  });
+  
+  watcher.on('all', listener);
 }
+
 FileSystemMonitor();
