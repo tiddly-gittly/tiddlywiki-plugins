@@ -33,6 +33,14 @@ tiddlywiki +plugins/tiddlywiki/filesystem +plugins/tiddlywiki/tiddlyweb +plugins
 # I haven't tested this with [[$:/config/FileSystemPaths]] and [[Fix file info PR|https://github.com/Jermolene/TiddlyWiki5/pull/4630]] , but I use this feature every day, so I will definitely support it.
 # Can't handle if git change the tiddler while you are open its Draft tiddler (might be fixed by [[Deleting a draft tiddler should not also delete the original tiddler|https://github.com/Jermolene/TiddlyWiki5/issues/4792]] )
 
+!!! Using on network share / NFS
+
+If the files are mounted from a remote, you will most likely use polling instead of the OS-native watcher.
+This is not done automaticly, since there is really no way for us to detect that.
+
+If your files are on a remote, you should set the environment-variable `CHOKIDAR_USEPOLLING=1`.
+You can also configure the polling interval (default 100ms) using `CHOKIDAR_INTERVAL`.
+
 !! Implementation Details
 
 !!! How to decide whether a change is comes from the browser?
