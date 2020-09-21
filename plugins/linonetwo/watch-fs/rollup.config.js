@@ -6,7 +6,7 @@ import disablePackages from 'rollup-plugin-disable-packages';
 export default {
   input: 'dependencies.js',
   output: {
-    file: '3rds.js',
+    file: 'watch-fs/3rds.js',
     format: 'cjs',
     exports: 'named'
   },

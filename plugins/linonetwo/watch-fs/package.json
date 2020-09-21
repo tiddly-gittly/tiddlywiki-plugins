@@ -1,12 +1,17 @@
 {
-  "description": "",
+  "description": "This plugin enables TiddlyWiki to watch the change in your disk, and if you edit one of your tiddler using editor likes VSCode and save it on the disk, the change will immediately reflected in the browser.",
   "license": "MIT",
-  "name": "test",
-  "version": "0.6.4",
+  "name": "watch-fs",
+  "version": "0.0.1",
   "url": "https://github.com/linonetwo/tiddlywiki-plugins/blob/master/plugins/linonetwo/watch-fs/",
-  "author": "",
+  "author": "lin onetwo",
   "scripts": {
-    "bundle": "rollup -c"
+    "clean": "rm -rf watch-fs",
+    "prepare": "mkdir watch-fs 2> /dev/null",
+    "copywithmeta": "for i in $(ls *.meta | sed -e \"s/\\.meta$//\"); do cp ${i}* watch-fs/; done",
+    "copytid": "cp *.tid watch-fs/",
+    "bundle": "rollup -c",
+    "make": "npm run clean && npm run prepare && npm run bundle && npm run copywithmeta && npm run copytid"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
