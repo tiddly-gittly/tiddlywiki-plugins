@@ -268,7 +268,7 @@ function FileSystemMonitor() {
             if (
               fileAbsolutePath.startsWith('$') &&
               fs.existsSync(fileAbsolutePath) &&
-              fs.readFileSync(fileAbsolutePath, 'utf-8').length === 0
+              fs.readFileSync(fileAbsolutePath, 'utf8').length === 0
             ) {
               fs.unlinkSync(fileAbsolutePath);
             }
