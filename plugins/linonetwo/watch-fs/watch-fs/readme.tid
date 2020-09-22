@@ -18,7 +18,7 @@ delete files to remove the tiddlers from the browser.
 
 !! Installation
 
-Some of the files are generated, but all the files are generated and ready to use in the `watch-fs` folder.
+FIXME: Use the files in the `dist` folder
 
 !! Usage
 

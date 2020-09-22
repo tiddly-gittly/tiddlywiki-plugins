@@ -1,4 +1,4 @@
 creator: LinOnetwo
-title: $:/plugins/linonetwo/watch-fs/watch.js
+title: $:/plugins/linonetwo/watch-fs/has-native-recursive.js
 type: application/javascript
 module-type: startup
