@@ -37,6 +37,12 @@ function FileSystemMonitor() {
   debugLog(`watchPathBase`, JSON.stringify(watchPathBase, undefined, '  '));
 
   // Some helpers
+  function pad(number) {
+    if (number < 10) {
+      return '0' + number;
+    }
+    return number;
+  }
   Date.prototype.toTWUTCString = function toTWUTCString() {
     return (
       this.getUTCFullYear() +
