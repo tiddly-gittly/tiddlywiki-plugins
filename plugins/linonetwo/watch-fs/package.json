@@ -21,6 +21,7 @@
     "rollup-plugin-disable-packages": "^4.0.1"
   },
   "dependencies": {
-    "chokidar": "^3.4.2"
+    "chokidar": "^3.4.2",
+    "mime": "^2.4.6"
   }
 }
