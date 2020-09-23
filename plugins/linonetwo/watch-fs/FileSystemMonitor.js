@@ -11,6 +11,11 @@
 function FileSystemMonitor() {
   const isDebug = true;
   const debugLog = isDebug ? console.log : () => {};
+  const safeStringifyHugeTiddler = (tiddlerToStringify, fileExtensionOfTiddler) =>
+    fileExtensionOfTiddler === 'tid'
+      ? JSON.stringify(tiddlerToStringify, undefined, '  ')
+      : // prevent huge log out of png file
+        JSON.stringify({ ...tiddlerToStringify, text: '--log-ignored-by-watch-fs-plugin--' }, undefined, '  ');
 
   exports.name = 'watch-fs_FileSystemMonitor';
   exports.after = ['load-modules'];
@@ -166,6 +171,8 @@ function FileSystemMonitor() {
     const fileAbsolutePath = path.join(watchPathBase, fileRelativePath);
     const metaFileAbsolutePath = `${fileAbsolutePath}.meta`;
     const fileName = path.basename(fileAbsolutePath);
+    const fileExtension = path.extname(fileRelativePath);
+    const fileMimeType = mime.getType(fileExtension);
     debugLog(`${fileRelativePath} ${changeType}`);
     if (lockedFiles.has(fileRelativePath)) {
       debugLog(`${fileRelativePath} ignored due to mutex lock`);
@@ -175,9 +182,7 @@ function FileSystemMonitor() {
     }
     // on creation of non-tiddler file, for example, .md and .png file, we create a .meta file for it
     if (changeType === 'add') {
-      const fileExtension = path.extname(fileRelativePath);
-      const fileMimeType = mime.getType(fileExtension);
-      const createdTime = new Date().toTWUTCString()
+      const createdTime = new Date().toTWUTCString();
       debugLog(`Adding meta file ${metaFileAbsolutePath} using mime type ${fileMimeType}`);
       fs.writeFileSync(metaFileAbsolutePath, `title: ${fileName}\ntype: ${fileMimeType}\ncreated: ${createdTime}\n`);
     }
@@ -206,7 +211,7 @@ function FileSystemMonitor() {
         debugLog(error);
         return;
       }
-      debugLog(`tiddlersDescriptor`, JSON.stringify(tiddlersDescriptor, undefined, '  '));
+      debugLog(`tiddlersDescriptor`, safeStringifyHugeTiddler(tiddlersDescriptor, fileExtension));
       const { tiddlers, ...fileDescriptor } = tiddlersDescriptor;
       // if user is using git or VSCode to create new file in the disk, that is not yet exist in the wiki
       // but maybe our index is not updated, or maybe user is modify a system tiddler, we need to check each case
@@ -274,7 +279,7 @@ function FileSystemMonitor() {
       // if this tiddler is not existed in the wiki, this means this deletion is triggered by wiki
       // we only react on event that triggered by the git or VSCode
       const existedTiddlerResult = $tw.wiki.getTiddler(tiddlerTitle);
-      debugLog('existedTiddlerResult', existedTiddlerResult);
+      debugLog('existedTiddlerResult', safeStringifyHugeTiddler(existedTiddlerResult, fileExtension));
       if (!existedTiddlerResult) {
         debugLog('file already deleted by wiki', fileAbsolutePath);
         updateInverseIndex(fileRelativePath);
