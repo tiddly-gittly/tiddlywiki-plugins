@@ -9,7 +9,7 @@
     "clean": "rm -rf watch-fs",
     "prepare": "mkdir watch-fs 2> /dev/null",
     "copywithmeta": "for i in $(ls *.meta | sed -e \"s/\\.meta$//\"); do cp ${i}* watch-fs/; done",
-    "copytid": "cp *.tid watch-fs/",
+    "copytid": "cp *.tid *.info watch-fs/",
     "bundle": "rollup -c",
     "make": "npm run clean && npm run prepare && npm run bundle && npm run copywithmeta && npm run copytid"
   },
