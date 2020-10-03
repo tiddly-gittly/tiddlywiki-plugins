@@ -223,9 +223,7 @@ function FileSystemMonitor() {
         debugLog(`Adding meta file ${metaFileAbsolutePath} using mime type ${fileMimeType}`);
         fs.writeFileSync(
           metaFileAbsolutePath,
-          `caption: ${fileNameBase}\ncreated: ${createdTime}\nmodified: ${createdTime}\ntitle: ${fileName}\ntmap.id: ef532dde-88be-45fc-b38a-d66f2951${Math.floor(
-            Math.random() * 1000
-          )}a\ntype: ${fileMimeType}\n`
+          `caption: ${fileNameBase}\ncreated: ${createdTime}\nmodified: ${createdTime}\ntitle: ${fileName}\ntype: ${fileMimeType}\n`
         );
       }
       // sometimes this file get removed by wiki before we can get it, for example, Draft tiddler done editing, it get removed, and we got ENOENT here
