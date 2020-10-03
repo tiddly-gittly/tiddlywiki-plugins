@@ -217,7 +217,7 @@ function FileSystemMonitor() {
 
       // on creation of non-tiddler file, for example, .md and .png file, we create a .meta file for it
       const isCreatingNewNonTiddlerFile =
-        changeType === 'add' && fileExtension !== 'tid' && !fs.existsSync(metaFileAbsolutePath);
+        changeType === 'add' && !fileExtension.endsWith('tid') && !fs.existsSync(metaFileAbsolutePath);
       if (isCreatingNewNonTiddlerFile) {
         const createdTime = toTWUTCString(new Date());
         debugLog(`Adding meta file ${metaFileAbsolutePath} using mime type ${fileMimeType}`);
