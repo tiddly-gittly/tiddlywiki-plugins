@@ -73,6 +73,16 @@ A VSCode style "opened tiddler" bar on the top of the wiki.
 
 Client side only.
 
+### SCM
+
+"linonetwo/source-control-management"
+
+Allow you view modified tiddlers in your git-backup-ed nodejs wiki, inside TiddlyGit-Desktop.
+
+Note this plugin uses git api provided by TiddlyGit-Desktop, you can't use it alone.
+
+![SCM Screenshot](./docs/img/opened-tiddlers-bar.png)
+
 ## How to use
 
 Place the plugin like this:
