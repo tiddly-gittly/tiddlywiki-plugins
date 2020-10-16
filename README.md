@@ -8,7 +8,7 @@ Plugins developed for a better [TiddlyGit](https://github.com/tiddly-gittly/Tidd
 
 "linonetwo/watch-fs"
 
-This plugin enables TiddlyWiki to watch the change in your disk, and if you edit one of your tiddler using editor likes VSCode and save it on the disk, the change will immediately reflected in the browser.
+This plugin enables TiddlyWiki to watch the change in your disk, solves [pick up changes made by outside agencies #1530](https://github.com/Jermolene/TiddlyWiki5/issues/1530), and if you edit one of your tiddler using editor likes VSCode and save it on the disk, the change will immediately reflected in the browser.
 
 This by default monitor `./tiddlers` folder, if you have a different setup like my [linonetwo/wiki](https://github.com/linonetwo/wiki), add a `watchFolder` config to your `tiddlywiki.info`:
 
