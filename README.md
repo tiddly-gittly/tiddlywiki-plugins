@@ -83,6 +83,14 @@ Note this plugin uses git api provided by TiddlyGit-Desktop, you can't use it al
 
 ![SCM Screenshot](./docs/img/opened-tiddlers-bar.png)
 
+### Github External Images
+
+"linonetwo/github-external-image"
+
+Allow extract your images, and load image from github raw image file.
+
+Need some simple setup, see readme for detail.
+
 ## How to use
 
 Place the plugin like this:

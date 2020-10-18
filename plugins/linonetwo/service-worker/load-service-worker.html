@@ -28,6 +28,7 @@
           });
         } else {
           // Is not localhost. Just register service worker
+          console.log('Register service worker');
           registerValidSW(swUrl, config);
         }
       });
@@ -38,7 +39,9 @@
     navigator.serviceWorker
       .register(swUrl)
       .then((registration) => {
+        console.log('Service worker is speeding up this wiki.')
         registration.onupdatefound = () => {
+          console.log('New content is found, prepare to fetch', registration);
           const installingWorker = registration.installing;
           if (installingWorker == null) {
             return;
