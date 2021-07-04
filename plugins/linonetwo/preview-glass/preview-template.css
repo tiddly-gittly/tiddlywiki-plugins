@@ -1,5 +1,5 @@
 .hover-popup-preview-container {
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(3px);
 	background: rgba(255, 255, 255, 0.3) !important;
 	transform: translateY(0px);
 }
