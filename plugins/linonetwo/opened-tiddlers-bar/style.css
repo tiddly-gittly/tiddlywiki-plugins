@@ -18,8 +18,9 @@ section.story-backdrop > p, section.story-backdrop > p > div.tc-tab-buttons {
   width: 100%;
   margin: 0;
   display: flex;
+  background-color: white;
   backdrop-filter: blur(3px);
-  background: #FAFAFA33;
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 
