@@ -25,3 +25,7 @@ This plugin requires [TiddlyGit](https://github.com/tiddly-gittly/TiddlyGit-Desk
 A ViewToolbar button is added. You can click on it to execute the script inside your tiddler.
 
 And the zx output will be printed below your tiddler content.
+
+!! Developer Documentation
+
+See [[$:/plugins/linonetwo/zx-script/developer]]
