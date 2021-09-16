@@ -29,12 +29,29 @@
      * Event listener of button
      */
     async onExecuteButtonClick() {
-      const title = this.getAttribute('title', 'aaa.mjs');
+      const title = this.getAttribute('title', 'aaa.md');
+      const type = this.getAttribute('type', 'text/vnd.tiddlywiki');
       const stateTiddlerTitle = `$:/state/linonetwo/zx-script/output/${title}`;
       let fileName = title;
       let fileContent = this.getAttribute('content', '');
-      if (!fileName.endsWith('.mjs') && !fileName.endsWith('.md')) {
-        fileName += '.mjs';
+      // add mjs or md to the end
+      if (!fileName.endsWith('.mjs') && !fileName.endsWith('.js') && !fileName.endsWith('.md')) {
+        switch (type) {
+          // try fit everything that may have ```js block into md
+          case 'text/vnd.tiddlywiki':
+          case 'text/plain':
+          case 'text/markdown':
+          case 'text/x-markdown':
+          case 'text/html': {
+            fileName += '.md';
+            break;
+          }
+          case 'application/javascript':
+          default: {
+            fileName += '.mjs';
+            break;
+          }
+        }
       }
 
       $tw.wiki.setText(stateTiddlerTitle, 'text', undefined, '');
