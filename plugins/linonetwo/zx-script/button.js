@@ -18,7 +18,7 @@
       this.computeAttributes();
       const importButton = this.document.createElement('button');
       importButton.classList.add('tc-btn-invisible');
-      importButton.innerHTML = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/zx-script/zx-icon.svg');
+      importButton.innerHTML = `${$tw.wiki.getTiddlerText('$:/plugins/linonetwo/zx-script/zx-icon')}<span class="tc-btn-text tc-button-zx-script-caption">${$tw.wiki.getTiddlerText('$:/plugins/linonetwo/zx-script/zx-button-caption')}</span>`;
       importButton.onclick = this.onExecuteButtonClick.bind(this);
       importButton.title = importButton.ariaLabel = 'ZX';
       parent.insertBefore(importButton, nextSibling);
