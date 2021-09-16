@@ -6,4 +6,5 @@ caption: {{$:/core/images/video}}
 short-caption: zx script executor
 description: Run tiddler as ZX Script
 
+\whitespace trim
 <$execute-zx-script content={{!!text}} title={{!!title}} type={{!!type}} />
