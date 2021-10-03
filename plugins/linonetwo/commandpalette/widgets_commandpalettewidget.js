@@ -201,32 +201,32 @@ Command Palette Widget
         if (type === 'prompt') {
           let immediate = !!tiddler.fields[this.immediateField];
           let caret = tiddler.fields[this.caretField];
-          let action = { name, caption, action: () => this.promptCommand(textFirstLine, caret), keepPalette: !immediate, immediate: immediate };
+          let action = { name, caption, hint, action: () => this.promptCommand(textFirstLine, caret), keepPalette: !immediate, immediate: immediate };
           this.actions.push(action);
           continue;
         }
         if (type === 'prompt-basic') {
           let caret = tiddler.fields[this.caretField];
-          let action = { name, caption, action: () => this.promptCommandBasic(textFirstLine, caret, hint), keepPalette: true };
+          let action = { name, caption, hint, action: () => this.promptCommandBasic(textFirstLine, caret, hint), keepPalette: true };
           this.actions.push(action);
           continue;
         }
         if (type === 'message') {
-          this.actions.push({ name, caption, action: (e) => this.tmMessageBuilder(textFirstLine)(e) });
+          this.actions.push({ name, caption, hint, action: (e) => this.tmMessageBuilder(textFirstLine)(e) });
           continue;
         }
         if (type === 'actionString') {
           let userInput = tiddler.fields[this.userInputField] !== undefined && tiddler.fields[this.userInputField] === 'true';
           if (userInput) {
-            this.actions.push({ name, caption, action: (e) => this.actionStringInput(text, hint, e), keepPalette: true });
+            this.actions.push({ name, caption, hint, action: (e) => this.actionStringInput(text, hint, e), keepPalette: true });
           } else {
-            this.actions.push({ name, caption, action: (e) => this.actionStringBuilder(text)(e) });
+            this.actions.push({ name, caption, hint, action: (e) => this.actionStringBuilder(text)(e) });
           }
           continue;
         }
         if (type === 'history') {
           let mode = tiddler.fields[this.modeField];
-          this.actions.push({ name, caption, action: (e) => this.commandWithHistoryPicker(textFirstLine, hint, mode).handler(e), keepPalette: true });
+          this.actions.push({ name, caption, hint, action: (e) => this.commandWithHistoryPicker(textFirstLine, hint, mode).handler(e), keepPalette: true });
           continue;
         }
       }
@@ -628,7 +628,7 @@ Command Palette Widget
       let resultDiv = this.createElement('div', { className: 'commandpaletteresult', innerText: this.translateCaption(result.caption || result.name) });
       if (result.hint !== undefined) {
         let hint = this.createElement('div', { className: 'commandpalettehint', innerText: this.translateCaption(result.hint) });
-        resultDiv.append(hint);
+        resultDiv.appendChild(hint);
       }
       resultDiv.result = result;
       this.currentResults.push(resultDiv);
@@ -636,7 +636,7 @@ Command Palette Widget
         this.setSelection(id + 1);
         this.validateSelection(e);
       });
-      this.scrollDiv.append(resultDiv);
+      this.scrollDiv.appendChild(resultDiv);
     }
     validateSelection(e) {
       this.currentResolver(e);
