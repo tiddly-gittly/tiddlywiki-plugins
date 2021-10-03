@@ -71,7 +71,7 @@ class CommandPaletteWidget extends Widget {
   private triggerField = 'command-palette-trigger' as const;
 
   private currentSelection = 0; //0 is nothing selected, 1 is first result,...
-  private symbolProviders = {};
+  private symbolProviders: Record<string, { searcher: (term: string, hint?: string) => void; resolver: (e: AllPossibleEvent) => void }> = {};
   private blockProviderChange = false;
   private defaultSettings: ISettings = {
     maxResults: 15,
@@ -89,6 +89,10 @@ class CommandPaletteWidget extends Widget {
   private customCommandsTag = '$:/tags/CommandPaletteCommand' as const;
   private themesTag = '$:/tags/CommandPaletteTheme' as const;
 
+  /** current item's click/enter handler function */
+  private currentResolver: (e: AllPossibleEvent) => void = () => {};
+  private currentProvider: (input: string) => void = () => {};
+
   constructor(parseTreeNode: any, options: any) {
     super(parseTreeNode, options);
     this.initialise(parseTreeNode, options);
@@ -104,7 +108,7 @@ class CommandPaletteWidget extends Widget {
     this.hint.innerText = hint;
     this.input.value = '';
     this.currentProvider = () => {};
-    this.currentResolver = (e: any) => {
+    this.currentResolver = (e: AllPossibleEvent) => {
       this.invokeActionString(action, this, e, { commandpaletteinput: this.input.value });
       this.closePalette();
     };
@@ -216,6 +220,7 @@ class CommandPaletteWidget extends Widget {
           'Pick tiddler to tag',
           'Pick tag to add (⇧⏎ to add multiple)',
           (tiddler: string, terms: string): string[] =>
+            // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
             $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[search[${terms}]]`),
           true,
           'tm-add-tag',
@@ -229,6 +234,7 @@ class CommandPaletteWidget extends Widget {
           e,
           'Pick tiddler to untag',
           'Pick tag to remove (⇧⏎ to remove multiple)',
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
           (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[search[${terms}]]`),
           false,
           'tm-remove-tag',
@@ -353,8 +359,7 @@ class CommandPaletteWidget extends Widget {
       };
     };
 
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.currentProvider = (terms) => {};
+    this.currentProvider = (terms: string) => {};
     this.currentResolver = (e: AllPossibleEvent) => {
       if (this.input.value.length === 0) return;
       name = this.input.value;
@@ -373,19 +378,14 @@ class CommandPaletteWidget extends Widget {
       if (this.currentSelection === 0) return;
       this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     };
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.onInput();
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'url' implicitly has an 'any' type.
-  explorerProvider(url, terms) {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'url' implicitly has an 'any' type.
-    let switchFolder = (url) => {
+  explorerProvider(url: string, terms: string) {
+    let switchFolder = (url: string) => {
       this.input.value = url;
       this.lastExplorerInput = this.input.value;
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-      this.currentProvider = (terms) => this.explorerProvider(url, terms);
-      // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
+      this.currentProvider = (terms: string) => this.explorerProvider(url, terms);
       this.onInput();
     };
     if (!this.input.value.startsWith(url)) {
@@ -496,22 +496,15 @@ class CommandPaletteWidget extends Widget {
 
     this.refreshCommandPalette();
 
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['>'] = { searcher: (terms) => this.actionProvider(terms), resolver: (e) => this.actionResolver(e) };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['#'] = { searcher: (terms) => this.tagListProvider(terms), resolver: (e) => this.tagListResolver(e) };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['@'] = { searcher: (terms) => this.tagProvider(terms), resolver: (e) => this.defaultResolver(e) };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['?'] = { searcher: (terms) => this.helpProvider(terms), resolver: (e) => this.helpResolver(e) };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['['] = { searcher: (terms, hint) => this.filterProvider(terms, hint), resolver: (e) => this.filterResolver(e) };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['+'] = { searcher: (terms) => this.createTiddlerProvider(terms), resolver: (e) => this.createTiddlerResolver() };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.symbolProviders['|'] = { searcher: (terms) => this.settingsProvider(terms), resolver: (e) => this.settingsResolver() };
+    this.symbolProviders['>'] = { searcher: (terms: string) => this.actionProvider(terms), resolver: (e) => this.actionResolver(e) };
+    this.symbolProviders['#'] = { searcher: (terms: string) => this.tagListProvider(terms), resolver: (e) => this.tagListResolver(e) };
+    this.symbolProviders['@'] = { searcher: (terms: string) => this.tagProvider(terms), resolver: (e) => this.defaultResolver(e) };
+    this.symbolProviders['?'] = { searcher: (terms: string) => this.helpProvider(terms), resolver: (e) => this.helpResolver(e) };
+    this.symbolProviders['['] = { searcher: (terms: string, hint?: string) => this.filterProvider(terms, hint), resolver: (e) => this.filterResolver(e) };
+    this.symbolProviders['+'] = { searcher: (terms: string) => this.createTiddlerProvider(terms), resolver: (e) => this.createTiddlerResolver(e) };
+    this.symbolProviders['|'] = { searcher: (terms: string) => this.settingsProvider(terms), resolver: (e) => this.settingsResolver(e) };
     this.currentResults = [];
-    this.currentProvider = {};
+    this.currentProvider = () => {};
   }
 
   refreshSearchSteps() {
@@ -589,7 +582,7 @@ class CommandPaletteWidget extends Widget {
     };
   }
 
-  onInput(text: string) {
+  onInput(text: string = '') {
     if (this.blockProviderChange) {
       //prevent provider changes
       this.currentProvider(text);
@@ -729,7 +722,7 @@ class CommandPaletteWidget extends Widget {
     }
   }
 
-  addResult(result: IResult, id: string) {
+  addResult(result: IResult, id: number) {
     let resultDiv = this.createElement('div', { className: 'commandpaletteresult', innerText: this.translateCaption(result.caption || result.name) });
     if (result.hint !== undefined) {
       let hint = this.createElement('div', { className: 'commandpalettehint', innerText: this.translateCaption(result.hint) });
@@ -749,12 +742,10 @@ class CommandPaletteWidget extends Widget {
     this.scrollDiv.appendChild(resultDiv);
   }
 
-  private getDataFromResultDiv(resultDiv: HTMLDivElement, key: string): string | undefined {
+  private getDataFromResultDiv<K extends keyof IResult>(resultDiv: HTMLDivElement, key: K): IResult[K] | undefined {
     return JSON.parse(resultDiv.dataset.result ?? '{}')[key];
   }
   private getActionFromResultDiv(resultDiv: HTMLDivElement): IResult['action'] | undefined {
-    // DEBUG: console
-    console.log(`resultDiv.onabort`, resultDiv, resultDiv.onabort);
     return resultDiv.onabort as unknown as IResult['action'];
   }
 
@@ -821,8 +812,7 @@ class CommandPaletteWidget extends Widget {
     this.setSelection(sel);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'id' implicitly has an 'any' type.
-  setSelection(id) {
+  setSelection(id: number) {
     this.currentSelection = id;
     for (let i = 0; i < this.currentResults.length; i++) {
       let selected = this.currentSelection === i + 1;
@@ -834,8 +824,8 @@ class CommandPaletteWidget extends Widget {
     }
     let scrollHeight = this.scrollDiv.offsetHeight;
     let scrollPos = this.scrollDiv.scrollTop;
-    let selectionPos = this.currentResults[this.currentSelection - 1].offsetTop;
-    let selectionHeight = this.currentResults[this.currentSelection - 1].offsetHeight;
+    let selectionPos = Number(this.currentResults[this.currentSelection - 1]?.offsetTop ?? 0);
+    let selectionHeight = Number(this.currentResults[this.currentSelection - 1]?.offsetHeight ?? 0);
 
     if (selectionPos < scrollPos || selectionPos >= scrollPos + scrollHeight) {
       //select the closest scrolling position showing the selection
@@ -858,6 +848,7 @@ class CommandPaletteWidget extends Widget {
     if (history === undefined) {
       history = [];
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     history = [...history.reverse().map((x) => x.title), ...$tw.wiki.filterTiddlers('[list[$:/StoryList]]')];
     return Array.from(new Set(history.filter((t) => this.tiddlerOrShadowExists(t))));
   }
@@ -892,8 +883,7 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'filter' implicitly has an 'any' type.
   searchStepBuilder(filter, caret, hint) {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    return (terms) => {
+    return (terms: string) => {
       let search = filter.substr(0, caret) + terms + filter.substr(caret);
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
       let results = $tw.wiki.filterTiddlers(search).map((s) => {
@@ -987,8 +977,8 @@ class CommandPaletteWidget extends Widget {
   settingsProvider(terms: string) {
     this.currentSelection = 0;
     this.hint.innerText = 'Select the setting you want to change';
-    let isNumerical: IValidator = (terms) => terms.length !== 0 && terms.match(/\D/gm) === null;
-    let isBoolean: IValidator = (terms) => terms.length !== 0 && terms.match(/(true\b)|(false\b)/gim) !== null;
+    let isNumerical: IValidator = (terms: string) => terms.length !== 0 && terms.match(/\D/gm) === null;
+    let isBoolean: IValidator = (terms: string) => terms.length !== 0 && terms.match(/(true\b)|(false\b)/gim) !== null;
     this.showResults([
       { name: 'Theme (currently ' + this.settings.theme?.match?.(/[^\/]*$/) ?? 'no ' + ')', action: () => this.promptForThemeSetting() },
       this.settingResultBuilder('Max results', 'maxResults', 'Choose the maximum number of results', isNumerical, 'Error: value must be a positive integer'),
@@ -1047,8 +1037,7 @@ class CommandPaletteWidget extends Widget {
   promptForThemeSetting() {
     this.blockProviderChange = true;
     this.allowInputFieldSelection = false;
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.currentProvider = (terms) => {
+    this.currentProvider = (terms: string) => {
       this.currentSelection = 0;
       this.hint.innerText = 'Choose a theme';
       let defaultValue = this.defaultSettings['theme'];
@@ -1126,7 +1115,7 @@ class CommandPaletteWidget extends Widget {
     this.currentResults = [];
     let resultCount = 0;
     for (let result of results) {
-      this.addResult(result, String(resultCount));
+      this.addResult(result, resultCount);
       resultCount++;
       if (resultCount >= (this.settings.maxResults ?? this.defaultSettings.maxResults)) break;
     }
@@ -1173,7 +1162,7 @@ class CommandPaletteWidget extends Widget {
     this.showResults(searches);
   }
 
-  filterProvider(terms: string, hint: string) {
+  filterProvider(terms: string, hint?: string) {
     this.currentSelection = 0;
     this.hint.innerText = hint === undefined ? 'Filter operation' : hint;
     terms = '[' + terms;
@@ -1344,7 +1333,7 @@ class CommandPaletteWidget extends Widget {
     e.preventDefault();
     e.stopPropagation();
     if (this.currentSelection === 0) return;
-    let result = this.actions.find((a) => a.name === this.currentResults[this.currentSelection - 1].innerText);
+    let result = this.actions.find((a) => a.name === this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name'));
     if (!result) return;
     if (result.keepPalette) {
       let curInput = this.input.value;
@@ -1425,6 +1414,7 @@ class CommandPaletteWidget extends Widget {
     document.createElement;
     let el = this.document.createElement(name) as HTMLDivElement;
     for (let [propriety, value] of Object.entries(proprieties || {})) {
+      // @ts-expect-error ts-migrate(2304) FIXME: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'HTMLDivElement'. No index signature with a parameter of type 'string' was found on type 'HTMLDivElement'.ts(7053)
       el[propriety] = value;
     }
     for (let [style, value] of Object.entries(styles || {})) {
