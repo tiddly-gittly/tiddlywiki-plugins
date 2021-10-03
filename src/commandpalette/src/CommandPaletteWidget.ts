@@ -2,14 +2,18 @@ import { hasPinyinMatchOrFuseMatch } from './search';
 
 const Widget = require('$:/core/modules/widgets/widget.js').widget;
 
+type AllPossibleEvent = PointerEvent | KeyboardEvent | MouseEvent;
 export interface IResult {
   name: string;
   caption?: string;
   hint?: string;
+  action?: (event: AllPossibleEvent) => void;
+}
+export interface IHistoryResult extends IResult {
+  title: string;
 }
 
 export interface IAction extends IResult {
-  action: (event: MouseEvent) => void;
   keepPalette: boolean;
   immediate?: boolean;
 }
@@ -52,6 +56,7 @@ export type IValidator = (term: string) => boolean;
 class CommandPaletteWidget extends Widget {
   private actions: IAction[] = [];
   private triggers: ITrigger[] = [];
+  private currentResults: HTMLDivElement[] = [];
 
   private typeField = 'command-palette-type' as const;
   /** 用于搜索的字段 */
@@ -115,35 +120,39 @@ class CommandPaletteWidget extends Widget {
   }
 
   //filter = (tiddler, terms) => [tiddlers]
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  tagOperation(event: MouseEvent, hintTiddler, hintTag, filter, allowNoSelection, message) {
+  tagOperation(
+    event: AllPossibleEvent,
+    hintTiddler: string,
+    hintTag: string,
+    filter: (tiddler: string, terms: string) => string[],
+    allowNoSelection: boolean,
+    message: string,
+  ) {
     this.blockProviderChange = true;
     if (allowNoSelection) this.allowInputFieldSelection = true;
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     this.currentProvider = this.historyProviderBuilder(hintTiddler);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
+    this.currentResolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) return;
-      let tiddler = this.currentResults[this.currentSelection - 1].result.name;
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-      this.currentProvider = (terms) => {
+      let tiddler: string | undefined = this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name');
+      this.currentProvider = (terms: string) => {
         this.currentSelection = 0;
         this.hint.innerText = hintTag;
-        let searches = filter(tiddler, terms);
-        // @ts-expect-error ts-migrate(7006) FIXME: Parameter 's' implicitly has an 'any' type.
-        searches = searches.map((s) => {
-          return { name: s };
-        });
-        this.showResults(searches);
+        if (tiddler) {
+          let searches = filter(tiddler, terms);
+          this.showResults(
+            searches.map((s) => {
+              return { name: s };
+            }),
+          );
+        }
       };
       this.input.value = '';
       this.onInput(this.input.value);
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      this.currentResolver = (e) => {
+      this.currentResolver = (e: AllPossibleEvent) => {
         if (!allowNoSelection && this.currentSelection === 0) return;
-        let tag = this.input.value;
+        let tag: string | undefined = this.input.value;
         if (this.currentSelection !== 0) {
-          tag = this.currentResults[this.currentSelection - 1].result.name;
+          tag = this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name');
         }
         this.invokeFieldMangler(tiddler, message, tag, e);
         if (!e.getModifierState('Shift')) {
@@ -157,8 +166,7 @@ class CommandPaletteWidget extends Widget {
     this.onInput(this.input.value);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  refreshThemes(e) {
+  refreshThemes(e: AllPossibleEvent) {
     this.themes = this.getTiddlersWithTag(this.themesTag);
     let found = false;
     for (let theme of this.themes) {
@@ -191,17 +199,15 @@ class CommandPaletteWidget extends Widget {
     this.actions = [];
     this.actions.push({
       name: 'Refresh Command Palette',
-      action: (e) => {
+      action: (e: AllPossibleEvent) => {
         this.refreshCommandPalette();
         this.promptCommand('');
       },
       keepPalette: true,
     });
-    this.actions.push({ name: 'Explorer', action: (e) => this.explorer(e), keepPalette: true });
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.actions.push({ name: 'See History', action: (e) => this.showHistory(e), keepPalette: true });
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.actions.push({ name: 'New Command Wizard', action: (e) => this.newCommandWizard(e), keepPalette: true });
+    this.actions.push({ name: 'Explorer', action: (e: AllPossibleEvent) => this.explorer(e), keepPalette: true });
+    this.actions.push({ name: 'See History', action: (e: AllPossibleEvent) => this.showHistory(), keepPalette: true });
+    this.actions.push({ name: 'New Command Wizard', action: (e: AllPossibleEvent) => this.newCommandWizard(), keepPalette: true });
     this.actions.push({
       name: 'Add tag to tiddler',
       action: (e) =>
@@ -209,8 +215,8 @@ class CommandPaletteWidget extends Widget {
           e,
           'Pick tiddler to tag',
           'Pick tag to add (⇧⏎ to add multiple)',
-          // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'tiddler' implicitly has an 'any' type.
-          (tiddler, terms) => $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[search[${terms}]]`),
+          (tiddler: string, terms: string): string[] =>
+            $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[search[${terms}]]`),
           true,
           'tm-add-tag',
         ),
@@ -223,8 +229,7 @@ class CommandPaletteWidget extends Widget {
           e,
           'Pick tiddler to untag',
           'Pick tag to remove (⇧⏎ to remove multiple)',
-          // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'tiddler' implicitly has an 'any' type.
-          (tiddler, terms) => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[search[${terms}]]`),
+          (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[search[${terms}]]`),
           false,
           'tm-remove-tag',
         ),
@@ -264,23 +269,27 @@ class CommandPaletteWidget extends Widget {
         continue;
       }
       if (type === 'message') {
-        // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-        this.actions.push({ name, caption, hint, action: (e) => this.tmMessageBuilder(textFirstLine)(e) });
+        this.actions.push({ name, caption, hint, action: (e: AllPossibleEvent) => this.tmMessageBuilder(textFirstLine)(e), keepPalette: false });
         continue;
       }
       if (type === 'actionString') {
         let userInput = tiddler.fields[this.userInputField] !== undefined && tiddler.fields[this.userInputField] === 'true';
         if (userInput) {
-          this.actions.push({ name, caption, hint, action: (e) => this.actionStringInput(text, hint, e), keepPalette: true });
+          this.actions.push({ name, caption, hint, action: (e: AllPossibleEvent) => this.actionStringInput(text, hint, e), keepPalette: true });
         } else {
-          // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-          this.actions.push({ name, caption, hint, action: (e) => this.actionStringBuilder(text)(e) });
+          this.actions.push({ name, caption, hint, action: (e: AllPossibleEvent) => this.actionStringBuilder(text)(e), keepPalette: false });
         }
         continue;
       }
       if (type === 'history') {
         let mode = tiddler.fields[this.modeField];
-        this.actions.push({ name, caption, hint, action: (e) => this.commandWithHistoryPicker(textFirstLine, hint, mode).handler(e), keepPalette: true });
+        this.actions.push({
+          name,
+          caption,
+          hint,
+          action: (e: AllPossibleEvent) => this.commandWithHistoryPicker(textFirstLine, hint, mode).handler(e),
+          keepPalette: true,
+        });
         continue;
       }
     }
@@ -303,8 +312,7 @@ class CommandPaletteWidget extends Widget {
     let messageStep = () => {
       this.input.value = '';
       this.hint.innerText = 'Enter Message';
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      this.currentResolver = (e) => {
+      this.currentResolver = (e: AllPossibleEvent) => {
         this.tmMessageBuilder('tm-new-tiddler', {
           title: '$:/' + name,
           tags: this.customCommandsTag,
@@ -320,8 +328,7 @@ class CommandPaletteWidget extends Widget {
     let hintStep = () => {
       this.input.value = '';
       this.hint.innerText = 'Enter hint';
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      this.currentResolver = (e) => {
+      this.currentResolver = (e: AllPossibleEvent) => {
         hint = this.input.value;
         messageStep();
       };
@@ -330,8 +337,7 @@ class CommandPaletteWidget extends Widget {
     let typeStep = () => {
       this.input.value = '';
       this.hint.innerText = 'Enter type (prompt, prompt-basic, message, actionString, history)';
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      this.currentResolver = (e) => {
+      this.currentResolver = (e: AllPossibleEvent) => {
         type = this.input.value;
         if (type === 'history') {
           hintStep();
@@ -349,8 +355,7 @@ class CommandPaletteWidget extends Widget {
 
     // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
     this.currentProvider = (terms) => {};
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
+    this.currentResolver = (e: AllPossibleEvent) => {
       if (this.input.value.length === 0) return;
       name = this.input.value;
       typeStep();
@@ -358,18 +363,15 @@ class CommandPaletteWidget extends Widget {
     this.showResults([]);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  explorer(e) {
+  explorer(e: AllPossibleEvent) {
     this.blockProviderChange = true;
     this.input.value = '$:/';
     this.lastExplorerInput = '$:/';
     this.hint.innerText = 'Explorer (⇧⏎ to add multiple)';
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    this.currentProvider = (terms) => this.explorerProvider('$:/', terms);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
+    this.currentProvider = (terms: string) => this.explorerProvider('$:/', terms);
+    this.currentResolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) return;
-      this.currentResults[this.currentSelection - 1].result.action(e);
+      this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     };
     // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     this.onInput();
@@ -398,13 +400,11 @@ class CommandPaletteWidget extends Widget {
     let files = [];
     for (let tiddler of tiddlers) {
       if (tiddler.endsWith('/')) {
-        // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-        folders.push({ name: tiddler, action: (e) => switchFolder(`${url}${tiddler}`) });
+        folders.push({ name: tiddler, action: (e: AllPossibleEvent) => switchFolder(`${url}${tiddler}`) });
       } else {
         files.push({
           name: tiddler,
-          // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-          action: (e) => {
+          action: (e: AllPossibleEvent) => {
             this.navigateTo(`${url}${tiddler}`);
             if (!e.getModifierState('Shift')) {
               this.closePalette();
@@ -418,8 +418,7 @@ class CommandPaletteWidget extends Widget {
       let splits = url.split('/');
       splits.splice(splits.length - 2);
       let parent = splits.join('/') + '/';
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      topResult = { name: '..', action: (e) => switchFolder(parent) };
+      topResult = { name: '..', action: (e: AllPossibleEvent) => switchFolder(parent) };
       this.showResults([topResult, ...folders, ...files]);
       return;
     }
@@ -477,27 +476,22 @@ class CommandPaletteWidget extends Widget {
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
 
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('open-command-palette', (e) => this.openPalette(e));
+    $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent) => this.openPalette(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('open-command-palette-selection', (e) => this.openPaletteSelection(e));
+    $tw.rootWidget.addEventListener('open-command-palette-selection', (e: AllPossibleEvent) => this.openPaletteSelection(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('insert-command-palette-result', (e) => this.insertSelectedResult(e));
+    $tw.rootWidget.addEventListener('insert-command-palette-result', (e: AllPossibleEvent) => this.insertSelectedResult(e));
 
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
     this.div = this.createElement('div', { className: 'commandpalette' }, { display: 'none' });
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
     this.input = this.createElement('input', { type: 'text' });
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
     this.hint = this.createElement('div', { className: 'commandpalettehint commandpalettehintmain' });
     inputAndMainHintWrapper.append(this.input, this.hint);
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
     this.scrollDiv = this.createElement('div', { className: 'cp-scroll' });
     this.div.append(inputAndMainHintWrapper, this.scrollDiv);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.input.addEventListener('keydown', (e) => this.onKeyDown(e));
+    this.input.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
     this.input.addEventListener('input', () => this.onInput(this.input.value));
-    window.addEventListener('click', (e) => this.onClick(e));
+    document.addEventListener('click', (e: PointerEvent | MouseEvent | TouchEvent) => this.onClick(e));
     parent.insertBefore(this.div, nextSibling);
 
     this.refreshCommandPalette();
@@ -545,10 +539,8 @@ class CommandPaletteWidget extends Widget {
     $tw.wiki.setTiddlerData(this.commandHistoryPath, { history: this.history });
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'hint' implicitly has an 'any' type.
-  historyProviderBuilder(hint, mode) {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-    return (terms) => {
+  historyProviderBuilder(hint: string, mode?: 'drafts' | 'story') {
+    return (terms: string) => {
       this.currentSelection = 0;
       this.hint.innerText = hint;
       let results;
@@ -571,8 +563,7 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'message' implicitly has an 'any' type.
   commandWithHistoryPicker(message, hint, mode) {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    let handler = (e) => {
+    let handler = (e: AllPossibleEvent) => {
       this.blockProviderChange = true;
       this.allowInputFieldSelection = true;
       this.currentProvider = provider;
@@ -581,10 +572,9 @@ class CommandPaletteWidget extends Widget {
       this.onInput(this.input.value);
     };
     let provider = this.historyProviderBuilder(hint, mode);
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    let resolver = (e) => {
+    let resolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) return;
-      let title = this.currentResults[this.currentSelection - 1].result.name;
+      let title = this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name');
       this.parentWidget.dispatchEvent({
         type: message,
         param: title,
@@ -619,8 +609,7 @@ class CommandPaletteWidget extends Widget {
     let provider;
     let shortcut = this.triggers.find((t) => text.startsWith(t.trigger));
     if (shortcut !== undefined) {
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-      resolver = (e) => {
+      resolver = (e: AllPossibleEvent) => {
         let inputWithoutShortcut = this.input.value.substr(shortcut!.trigger.length);
         this.invokeActionString(shortcut!.text, this, e, { commandpaletteinput: inputWithoutShortcut });
         this.closePalette();
@@ -644,19 +633,17 @@ class CommandPaletteWidget extends Widget {
     return { resolver, provider, terms };
   }
 
-  onClick(event: MouseEvent) {
+  onClick(event: MouseEvent | PointerEvent | TouchEvent) {
     if (this.isOpened && !this.div.contains(event.target)) {
       this.closePalette();
     }
   }
 
-  openPaletteSelection(event: MouseEvent) {
+  openPaletteSelection(event: AllPossibleEvent) {
     let selection = this.getCurrentSelection();
-    event.param = selection;
-    this.openPalette(event);
+    this.openPalette(event, selection);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  openPalette(e) {
+  openPalette(e: AllPossibleEvent, selection: string) {
     this.isOpened = true;
     this.allowInputFieldSelection = false;
     this.goBack = undefined;
@@ -669,8 +656,8 @@ class CommandPaletteWidget extends Widget {
       caretPos: activeElement.selectionEnd,
     };
     this.input.value = '';
-    if (e.param !== undefined) {
-      this.input.value = e.param;
+    if (selection !== undefined) {
+      this.input.value = selection;
     }
     if (this.settings.alwaysPassSelection) {
       this.input.value += this.getCurrentSelection();
@@ -687,7 +674,9 @@ class CommandPaletteWidget extends Widget {
     let previous = this.previouslyFocused;
     let previousValue = previous.element.value;
     if (previousValue === undefined) return;
-    let selection = this.currentResults[this.currentSelection - 1].result.name;
+    let selection = this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name');
+    // TODO: early return may cause bug here?
+    if (!selection) return;
     if (previous.start !== previous.end) {
       this.previouslyFocused.element.value = previousValue.substring(0, previous.start) + selection + previousValue.substring(previous.end);
     } else {
@@ -702,8 +691,8 @@ class CommandPaletteWidget extends Widget {
     this.isOpened = false;
     this.focusAtCaretPosition(this.previouslyFocused.element, this.previouslyFocused.caretPos);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  onKeyDown(e) {
+
+  onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       //									\/ There's no previous state
       if (!this.settings.escapeGoesBack || this.goBack === undefined) {
@@ -739,17 +728,19 @@ class CommandPaletteWidget extends Widget {
       this.validateSelection(e);
     }
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'result' implicitly has an 'any' type.
-  addResult(result, id) {
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
+
+  addResult(result: IResult, id: string) {
     let resultDiv = this.createElement('div', { className: 'commandpaletteresult', innerText: this.translateCaption(result.caption || result.name) });
     if (result.hint !== undefined) {
-      // @ts-expect-error ts-migrate(2554) FIXME: Expected 3 arguments, but got 2.
       let hint = this.createElement('div', { className: 'commandpalettehint', innerText: this.translateCaption(result.hint) });
       resultDiv.appendChild(hint);
     }
-    // for debug conveniences
+    // we will get this later
     resultDiv.dataset.result = JSON.stringify(result);
+    /** we use this to pass the action */
+    if (result.action) {
+      resultDiv.onabort = result.action as unknown as (this: GlobalEventHandlers, ev: UIEvent) => any;
+    }
     this.currentResults.push(resultDiv);
     resultDiv.addEventListener('click', (e) => {
       this.setSelection(id + 1);
@@ -757,19 +748,28 @@ class CommandPaletteWidget extends Widget {
     });
     this.scrollDiv.appendChild(resultDiv);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  validateSelection(e) {
+
+  private getDataFromResultDiv(resultDiv: HTMLDivElement, key: string): string | undefined {
+    return JSON.parse(resultDiv.dataset.result ?? '{}')[key];
+  }
+  private getActionFromResultDiv(resultDiv: HTMLDivElement): IResult['action'] | undefined {
+    // DEBUG: console
+    console.log(`resultDiv.onabort`, resultDiv, resultDiv.onabort);
+    return resultDiv.onabort as unknown as IResult['action'];
+  }
+
+  validateSelection(e: AllPossibleEvent) {
     this.currentResolver(e);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  defaultResolver(e) {
+
+  defaultResolver(e: AllPossibleEvent) {
     if (e.getModifierState('Shift')) {
       this.input.value = '+' + this.input.value; //this resolver expects that the input starts with +
       this.createTiddlerResolver(e);
       return;
     }
     if (this.currentSelection === 0) return;
-    let selectionTitle = this.currentResults[this.currentSelection - 1].result.name;
+    let selectionTitle = this.getDataFromResultDiv(this.currentResults[this.currentSelection - 1], 'name');
     this.closePalette();
     this.navigateTo(selectionTitle);
   }
@@ -785,27 +785,28 @@ class CommandPaletteWidget extends Widget {
   showHistory() {
     this.hint.innerText = 'History';
     this.currentProvider = (terms: string) => {
-      let results;
+      let results: IHistoryResult[];
       if (terms.length === 0) {
         results = this.getHistory();
       } else {
         results = this.getHistory().filter((h) => (h as any).includes(terms));
       }
-      results = results.map((r) => {
-        return {
-          name: r,
-          action: () => {
-            this.navigateTo(r);
-            this.closePalette();
-          },
-        };
-      });
-      this.showResults(results);
+      this.showResults(
+        results.map((r) => {
+          return {
+            name: r.title,
+            action: () => {
+              this.navigateTo(r);
+              this.closePalette();
+            },
+          };
+        }),
+      );
     };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
+
+    this.currentResolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) return;
-      this.currentResults[this.currentSelection - 1].result.action(e);
+      this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1]);
     };
     this.input.value = '';
     this.blockProviderChange = true;
@@ -850,15 +851,14 @@ class CommandPaletteWidget extends Widget {
     }
   }
 
-  getHistory() {
+  getHistory(): IHistoryResult[] {
+    // TODO: what is the type here?
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    let history = $tw.wiki.getTiddlerData('$:/HistoryList');
+    let history: IHistoryResult[] | undefined = $tw.wiki.getTiddlerData('$:/HistoryList');
     if (history === undefined) {
       history = [];
     }
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'x' implicitly has an 'any' type.
     history = [...history.reverse().map((x) => x.title), ...$tw.wiki.filterTiddlers('[list[$:/StoryList]]')];
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 't' implicitly has an 'any' type.
     return Array.from(new Set(history.filter((t) => this.tiddlerOrShadowExists(t))));
   }
 
@@ -868,8 +868,7 @@ class CommandPaletteWidget extends Widget {
     return $tw.wiki.tiddlerExists(title) || $tw.wiki.isShadowTiddler(title);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-  defaultProvider(terms) {
+  defaultProvider(terms: string) {
     this.hint.innerText = 'Search tiddlers (⇧⏎ to create)';
     // @ts-expect-error ts-migrate(7034) FIXME: Variable 'searches' implicitly has type 'any[]' in... Remove this comment to see the full error message
     let searches;
@@ -904,8 +903,7 @@ class CommandPaletteWidget extends Widget {
     };
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-  tagListProvider(terms) {
+  tagListProvider(terms: string) {
     this.currentSelection = 0;
     this.hint.innerText = 'Search tags';
     let searches;
@@ -924,8 +922,8 @@ class CommandPaletteWidget extends Widget {
     });
     this.showResults(searches);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  tagListResolver(e) {
+
+  tagListResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) {
       let input = this.input.value.substr(1);
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
@@ -938,8 +936,8 @@ class CommandPaletteWidget extends Widget {
     this.input.value = '@' + result.innerText;
     this.onInput(this.input.value);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-  tagProvider(terms) {
+
+  tagProvider(terms: string) {
     this.currentSelection = 0;
     this.hint.innerText = 'Search tiddlers with @tag(s)';
     // @ts-expect-error ts-migrate(7034) FIXME: Variable 'searches' implicitly has type 'any[]' in... Remove this comment to see the full error message
@@ -1036,15 +1034,14 @@ class CommandPaletteWidget extends Widget {
     return { name: name + ' (currently ' + this.settings[settingName] + ')', action: () => this.promptForSetting(settingName, hint, validator, errorMsg) };
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  settingsResolver(e) {
+  settingsResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) return;
     this.goBack = () => {
       this.input.value = '|';
       this.blockProviderChange = false;
       this.onInput(this.input.value);
     };
-    this.currentResults[this.currentSelection - 1].result.action();
+    this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
   }
 
   promptForThemeSetting() {
@@ -1077,9 +1074,8 @@ class CommandPaletteWidget extends Widget {
       }
       this.showResults(results);
     };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
-      this.currentResults[this.currentSelection - 1].result.action(e);
+    this.currentResolver = (e: AllPossibleEvent) => {
+      this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     };
     this.input.value = '';
     this.onInput(this.input.value);
@@ -1098,8 +1094,7 @@ class CommandPaletteWidget extends Widget {
       }
       this.showResults(results);
     };
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    this.currentResolver = (e) => {
+    this.currentResolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) {
         let input = this.input.value;
         if (validator(input)) {
@@ -1110,9 +1105,9 @@ class CommandPaletteWidget extends Widget {
           this.promptCommand('|');
         }
       } else {
-        let action = this.currentResults[this.currentSelection - 1].result.action;
+        let action = this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1]);
         if (action) {
-          action();
+          action(e);
           this.goBack = undefined;
           this.blockProviderChange = false;
           this.allowInputFieldSelection = false;
@@ -1124,15 +1119,14 @@ class CommandPaletteWidget extends Widget {
     this.onInput(this.input.value);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'results' implicitly has an 'any' type.
-  showResults(results) {
+  showResults(results: IResult[]) {
     for (let cur of this.currentResults) {
       cur.remove();
     }
     this.currentResults = [];
     let resultCount = 0;
     for (let result of results) {
-      this.addResult(result, resultCount);
+      this.addResult(result, String(resultCount));
       resultCount++;
       if (resultCount >= (this.settings.maxResults ?? this.defaultSettings.maxResults)) break;
     }
@@ -1140,8 +1134,7 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'message' implicitly has an 'any' type.
   tmMessageBuilder(message, params = {}) {
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-    return (e) => {
+    return (e: AllPossibleEvent) => {
       let event = {
         type: message,
         paramObject: params,
@@ -1150,8 +1143,7 @@ class CommandPaletteWidget extends Widget {
       this.parentWidget.dispatchEvent(event);
     };
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-  actionProvider(terms) {
+  actionProvider(terms: string) {
     this.currentSelection = 0;
     this.hint.innerText = 'Search commands';
     let results: IResult[];
@@ -1273,29 +1265,25 @@ class CommandPaletteWidget extends Widget {
     this.showResults(results);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  filterResolver(e) {
+  filterResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) return;
-    this.currentResults[this.currentSelection - 1].result.action();
+    this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     e.stopPropagation();
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  helpResolver(e) {
+  helpResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) return;
-    this.currentResults[this.currentSelection - 1].result.action();
+    this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     e.stopPropagation();
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'terms' implicitly has an 'any' type.
-  createTiddlerProvider(terms) {
+  createTiddlerProvider(terms: string) {
     this.currentSelection = 0;
     this.hint.innerText = 'Create new tiddler with title @tag(s)';
     this.showResults([]);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  createTiddlerResolver(e) {
+  createTiddlerResolver(e: AllPossibleEvent) {
     let { tags, searchTerms } = this.parseTags(this.input.value.substr(1));
     let title = searchTerms.join(' ');
     // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'any[]'.
@@ -1351,8 +1339,10 @@ class CommandPaletteWidget extends Widget {
     }
     return results;
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'e' implicitly has an 'any' type.
-  actionResolver(e) {
+
+  actionResolver(e: AllPossibleEvent) {
+    e.preventDefault();
+    e.stopPropagation();
     if (this.currentSelection === 0) return;
     let result = this.actions.find((a) => a.name === this.currentResults[this.currentSelection - 1].innerText);
     if (!result) return;
@@ -1365,8 +1355,7 @@ class CommandPaletteWidget extends Widget {
       };
     }
     this.updateCommandHistory(result);
-    result.action(e);
-    e.stopPropagation();
+    result.action?.(e);
     if (result.immediate) {
       this.validateSelection(e);
       return;
@@ -1431,8 +1420,9 @@ class CommandPaletteWidget extends Widget {
       }
     }
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'name' implicitly has an 'any' type.
-  createElement(name, proprieties, styles): HTMLDivElement {
+
+  createElement<E extends keyof HTMLElementTagNameMap>(name: E, proprieties: any, styles?: Partial<CSSStyleDeclaration>): HTMLDivElement {
+    document.createElement;
     let el = this.document.createElement(name) as HTMLDivElement;
     for (let [propriety, value] of Object.entries(proprieties || {})) {
       el[propriety] = value;
