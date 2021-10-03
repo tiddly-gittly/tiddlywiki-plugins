@@ -1,9 +1,9 @@
 command-palette-name: Permaview
 command-palette-type: message
-created: 20200604212411320
-modified: 20200604212415435
+command-palette-caption: {{$:/language/Buttons/Permaview/Caption}}
+command-palette-hint: {{$:/language/Buttons/Permaview/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Permaview
+title: $:/plugins/linonetwo/commandpalette/Permaview
 type: text/vnd.tiddlywiki
 
 tm-permaview

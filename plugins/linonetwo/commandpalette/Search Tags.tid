@@ -1,9 +1,9 @@
 command-palette-name: Search Tags
 command-palette-type: prompt
-created: 20200604001529132
-modified: 20200610112728489
+command-palette-caption: 搜索标签列表
+command-palette-hint: 在命令菜单里列出搜索到的标签
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Search Tags
+title: $:/plugins/linonetwo/commandpalette/Search Tags
 type: text/vnd.tiddlywiki
 
 #

@@ -1,9 +1,9 @@
 command-palette-name: Close All Tiddlers
 command-palette-type: message
-created: 20200604001529132
-modified: 20200610112248371
+command-palette-caption: {{$:/language/Buttons/CloseAll/Caption}}
+command-palette-hint: {{$:/language/Buttons/CloseAll/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Close All Tiddlers
+title: $:/plugins/linonetwo/commandpalette/Close All Tiddlers
 type: text/vnd.tiddlywiki
 
 tm-close-all-tiddlers

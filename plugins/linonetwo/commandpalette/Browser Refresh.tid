@@ -1,9 +1,9 @@
 command-palette-name: Browser Refresh
 command-palette-type: message
-created: 20200604212446283
-modified: 20200604212453363
+command-palette-caption: {{$:/language/Buttons/Refresh/Caption}}
+command-palette-hint: {{$:/language/Buttons/Refresh/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Browser Refresh
+title: $:/plugins/linonetwo/commandpalette/Browser Refresh
 type: text/vnd.tiddlywiki
 
 tm-browser-refresh

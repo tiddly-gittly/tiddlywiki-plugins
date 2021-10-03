@@ -1,9 +1,9 @@
 command-palette-name: Save Wiki
 command-palette-type: message
-created: 20200604212312470
-modified: 20200604212316943
+command-palette-caption: {{$:/language/Buttons/SaveWiki/Caption}}
+command-palette-hint: {{$:/language/Buttons/SaveWiki/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Save Wiki
+title: $:/plugins/linonetwo/commandpalette/Save Wiki
 type: text/vnd.tiddlywiki
 
 tm-save-wiki
