@@ -47,14 +47,14 @@ body.tc-body {
 
 .tc-tiddler-title {
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(10px);
   /** fix menubar with sticky title https://github.com/Jermolene/TiddlyWiki5/issues/4471#issuecomment-594456486*/
   top: var(--menubar-height);
 }
 /** 编辑器工具栏 */
 .tc-editor-toolbar {
   background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 35px;
   z-index: 1000;
