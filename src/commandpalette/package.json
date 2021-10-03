@@ -7,7 +7,7 @@
   "author": "lin onetwo",
   "scripts": {
     "clean": "rm -rf ../../dist",
-    "build": "rollup -c"
+    "build": "rollup -c && zx scripts/after-build.mjs"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
