@@ -5,9 +5,9 @@ import typescript from '@rollup/plugin-typescript';
 import disablePackages from 'rollup-plugin-disable-packages';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/CommandPaletteWidget.ts',
   output: {
-    file: '../../dist/watch-fs.js',
+    file: '../../dist/commandpalette/CommandPaletteWidget.js',
     format: 'cjs',
     exports: 'named'
   },
