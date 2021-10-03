@@ -1,10 +1,10 @@
 command-palette-caret: 48
 command-palette-name: See all content-type
 command-palette-type: prompt-basic
-created: 20200604201605853
-modified: 20200610112751272
+command-palette-caption: 查看内容类型
+command-palette-hint: 在命令菜单里列出所有Wiki里涉及到的内容类型
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/See all content-types
+title: $:/plugins/linonetwo/commandpalette/See all content-types
 type: text/vnd.tiddlywiki
 
 [all[tiddlers+shadows]each[type]get[type]search[]]

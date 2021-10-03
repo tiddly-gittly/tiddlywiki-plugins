@@ -24,22 +24,25 @@ Command Palette Widget
 			this.triggers = [];
 			this.blockProviderChange = false;
 			this.defaultSettings = {
-				maxResults: 15,
-				maxResultHintSize: 45,
-				neverBasic: false,
-				showHistoryOnOpen: true,
-				escapeGoesBack: true,
-				alwaysPassSelection: true,
-				theme: '$:/plugins/souk21/commandpalette/Compact.css',
-			};
-			this.settings = {};
-			this.commandHistoryPath = '$:/plugins/souk21/commandpalette/CommandPaletteHistory';
-			this.settingsPath = '$:/plugins/souk21/commandpalette/CommandPaletteSettings';
-			this.searchStepsPath = '$:/plugins/souk21/commandpalette/CommandPaletteSearchSteps';
+        maxResults: 15,
+        maxResultHintSize: 45,
+        neverBasic: false,
+        showHistoryOnOpen: true,
+        escapeGoesBack: true,
+        alwaysPassSelection: true,
+        theme: '$:/plugins/linonetwo/commandpalette/Compact.css',
+      };
+      this.settings = {};
+      this.commandHistoryPath = '$:/plugins/linonetwo/commandpalette/CommandPaletteHistory';
+      this.settingsPath = '$:/plugins/linonetwo/commandpalette/CommandPaletteSettings';
+      this.searchStepsPath = '$:/plugins/linonetwo/commandpalette/CommandPaletteSearchSteps';
 			this.customCommandsTag = '$:/tags/CommandPaletteCommand';
 			this.themesTag = '$:/tags/CommandPaletteTheme';
 			this.typeField = 'command-palette-type';
+			/** 用于搜索的字段 */
 			this.nameField = 'command-palette-name';
+			/** 用于展示翻译内容的字段 */
+			this.captionField = 'command-palette-caption';
 			this.hintField = 'command-palette-hint';
 			this.modeField = 'command-palette-mode';
 			this.userInputField = 'command-palette-user-input';

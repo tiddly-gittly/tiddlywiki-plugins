@@ -1,10 +1,9 @@
 command-palette-name: Clone Tiddler
 command-palette-type: history
-command-palette-hint: Chose tiddler to clone
-created: 20200605211432310
-modified: 20200605211434831
+command-palette-caption: {{$:/language/Buttons/Clone/Caption}}
+command-palette-hint: {{$:/language/Buttons/Clone/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Clone Tiddler
+title: $:/plugins/linonetwo/commandpalette/Clone Tiddler
 type: text/vnd.tiddlywiki
 
 tm-new-tiddler

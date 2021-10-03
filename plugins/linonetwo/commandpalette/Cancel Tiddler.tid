@@ -1,11 +1,10 @@
 command-palette-mode: drafts
 command-palette-name: Cancel Tiddler
 command-palette-type: history
-command-palette-hint: Choose Draft to cancel
-created: 20200605221333412
-modified: 20200605221425246
+command-palette-caption: {{$:/language/Buttons/Cancel/Caption}}
+command-palette-hint: {{$:/language/Buttons/Cancel/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Cancel Tiddler
+title: $:/plugins/linonetwo/commandpalette/Cancel Tiddler
 type: text/vnd.tiddlywiki
 
 tm-cancel-tiddler

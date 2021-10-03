@@ -1,9 +1,9 @@
 command-palette-name: New Tiddler
 command-palette-type: message
-created: 20200604211924196
-modified: 20200604212110424
+command-palette-caption: {{$:/language/Buttons/NewTiddler/Caption}}
+command-palette-hint: {{$:/language/Buttons/NewTiddler/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/New Tiddler
+title: $:/plugins/linonetwo/commandpalette/New Tiddler
 type: text/vnd.tiddlywiki
 
 tm-new-tiddler

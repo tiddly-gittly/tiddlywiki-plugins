@@ -1,9 +1,9 @@
 command-palette-name: Toggle Fullscreen
 command-palette-type: message
-created: 20200604212224319
-modified: 20200604212229222
+command-palette-caption: {{$:/language/Buttons/FullScreen/Caption}}
+command-palette-hint: {{$:/language/Buttons/FullScreen/Hint}}
 tags: $:/tags/CommandPaletteCommand
-title: $:/plugins/souk21/commandpalette/Toggle Fullscreen
+title: $:/plugins/linonetwo/commandpalette/Toggle Fullscreen
 type: text/vnd.tiddlywiki
 
 tm-full-screen
