@@ -123,11 +123,11 @@ class CommandPaletteWidget extends Widget {
     this.invokeActionString(action, this, e);
   }
 
-  //filter = (tiddler, terms) => [tiddlers]
   tagOperation(
     event: AllPossibleEvent,
     hintTiddler: string,
     hintTag: string,
+    /** (tiddler, terms) => [tiddlers] */
     filter: (tiddler: string, terms: string) => string[],
     allowNoSelection: boolean,
     message: string,
@@ -481,6 +481,27 @@ class CommandPaletteWidget extends Widget {
     $tw.rootWidget.addEventListener('open-command-palette-selection', (e: AllPossibleEvent) => this.openPaletteSelection(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('insert-command-palette-result', (e: AllPossibleEvent) => this.insertSelectedResult(e));
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+    $tw.rootWidget.addEventListener('command-palette-switch-history', (e: AllPossibleEvent) => {
+      // we have history list in palette by default, if we have showHistoryOnOpen === true
+      // TODO: handle this if !showHistoryOnOpen
+      if (!this.isOpened) {
+        this.openPalette(e);
+      }
+      this.onKeyDown(
+        new KeyboardEvent('keydown', {
+          bubbles: false,
+          cancelable: true,
+          key: 'ArrowDown',
+          shiftKey: false,
+        }),
+      );
+      window.addEventListener('keyup', (keyUpEvent) => {
+        if (!keyUpEvent.ctrlKey) {
+          this.currentResolver(keyUpEvent);
+        }
+      });
+    });
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
     this.div = this.createElement('div', { className: 'commandpalette' }, { display: 'none' });
@@ -636,7 +657,7 @@ class CommandPaletteWidget extends Widget {
     let selection = this.getCurrentSelection();
     this.openPalette(event, selection);
   }
-  openPalette(e: AllPossibleEvent, selection: string) {
+  openPalette(e: AllPossibleEvent, selection?: string) {
     this.isOpened = true;
     this.allowInputFieldSelection = false;
     this.goBack = undefined;
