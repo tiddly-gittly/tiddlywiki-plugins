@@ -1,6 +1,5 @@
 import Fuse from 'fuse.js';
 import pinyin from 'pinyin';
-import type { IResult } from './CommandPaletteWidget';
 
 export function hasPinyinMatchOrFuseMatch(userInput: string, results: IResult[]) {
   const fuse = new Fuse(results, {
@@ -18,3 +17,4 @@ export function hasPinyinMatchOrFuseMatch(userInput: string, results: IResult[])
   });
   return fuse.search(userInput);
 }
+export const pinyinfuse = hasPinyinMatchOrFuseMatch;
