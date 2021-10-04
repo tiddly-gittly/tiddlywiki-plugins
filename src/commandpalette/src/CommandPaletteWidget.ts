@@ -1,5 +1,3 @@
-import { hasPinyinMatchOrFuseMatch } from './search';
-
 const Widget = require('$:/core/modules/widgets/widget.js').widget;
 
 type AllPossibleEvent = PointerEvent | KeyboardEvent | MouseEvent;
@@ -496,11 +494,13 @@ class CommandPaletteWidget extends Widget {
           shiftKey: false,
         }),
       );
-      window.addEventListener('keyup', (keyUpEvent) => {
+      const onCtrlKeyUp = (keyUpEvent: KeyboardEvent) => {
         if (!keyUpEvent.ctrlKey) {
           this.currentResolver(keyUpEvent);
+          window.removeEventListener('keyup', onCtrlKeyUp);
         }
-      });
+      };
+      window.addEventListener('keyup', onCtrlKeyUp);
     });
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
