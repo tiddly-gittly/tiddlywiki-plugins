@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "fuse.js": "^6.4.6",
+    "lodash": "^4.17.21",
     "pinyin": "^2.10.2"
   }
 }
