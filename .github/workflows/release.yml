@@ -41,7 +41,7 @@ jobs:
         run: npm i
 
       - name: Make Plugins
-        run: npm run build && npm run copyToDist
+        run: npm run build && npm run copyToDist && npm run zip
         env:
           CI: true
           CI_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
