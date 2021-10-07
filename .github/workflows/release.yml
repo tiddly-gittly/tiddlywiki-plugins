@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  Linux:
+  Plugins:
     runs-on: ubuntu-latest
 
     steps:
