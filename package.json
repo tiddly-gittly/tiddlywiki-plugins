@@ -1,5 +1,8 @@
 {
+  "scripts": {
+    "postinstall": "zx scripts/installDep.mjs"
+  },
   "devDependencies": {
-    "@types/node": "^16.9.2"
+    "zx": "^4.2.0"
   }
 }
