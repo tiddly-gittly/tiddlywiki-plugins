@@ -245,12 +245,12 @@ class CommandPaletteWidget extends Widget {
       if (!tiddler.fields[this.typeField] === undefined) continue;
       let name = tiddler.fields[this.nameField];
       if (typeof name !== 'string') throw new Error(`Command palette tiddler ${tiddler.fields.title} doesn't have a ${this.nameField} field`);
-      let caption = tiddler.fields[this.captionField];
+      let caption = this.translateCaption(tiddler.fields[this.captionField]);
       let type = tiddler.fields[this.typeField];
-      let text = tiddler.fields.text;
+      let text = this.translateCaption(tiddler.fields.text);
       if (text === undefined) text = '';
       let textFirstLine = (text.match(/^.*/) ?? [''])[0];
-      let hint = tiddler.fields[this.hintField] ?? tiddler.fields[this.nameField] ?? '';
+      let hint = this.translateCaption(tiddler.fields[this.hintField] ?? tiddler.fields[this.nameField] ?? '');
       if (type === 'shortcut') {
         ``;
         let trigger = tiddler.fields[this.triggerField];
@@ -474,7 +474,7 @@ class CommandPaletteWidget extends Widget {
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
 
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent) => this.openPalette(e));
+    $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent, param) => this.openPalette(e, param));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('open-command-palette-selection', (e: AllPossibleEvent) => this.openPaletteSelection(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
@@ -518,9 +518,11 @@ class CommandPaletteWidget extends Widget {
     this.refreshCommandPalette();
 
     this.symbolProviders['>'] = { searcher: (terms: string) => this.actionProvider(terms), resolver: (e) => this.actionResolver(e) };
+    this.symbolProviders['》'] = this.symbolProviders['>'];
     this.symbolProviders['#'] = { searcher: (terms: string) => this.tagListProvider(terms), resolver: (e) => this.tagListResolver(e) };
     this.symbolProviders['@'] = { searcher: (terms: string) => this.tagProvider(terms), resolver: (e) => this.defaultResolver(e) };
     this.symbolProviders['?'] = { searcher: (terms: string) => this.helpProvider(terms), resolver: (e) => this.helpResolver(e) };
+    this.symbolProviders['？'] = this.symbolProviders['?'];
     this.symbolProviders['['] = { searcher: (terms: string, hint?: string) => this.filterProvider(terms, hint), resolver: (e) => this.filterResolver(e) };
     this.symbolProviders['+'] = { searcher: (terms: string) => this.createTiddlerProvider(terms), resolver: (e) => this.createTiddlerResolver(e) };
     this.symbolProviders['|'] = { searcher: (terms: string) => this.settingsProvider(terms), resolver: (e) => this.settingsResolver(e) };
@@ -744,9 +746,9 @@ class CommandPaletteWidget extends Widget {
   }
 
   addResult(result: IResult, id: number) {
-    let resultDiv = this.createElement('div', { className: 'commandpaletteresult', innerText: this.translateCaption(result.caption || result.name) });
+    let resultDiv = this.createElement('div', { className: 'commandpaletteresult', innerText: result.caption || result.name });
     if (result.hint !== undefined) {
-      let hint = this.createElement('div', { className: 'commandpalettehint', innerText: this.translateCaption(result.hint) });
+      let hint = this.createElement('div', { className: 'commandpalettehint', innerText: result.hint });
       resultDiv.appendChild(hint);
     }
     // we will get this later
@@ -801,7 +803,7 @@ class CommandPaletteWidget extends Widget {
       if (terms.length === 0) {
         results = this.getHistory();
       } else {
-        results = this.getHistory().filter((h) => (h as any).includes(terms));
+        results = $tw.utils.pinyinfuse(this.getHistory(), terms, ['title']).map((item) => item.item);
       }
       this.showResults(
         results.map((r) => {
@@ -1168,7 +1170,7 @@ class CommandPaletteWidget extends Widget {
               matches?: readonly Fuse.FuseResultMatch[] | undefined;
           }
        */
-      results = $tw.utils.pinyinfuse(this.actions, terms.toLowerCase()).map(item => item.item);
+      results = $tw.utils.pinyinfuse(this.actions, terms.toLowerCase(), ['name', 'caption']).map((item) => item.item);
     }
     this.showResults(results);
   }
