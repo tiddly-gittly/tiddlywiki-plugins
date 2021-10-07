@@ -48,14 +48,16 @@ function translatePinyin(item: string): string {
   if (!containsChinese(item)) {
     return item;
   }
-  return `${item}${pinyin(item, { style: pinyin.STYLE_NORMAL }).join('')}`;
+  return `${pinyin(item, { style: pinyin.STYLE_NORMAL }).join('')} ${item}`;
 }
 
 export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks extends keyof T>(
   items: T[],
   input: string,
   keys: Ks[] = [],
+  options: { threshold?: number; distance?: number; minMatchCharLength?: number } = {},
 ): Fuse.FuseResult<T>[] {
+  const { threshold = 0.3, distance = 60, minMatchCharLength = 3 } = options;
   const fuse = new Fuse<T>(items, {
     getFn: (object: T, keyPath: string | string[]): string => {
       if (Array.isArray(keyPath)) {
@@ -67,12 +69,20 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
       }
     },
     keys: keys as string[],
-    ignoreLocation: true,
+    ignoreLocation: false,
     includeScore: true,
     includeMatches: true,
     shouldSort: true,
+    minMatchCharLength,
+    threshold,
+    distance,
   });
-  return fuse.search(input).reverse();
+  const result = fuse.search(input);
+  // DEBUG: console
+  console.log(`items`, input, items);
+  // DEBUG: console
+  console.log(`result`, result);
+  return result.reverse();
 }
 
 $tw.utils.pinyinfuse = hasPinyinMatchOrFuseMatch;
