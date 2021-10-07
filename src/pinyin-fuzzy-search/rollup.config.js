@@ -8,7 +8,8 @@ export default {
   input: 'src/pinyin-fuzzy-search.ts',
   output: {
     file: '../../dist/pinyin-fuzzy-search/pinyin-fuzzy-search.js',
-    format: 'cjs',
+    format: 'commonjs',
+    sourcemap: 'inline',
     exports: 'named'
   },
   external: [
@@ -21,10 +22,10 @@ export default {
     'stream'
   ],
   plugins: [
-    typescript(),
-    nodeResolve(),
-    json(),
+    nodeResolve({ browser: true }),
     commonjs(),
+    typescript(),
+    json(),
 
     // We are not able to bundle in fsevents since it is a native osx lib.
     // It will give us errors if we don't disable (replace it with noop) it.
