@@ -25,23 +25,58 @@ export interface IFilterOperatorOptions {
   widget: Object;
 }
 
+/** Regex equivalent to \p{Han} in other programming languages. */
+const HAN_REGEX = /[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303B\u3400-\u4DB5\u4E00-\u9FD5\uF900-\uFA6D\uFA70-\uFAD9]/;
+
+/**
+ * Returns true if the `text` contains at least one Chinese characters;
+ * false otherwise.
+ * @param {string} text - The text to be checked for Chinese.
+ * @returns {boolean}
+ */
+function containsChinese(text: string) {
+  // Empty strings don't contain Chinese.
+  if (text === null || text === undefined || text === '') {
+    return false;
+  }
+  // Check for any match using regex; cast boolean
+  return !!text.match(HAN_REGEX);
+}
+$tw.utils.containsChinese = containsChinese;
+
+const getFn = (object: { title: string }, keyPath: string | string[]): string => {
+  if (Array.isArray(keyPath)) {
+    const value = object[keyPath[0] as 'title'];
+    return translatePinyin(value);
+  } else {
+    const value = object[keyPath as 'title'];
+    return translatePinyin(value);
+  }
+};
+function translatePinyin(item: string): string {
+  if (!containsChinese(item)) {
+    return item;
+  }
+  return `${item}${pinyin(item, { style: pinyin.STYLE_NORMAL }).join('')}`;
+}
+
 export function hasPinyinMatchOrFuseMatch(items: string[], input: string): Fuse.FuseResult<string>[] {
-  const fuse = new Fuse(items, {
-    getFn: (object, keyPath): string => {
-      if (Array.isArray(keyPath)) {
-        // we don't have nested keys
-        return '';
-      } else {
-        const value = object;
-        return `${value}${pinyin(value, { style: pinyin.STYLE_NORMAL }).join('')}`;
-      }
+  const fuse = new Fuse<{ title: string }>(
+    items.map((title) => ({ title })),
+    {
+      // seems getFn is not working here if it searches string[] , so we have to make items { title: string } first, and turn it back later
+      getFn,
+      keys: ['title'],
+      ignoreLocation: true,
+      includeScore: true,
+      includeMatches: true,
+      shouldSort: true,
     },
-    ignoreLocation: true,
-    includeScore: true,
-    includeMatches: true,
-    shouldSort: true,
-  });
-  return fuse.search(input).reverse();
+  );
+  return fuse
+    .search(input)
+    .map((item) => ({ ...item, item: item.item.title }))
+    .reverse();
 }
 
 $tw.utils.pinyinfuse = hasPinyinMatchOrFuseMatch;
