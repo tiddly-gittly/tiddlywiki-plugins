@@ -52,6 +52,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
-          files: dist/**/*
+          files: dist/linonetwo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
