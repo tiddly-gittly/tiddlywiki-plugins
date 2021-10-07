@@ -6,5 +6,6 @@
     "core-version": ">=5.0.8",
     "list": "readme",
     "source": "https://github.com/tiddly-gittly/tiddlywiki-plugins",
+    "dependents": "$:/plugins/linonetwo/pinyin-fuzzy-search",
     "plugin-type": "plugin"
 }

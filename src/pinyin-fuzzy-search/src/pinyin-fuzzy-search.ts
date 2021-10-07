@@ -48,25 +48,43 @@ function translatePinyin(item: string): string {
   if (!containsChinese(item)) {
     return item;
   }
-  return `${pinyin(item, { style: pinyin.STYLE_NORMAL }).join('')} ${item}`;
+  const pinyinVersionOfItem = pinyin(item, { style: pinyin.STYLE_NORMAL }).join('');
+  return `${pinyinVersionOfItem} ${item}`;
 }
 
 export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks extends keyof T>(
   items: T[],
   input: string,
   keys: Ks[] = [],
-  options: { threshold?: number; distance?: number; minMatchCharLength?: number } = {},
+  options: { threshold?: number; distance?: number; minMatchCharLength?: number; searchTiddlerByTitle?: boolean } = {},
 ): Fuse.FuseResult<T>[] {
-  const { threshold = 0.3, distance = 60, minMatchCharLength = 3 } = options;
+  const { threshold = 0.3, distance = 60, minMatchCharLength = 1, searchTiddlerByTitle = false } = options;
   const fuse = new Fuse<T>(items, {
     getFn: (object: T, keyPath: string | string[]): string => {
+      // general usage
+      let value: string;
+      let realKeyPath: string;
       if (Array.isArray(keyPath)) {
-        const value = object[keyPath[0] as 'any'];
-        return translatePinyin(value);
+        realKeyPath = keyPath[0] as 'any';
       } else {
-        const value = object[keyPath as 'any'];
-        return translatePinyin(value);
+        realKeyPath = keyPath as 'any';
       }
+      value = object[realKeyPath];
+      // tiddler search usage, should provide { title: string } to work
+      if (searchTiddlerByTitle) {
+        const title = object['title'];
+        const fieldName = realKeyPath;
+        const tiddler = $tw.wiki.getTiddler(title).fields;
+        const fieldValue = typeof tiddler[fieldName] === 'string' ? tiddler[fieldName] : String(tiddler[fieldName] ?? '');
+        // parse pinyin for long text is time consuming
+        // if use chinese to search chinese, no need for pinyin
+        if (fieldName === 'text' || containsChinese(input)) {
+          return fieldValue;
+        }
+        return translatePinyin(fieldValue);
+      }
+
+      return translatePinyin(value);
     },
     keys: keys as string[],
     ignoreLocation: false,
@@ -78,7 +96,6 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
     distance,
   });
   const result = fuse.search(input);
-  console.log(`result`, result);
   return result.reverse();
 }
 
@@ -161,10 +178,11 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
     tiddlerTitlesToSearch = $tw.wiki.getTiddlers();
   }
   // seems getFn is not working here if it searches string[] , so we have to make items { title: string } first, and turn it back later
-  const results = hasPinyinMatchOrFuseMatch(
+  const results = hasPinyinMatchOrFuseMatch<any, any>(
     tiddlerTitlesToSearch.map((title) => ({ title })),
     searchText,
-    ['title'],
+    fields,
+    { searchTiddlerByTitle: true },
   ).map((item) => item.item.title);
   // Remove any of the results we have to exclude
   if (exclude) {

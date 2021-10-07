@@ -1,3 +1,5 @@
+import throttle from 'lodash/throttle';
+
 const Widget = require('$:/core/modules/widgets/widget.js').widget;
 
 type AllPossibleEvent = PointerEvent | KeyboardEvent | MouseEvent;
@@ -94,6 +96,7 @@ class CommandPaletteWidget extends Widget {
   constructor(parseTreeNode: any, options: any) {
     super(parseTreeNode, options);
     this.initialise(parseTreeNode, options);
+    this.onInput = throttle(this.onInput, 300);
   }
 
   actionStringBuilder(text: any) {
@@ -470,6 +473,9 @@ class CommandPaletteWidget extends Widget {
   render(parent, nextSibling) {
     this.parentDomNode = parent;
     this.execute();
+    if ($tw.utils.pinyinfuse === undefined) {
+      throw new Error('需要安装 linonetwo/pinyin-fuzzy-search 插件以获得模糊搜索和拼音搜索的能力');
+    }
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
 
@@ -864,10 +870,10 @@ class CommandPaletteWidget extends Widget {
     }
   }
 
-  getHistory(): IHistoryResult[] {
+  getHistory(): string[] {
     // TODO: what is the type here?
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    let history: IHistoryResult[] | undefined = $tw.wiki.getTiddlerData('$:/HistoryList');
+    let history: string[] | undefined = $tw.wiki.getTiddlerData('$:/HistoryList');
     if (history === undefined) {
       history = [];
     }
@@ -884,23 +890,20 @@ class CommandPaletteWidget extends Widget {
 
   defaultProvider(terms: string) {
     this.hint.innerText = 'Search tiddlers (⇧⏎ to create)';
-    // @ts-expect-error ts-migrate(7034) FIXME: Variable 'searches' implicitly has type 'any[]' in... Remove this comment to see the full error message
-    let searches;
+    let searches: IResult[];
     if (terms.startsWith('\\')) terms = terms.substr(1);
     if (terms.length === 0) {
       if (this.settings.showHistoryOnOpen) {
         searches = this.getHistory().map((s) => {
-          return { name: s, hint: 'history' };
+          return { name: s, hint: '历史记录' };
         });
       } else {
         searches = [];
       }
     } else {
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'a' implicitly has an 'any' type.
       searches = this.searchSteps.reduce((a, c) => [...a, ...c(terms)], []);
       searches = Array.from(new Set(searches));
     }
-    // @ts-expect-error ts-migrate(7005) FIXME: Variable 'searches' implicitly has an 'any[]' type... Remove this comment to see the full error message
     this.showResults(searches);
   }
 

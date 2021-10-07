@@ -1,8 +1,8 @@
 {
-    "steps": [
-          {"filter": "[!is[system]search:title[]]", "hint": "in title", "caret": "25"},
-          {"filter": "[all[system+shadows]search:title[]]", "hint": "in title (system)", "caret": "33"},
-          {"filter": "[search[]]", "hint": "all", "caret": "8"},
-          {"filter": "[all[shadows]search[]]", "hint": "shadows", "caret": "20"}
-    ]
+  "steps": [
+    { "filter": "[!is[system]pinyinfuse:title[]]", "hint": "在标题中", "caret": "29" },
+    { "filter": "[all[system+shadows]pinyinfuse:title[]]", "hint": "在标题中 (系统)", "caret": "37" },
+    { "filter": "[all[]pinyinfuse[]]", "hint": "全局搜索", "caret": "17" },
+    { "filter": "[all[shadows]pinyinfuse[]]", "hint": "shadows", "caret": "24" }
+  ]
 }
