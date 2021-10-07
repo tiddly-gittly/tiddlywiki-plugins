@@ -157,17 +157,18 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
   const results = hasPinyinMatchOrFuseMatch(
     tiddlerTitlesToSearch.map((title) => ({ title })),
     searchText,
-  ).map((item) => ({ ...item, item: item.item.title }));
+    ['title'],
+  ).map((item) => item.item.title);
   // Remove any of the results we have to exclude
   if (exclude) {
     for (let excludeIndex = 0; excludeIndex < exclude.length; excludeIndex += 1) {
-      let p = results.findIndex((item) => item.item.includes(exclude[excludeIndex]));
+      let p = results.findIndex((item) => item.includes(exclude[excludeIndex]));
       if (p !== -1) {
         results.splice(p, 1);
       }
     }
   }
-  return results.map((item) => item.item);
+  return results.map((item) => item);
 }
 
 /**
