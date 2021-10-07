@@ -3,4 +3,4 @@ tags: $:/tags/KeyboardShortcut
 title: $:/plugins/linonetwo/commandpalette/CommandPaletteCommandMode
 type: text/vnd.tiddlywiki
 
-<$action-sendmessage $message="open-command-palette" $param=">"/>
+<$action-sendmessage $message="open-command-palette" $param=">" />

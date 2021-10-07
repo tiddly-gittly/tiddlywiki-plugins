@@ -78,9 +78,6 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
     distance,
   });
   const result = fuse.search(input);
-  // DEBUG: console
-  console.log(`items`, input, items);
-  // DEBUG: console
   console.log(`result`, result);
   return result.reverse();
 }
