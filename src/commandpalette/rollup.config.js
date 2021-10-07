@@ -7,7 +7,7 @@ import disablePackages from 'rollup-plugin-disable-packages';
 export default {
   input: 'src/CommandPaletteWidget.ts',
   output: {
-    file: '../../dist/commandpalette/CommandPaletteWidget.js',
+    file: '../../dist/linonetwo/commandpalette/CommandPaletteWidget.js',
     format: 'commonjs',
     sourcemap: 'inline',
     exports: 'named'
