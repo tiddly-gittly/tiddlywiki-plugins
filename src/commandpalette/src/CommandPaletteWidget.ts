@@ -219,7 +219,7 @@ class CommandPaletteWidget extends Widget {
           'Pick tag to add (⇧⏎ to add multiple)',
           (tiddler: string, terms: string): string[] =>
             // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-            $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[search[${terms}]]`),
+            $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
           true,
           'tm-add-tag',
         ),
@@ -233,7 +233,7 @@ class CommandPaletteWidget extends Widget {
           'Pick tiddler to untag',
           'Pick tag to remove (⇧⏎ to remove multiple)',
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-          (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[search[${terms}]]`),
+          (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
           false,
           'tm-remove-tag',
         ),
@@ -393,7 +393,7 @@ class CommandPaletteWidget extends Widget {
     this.currentSelection = 0;
     let search = this.input.value.substr(url.length);
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    let tiddlers = $tw.wiki.filterTiddlers(`[removeprefix[${url}]splitbefore[/]sort[]search[${search}]]`);
+    let tiddlers = $tw.wiki.filterTiddlers(`[removeprefix[${url}]splitbefore[/]sort[]pinyinfuse[${search}]]`);
     let folders = [];
     let files = [];
     for (let tiddler of tiddlers) {
@@ -924,7 +924,7 @@ class CommandPaletteWidget extends Widget {
     } else {
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
       searches = $tw.wiki.filterTiddlers(
-        '[all[]tags[]!is[system]search[' + terms + ']][all[]tags[]is[system]search[' + terms + ']][all[shadows]tags[]search[' + terms + ']]',
+        '[all[]tags[]!is[system]pinyinfuse[' + terms + ']][all[]tags[]is[system]pinyinfuse[' + terms + ']][all[shadows]tags[]pinyinfuse[' + terms + ']]',
       );
     }
     // @ts-expect-error ts-migrate(7006) FIXME: Parameter 's' implicitly has an 'any' type.
@@ -990,7 +990,7 @@ class CommandPaletteWidget extends Widget {
     }, '')}]`;
     if (searchTerms.length !== 0) {
       tagsFilter = tagsFilter.substr(0, tagsFilter.length - 1); //remove last ']'
-      tagsFilter += `search[${searchTerms.join(' ')}]]`;
+      tagsFilter += `pinyinfuse[${searchTerms.join(' ')}]]`;
     }
     return { tags, searchTerms, tagsFilter };
   }
@@ -1160,7 +1160,15 @@ class CommandPaletteWidget extends Widget {
     if (terms.length === 0) {
       results = this.getCommandHistory();
     } else {
-      results = this.actions.filter((a) => a.name.toLowerCase().includes(terms.toLowerCase()));
+      /**
+       * {
+              item: T;
+              refIndex: number;
+              score?: number | undefined;
+              matches?: readonly Fuse.FuseResultMatch[] | undefined;
+          }
+       */
+      results = $tw.utils.pinyinfuse(this.actions, terms.toLowerCase()).map(item => item.item);
     }
     this.showResults(results);
   }
