@@ -474,7 +474,7 @@ class CommandPaletteWidget extends Widget {
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
 
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent, param) => this.openPalette(e, param));
+    $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent) => this.openPalette(e, e.param));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('open-command-palette-selection', (e: AllPossibleEvent) => this.openPaletteSelection(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
