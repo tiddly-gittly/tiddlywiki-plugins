@@ -7,7 +7,7 @@ import disablePackages from 'rollup-plugin-disable-packages';
 export default {
   input: 'src/pinyin-fuzzy-search.ts',
   output: {
-    file: '../../dist/pinyin-fuzzy-search/pinyin-fuzzy-search.js',
+    file: '../../dist/linonetwo/pinyin-fuzzy-search/pinyin-fuzzy-search.js',
     format: 'commonjs',
     sourcemap: 'inline',
     exports: 'named'
