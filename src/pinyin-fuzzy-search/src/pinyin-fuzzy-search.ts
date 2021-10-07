@@ -44,15 +44,6 @@ function containsChinese(text: string) {
 }
 $tw.utils.containsChinese = containsChinese;
 
-const getFn = (object: { title: string }, keyPath: string | string[]): string => {
-  if (Array.isArray(keyPath)) {
-    const value = object[keyPath[0] as 'title'];
-    return translatePinyin(value);
-  } else {
-    const value = object[keyPath as 'title'];
-    return translatePinyin(value);
-  }
-};
 function translatePinyin(item: string): string {
   if (!containsChinese(item)) {
     return item;
@@ -60,23 +51,28 @@ function translatePinyin(item: string): string {
   return `${item}${pinyin(item, { style: pinyin.STYLE_NORMAL }).join('')}`;
 }
 
-export function hasPinyinMatchOrFuseMatch(items: string[], input: string): Fuse.FuseResult<string>[] {
-  const fuse = new Fuse<{ title: string }>(
-    items.map((title) => ({ title })),
-    {
-      // seems getFn is not working here if it searches string[] , so we have to make items { title: string } first, and turn it back later
-      getFn,
-      keys: ['title'],
-      ignoreLocation: true,
-      includeScore: true,
-      includeMatches: true,
-      shouldSort: true,
+export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks extends keyof T>(
+  items: T[],
+  input: string,
+  keys: Ks[] = [],
+): Fuse.FuseResult<T>[] {
+  const fuse = new Fuse<T>(items, {
+    getFn: (object: T, keyPath: string | string[]): string => {
+      if (Array.isArray(keyPath)) {
+        const value = object[keyPath[0] as 'any'];
+        return translatePinyin(value);
+      } else {
+        const value = object[keyPath as 'any'];
+        return translatePinyin(value);
+      }
     },
-  );
-  return fuse
-    .search(input)
-    .map((item) => ({ ...item, item: item.item.title }))
-    .reverse();
+    keys: keys as string[],
+    ignoreLocation: true,
+    includeScore: true,
+    includeMatches: true,
+    shouldSort: true,
+  });
+  return fuse.search(input).reverse();
 }
 
 $tw.utils.pinyinfuse = hasPinyinMatchOrFuseMatch;
@@ -157,7 +153,11 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
   } else {
     tiddlerTitlesToSearch = $tw.wiki.getTiddlers();
   }
-  const results = hasPinyinMatchOrFuseMatch(tiddlerTitlesToSearch, searchText);
+  // seems getFn is not working here if it searches string[] , so we have to make items { title: string } first, and turn it back later
+  const results = hasPinyinMatchOrFuseMatch(
+    tiddlerTitlesToSearch.map((title) => ({ title })),
+    searchText,
+  ).map((item) => ({ ...item, item: item.item.title }));
   // Remove any of the results we have to exclude
   if (exclude) {
     for (let excludeIndex = 0; excludeIndex < exclude.length; excludeIndex += 1) {
