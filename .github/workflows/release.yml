@@ -55,11 +55,3 @@ jobs:
           files: dist/linonetwo.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Make DemoPage
-        run: npm run demo-wiki
-      - name: Deploy DemoPage
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public-dist
