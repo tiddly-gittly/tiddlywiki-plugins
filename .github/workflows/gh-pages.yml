@@ -16,8 +16,10 @@ jobs:
 
       - name: Install Dependency
         run: npm install
-      - name: Build
-        run: npm run build
+      - name: Make Plugins
+        run: npm run build && npm run copyToDist && npm run zip
+      - name: Make DemoPage
+        run: npm run demo-wiki
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
