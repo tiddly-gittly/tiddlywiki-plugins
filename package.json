@@ -4,10 +4,14 @@
     "postinstall": "zx scripts/installDep.mjs",
     "build": "zx scripts/buildPlugins.mjs",
     "copyToDist": "cp -r plugins/* dist",
-    "zip": "zx scripts/zipDist.mjs"
+    "zip": "zx scripts/zipDist.mjs",
+    "demo-wiki": "zx scripts/build-wiki.mjs"
   },
   "devDependencies": {
     "archiver": "^5.3.0",
+    "html-minifier-terser": "^6.0.2",
+    "tiddlywiki": "^5.2.0",
+    "workbox-cli": "^6.3.0",
     "zx": "^4.2.0"
   }
 }
