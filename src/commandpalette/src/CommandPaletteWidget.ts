@@ -486,28 +486,9 @@ class CommandPaletteWidget extends Widget {
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('insert-command-palette-result', (e: AllPossibleEvent) => this.insertSelectedResult(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('command-palette-switch-history', (e: AllPossibleEvent) => {
-      // we have history list in palette by default, if we have showHistoryOnOpen === true
-      // TODO: handle this if !showHistoryOnOpen
-      if (!this.isOpened) {
-        this.openPalette(e);
-      }
-      this.onKeyDown(
-        new KeyboardEvent('keydown', {
-          bubbles: false,
-          cancelable: true,
-          key: 'ArrowDown',
-          shiftKey: false,
-        }),
-      );
-      const onCtrlKeyUp = (keyUpEvent: KeyboardEvent) => {
-        if (!keyUpEvent.ctrlKey) {
-          this.currentResolver(keyUpEvent);
-          window.removeEventListener('keyup', onCtrlKeyUp);
-        }
-      };
-      window.addEventListener('keyup', onCtrlKeyUp);
-    });
+    $tw.rootWidget.addEventListener('command-palette-switch-history', e => this.handleSwitchHistory(e, true));
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+    $tw.rootWidget.addEventListener('command-palette-switch-history-back', e => this.handleSwitchHistory(e, false));
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
     this.div = this.createElement('div', { className: 'commandpalette' }, { display: 'none' });
@@ -552,6 +533,30 @@ class CommandPaletteWidget extends Widget {
     this.refreshThemes();
     this.refreshCommands();
     this.refreshSearchSteps();
+  }
+
+  handleSwitchHistory(event: KeyboardEvent, forward: boolean) {
+    // we have history list in palette by default, if we have showHistoryOnOpen === true
+    // TODO: handle this if !showHistoryOnOpen
+    if (!this.isOpened) {
+      this.openPalette(event);
+    }
+
+    this.onKeyDown(new KeyboardEvent('keydown', {
+      bubbles: false,
+      cancelable: true,
+      key: forward ? 'ArrowDown' : 'ArrowUp',
+      shiftKey: false
+    }));
+
+    const onCtrlKeyUp = (keyUpEvent: KeyboardEvent) => {
+      if (!keyUpEvent.ctrlKey) {
+        this.currentResolver(keyUpEvent);
+        window.removeEventListener('keyup', onCtrlKeyUp);
+      }
+    };
+
+    window.addEventListener('keyup', onCtrlKeyUp);
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
