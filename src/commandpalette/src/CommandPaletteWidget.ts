@@ -492,6 +492,7 @@ class CommandPaletteWidget extends Widget {
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
     this.div = this.createElement('div', { className: 'commandpalette' }, { display: 'none' });
+    this.mask = this.createElement('div', { className: 'commandpalette-masklayer' }, { opacity: '0' });
     this.input = this.createElement('input', { type: 'text' });
     this.hint = this.createElement('div', { className: 'commandpalettehint commandpalettehintmain' });
     inputAndMainHintWrapper.append(this.input, this.hint);
@@ -500,6 +501,7 @@ class CommandPaletteWidget extends Widget {
     this.input.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
     this.input.addEventListener('input', () => this.onInput(this.input.value));
     document.addEventListener('click', (e: PointerEvent | MouseEvent | TouchEvent) => this.onClick(e));
+    parent.insertBefore(this.mask, nextSibling);
     parent.insertBefore(this.div, nextSibling);
 
     this.refreshCommandPalette();
@@ -692,6 +694,7 @@ class CommandPaletteWidget extends Widget {
     this.currentSelection = 0;
     this.onInput(this.input.value); //Trigger results on open
     this.div.style.display = 'flex';
+    this.mask.style.opacity = '0.6';
     this.input.focus();
   }
 
@@ -715,6 +718,7 @@ class CommandPaletteWidget extends Widget {
 
   closePalette() {
     this.div.style.display = 'none';
+    this.mask.style.opacity = '0';
     this.isOpened = false;
     this.focusAtCaretPosition(this.previouslyFocused.element, this.previouslyFocused.caretPos);
   }
