@@ -10,7 +10,7 @@ type: text/vnd.tiddlywiki
 .commandpalette {
     position: fixed;
     background:<<colour page-background>>;
-    z-index: 9999999;
+    z-index: 9999;
     left: 50%;
     top: 10%;
     transform: translate(-50%, 0%);
@@ -29,7 +29,7 @@ type: text/vnd.tiddlywiki
 }
 .commandpalette-masklayer {
     position: fixed;
-    z-index: 9999998;
+    z-index: 9998;
     top: 0;
     left: 0;
     right: 0;
