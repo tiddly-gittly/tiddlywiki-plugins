@@ -1,4 +1,4 @@
-import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 
 const Widget = require('$:/core/modules/widgets/widget.js').widget;
 
@@ -96,7 +96,7 @@ class CommandPaletteWidget extends Widget {
   constructor(parseTreeNode: any, options: any) {
     super(parseTreeNode, options);
     this.initialise(parseTreeNode, options);
-    this.onInput = throttle(this.onInput, 300);
+    this.onInput = debounce(this.onInput, 300);
   }
 
   actionStringBuilder(text: any) {
