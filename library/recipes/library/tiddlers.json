@@ -212,6 +212,7 @@
         "dependents": "$:/themes/tiddlywiki/vanilla",
         "plugin-priority": "1",
         "type": "application/json",
+        "readme": "Notion and VSCode inspired theme. Adapted for light theme.\n",
         "requires-reload": "no"
     }
 ]
