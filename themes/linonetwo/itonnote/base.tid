@@ -59,14 +59,6 @@ p > code, li > code {
   z-index: 1001;
 }
 
-/** 下拉列表当前鼠标悬浮状态的颜色 */
-.tc-block-dropdown a {
-  transition: background-color 0.2s;
-}
-.tc-block-dropdown a:hover {
-  background-color: <<colour dropdown-background>>;
-}
-
 /** 去掉编辑模式下的很多边框 */
 /** 去掉预览的边框，除了左边框 */
 .tc-tiddler-preview-preview {
@@ -144,7 +136,8 @@ button:not(.tc-btn-invisible) svg {
 }
 .tc-tab-buttons button:not(.tc-tab-selected) {
 	fill: none;
-	background-color: transparent;
+	background-color: <<colour tab-background>>;
+	color: <<colour tab-foreground>>;
 	border: none;
 }
 .tc-tab-buttons button:not(.tc-tab-selected):hover {
@@ -164,6 +157,7 @@ button:not(.tc-btn-invisible) svg {
 button.tc-tag-label, span.tc-tag-label {
   border-radius: 3px;
   background-color: <<colour tag-background>>;
+  color: <<colour foreground>>;
   /** hover动画 */
   transition: background-color 0.2s;
 }
@@ -175,13 +169,13 @@ button.tc-tag-label, span.tc-tag-label:hover {
   链接样式
 */
 
-a.tc-tiddlylink, a.tc-tiddlylink:hover, a.tc-tiddlylink:hover {
+a.tc-tiddlylink, a.tc-tiddlylink:hover {
   padding: 2px;
   padding-bottom: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 1.3;
   color: <<colour tiddler-link-foreground>>;
   border-bottom: <<colour tiddler-link-underline>>;
@@ -189,8 +183,9 @@ a.tc-tiddlylink, a.tc-tiddlylink:hover, a.tc-tiddlylink:hover {
   /** hover动画 */
   transition: background 120ms ease-in 0s;
 }
-a:hover {
-  background-color: <<colour background>>;
+a.tc-tiddlylink:hover {
+  background-color: <<colour page-background>>;
+  color: <<colour tiddler-link-foreground>>;
 }
 
 a.tc-tiddlylink-external, a.tc-tiddlylink-external:visited {
@@ -198,7 +193,7 @@ a.tc-tiddlylink-external, a.tc-tiddlylink-external:visited {
 	border-bottom: <<colour external-link-underline>>;
 	text-decoration: none;
   box-decoration-break: clone;
-  font-weight: 700;
+  font-weight: bold;
   color: <<external-link-foreground>>;
 }
 
@@ -209,8 +204,22 @@ a.tc-tiddlylink-external:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/** 预览状态标签下拉列表里的链接 */
+.tc-drop-down a.tc-tiddlylink:hover {
+  background-color: <<colour page-background>>;
+  color: <<colour tiddler-link-foreground>>;
+}
+/** 编辑器标签下拉列表当前鼠标悬浮状态的颜色 */
+.tc-block-dropdown a {
+  transition: background-color 0.2s;
+}
+.tc-block-dropdown a:hover {
+  background-color: <<colour dropdown-background>>;
+}
+
 /** 带链接的 Kookma badge，为了适应彩色背景，需要把链接默认蓝色背景色去掉，变成白色，与主题无关 */
-.dbadge a,a:hover {
+.dbadge a,.dbadge a:hover {
   color: white !important;
   border: unset;
   -webkit-text-fill-color: unset !important;
@@ -336,6 +345,11 @@ input[type=search] {
 }
 *:focus {
   outline: none;
+}
+/** 去除输入框默认的边框 */
+textarea, input[type=text], input[type=search], input[type=""], input:not([type]) {
+  border: 2px solid <<colour tiddler-editor-border>>;
+  background: <<colour page-background>>;
 }
 
 /*

@@ -60,7 +60,7 @@ notification-border: #999999
 page-background: #fafafa
 pre-background: #f5f5f5
 pre-border: #cccccc
-primary: #eeeee
+primary: #eeeeee
 selection-background:
 selection-foreground:
 select-tag-background:
@@ -83,8 +83,8 @@ sidebar-tiddler-link-foreground-hover: #444444
 sidebar-tiddler-link-foreground: #999999
 site-title-foreground: <<colour tiddler-title-foreground>>
 static-alert-foreground: #aaaaaa
-tab-background-selected: #ffffff
-tab-background: #d8d8d8
+tab-background-selected: rgba(255, 255, 255, 0.1)
+tab-background: transparent
 tab-border-selected: #d8d8d8
 tab-border: #cccccc
 tab-divider: #d8d8d8
@@ -93,8 +93,8 @@ tab-foreground: #666666
 table-border: #dddddd
 table-footer-background: #a8a8a8
 table-header-background: #f0f0f0
-tag-background: rgba(0, 0, 0, 0.1)
-tag-background-hover: rgba(0, 0, 0, 0.2)
+tag-background: rgba(92, 112, 128, 0.9)
+tag-background-hover: rgba(92, 112, 128, 1)
 tag-foreground: <<colour foreground>>
 tiddler-background: <<colour background>>
 tiddler-border: <<colour background>>
@@ -103,7 +103,7 @@ tiddler-controls-foreground-selected: #444444
 tiddler-controls-foreground: #cccccc
 tiddler-editor-background: rgba(255, 255, 255, 0.5)
 tiddler-editor-border-image: #ffffff
-tiddler-editor-border: #cccccc
+tiddler-editor-border: rgba(242, 241, 238, 0.6)
 tiddler-editor-fields-even: #eee
 tiddler-editor-fields-odd: #fff
 tiddler-info-background: #f8f8f8
