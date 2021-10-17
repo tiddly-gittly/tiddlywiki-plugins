@@ -3,11 +3,12 @@ import path from 'path';
 import { execSync } from 'child_process';
 
 const repoFolder = path.join(path.dirname(__filename), '..');
+const distFolder = path.join(repoFolder, 'dist');
 const folderToServe = path.join(repoFolder, 'public-dist');
 
 // cross-env TIDDLYWIKI_PLUGIN_PATH='node_modules/tiddlywiki/plugins/published' TIDDLYWIKI_THEME_PATH='${wikiFolderName}/themes'
-process.env.TIDDLYWIKI_PLUGIN_PATH = `${repoFolder}/dist`;
-process.env.TIDDLYWIKI_THEME_PATH = `${repoFolder}/themes`;
+process.env.TIDDLYWIKI_PLUGIN_PATH = `${distFolder}/plugins`;
+process.env.TIDDLYWIKI_THEME_PATH = `${distFolder}/themes`;
 
 const execAndLog = (command, options) => console.log(String(execSync(command, options)));
 
