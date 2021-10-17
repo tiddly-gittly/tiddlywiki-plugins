@@ -20,4 +20,5 @@ function zipDirectory(source, out) {
   });
 }
 
-await zipDirectory(path.join(__dirname, '..', 'dist', 'linonetwo'), path.join(__dirname, '..', 'dist', 'linonetwo.zip'));
+void zipDirectory(path.join(__dirname, '..', 'dist', 'plugins'), path.join(__dirname, '..', 'dist', 'plugins.zip'));
+void zipDirectory(path.join(__dirname, '..', 'dist', 'themes'), path.join(__dirname, '..', 'dist', 'themes.zip'));
