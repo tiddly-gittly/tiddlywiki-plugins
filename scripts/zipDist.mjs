@@ -1,4 +1,5 @@
 import archiver from 'archiver';
+import { fs } from 'zx';
 
 /**
  * @param {String} source
@@ -20,5 +21,7 @@ function zipDirectory(source, out) {
   });
 }
 
-void zipDirectory(path.join(__dirname, '..', 'dist', 'plugins'), path.join(__dirname, '..', 'dist', 'plugins.zip'));
-void zipDirectory(path.join(__dirname, '..', 'dist', 'themes'), path.join(__dirname, '..', 'dist', 'themes.zip'));
+const inputFolderPath = path.join(__dirname, '..', 'dist');
+const outPath = path.join(__dirname, '..', 'plugins.zip');
+await zipDirectory(path.join(__dirname, '..', 'dist'), outPath);
+await fs.move(outPath, path.join(inputFolderPath, 'plugins.zip'));
