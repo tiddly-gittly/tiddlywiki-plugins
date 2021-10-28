@@ -832,13 +832,18 @@ class CommandPaletteWidget extends Widget {
     this.closePalette();
     this.navigateTo(selectionTitle);
   }
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'title' implicitly has an 'any' type.
-  navigateTo(title) {
-    this.parentWidget.dispatchEvent({
-      type: 'tm-navigate',
-      param: title,
-      navigateTo: title,
-    });
+
+  /**
+   * 调用 tm-navigate 跳转到标题对应的条目处
+   */
+  navigateTo(title?: string) {
+    if (title) {
+      this.parentWidget.dispatchEvent({
+        type: 'tm-navigate',
+        param: title,
+        navigateTo: title,
+      });
+    }
   }
 
   showHistory() {
@@ -993,8 +998,6 @@ class CommandPaletteWidget extends Widget {
   }
 
   tagProvider(terms: string) {
-    // DEBUG: console
-    console.log(`terms`, terms);
     this.currentSelection = 0;
     this.hint.innerText = '用「#标签 #标签2」搜索条目';
     let tiddlerNameSearchResults: string[] = [];
