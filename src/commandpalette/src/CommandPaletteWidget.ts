@@ -211,15 +211,16 @@ class CommandPaletteWidget extends Widget {
       keepPalette: true,
     });
     this.actions.push({ name: 'Explorer', action: (e: AllPossibleEvent) => this.explorer(e), keepPalette: true });
-    this.actions.push({ name: 'See History', action: (e: AllPossibleEvent) => this.showHistory(), keepPalette: true });
-    this.actions.push({ name: 'New Command Wizard', action: (e: AllPossibleEvent) => this.newCommandWizard(), keepPalette: true });
+    this.actions.push({ name: 'History', caption: '查看历史记录', action: (e: AllPossibleEvent) => this.showHistory(), keepPalette: true });
+    this.actions.push({ name: 'New Command Wizard', caption: '交互式创建新命令', action: (e: AllPossibleEvent) => this.newCommandWizard(), keepPalette: true });
     this.actions.push({
       name: 'Add tag to tiddler',
+      caption: '向条目添加标签',
       action: (e) =>
         this.tagOperation(
           e,
-          'Pick tiddler to tag',
-          'Pick tag to add (⇧⏎ to add multiple)',
+          '选择一个条目来添加标签',
+          '选择一个标签来添加 (⇧⏎ 可以多次添加)',
           (tiddler: string, terms: string): string[] =>
             // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
             $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
@@ -230,11 +231,12 @@ class CommandPaletteWidget extends Widget {
     });
     this.actions.push({
       name: 'Remove tag',
+      caption: '去除标签',
       action: (e) =>
         this.tagOperation(
           e,
-          'Pick tiddler to untag',
-          'Pick tag to remove (⇧⏎ to remove multiple)',
+          '选择一个条目来去除标签',
+          '选择一个标签来去除 (⇧⏎ 可以去除多次)',
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
           (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
           false,
@@ -247,7 +249,7 @@ class CommandPaletteWidget extends Widget {
     for (let tiddler of commandTiddlers) {
       if (!tiddler.fields[this.typeField] === undefined) continue;
       let name = tiddler.fields[this.nameField];
-      if (typeof name !== 'string') throw new Error(`Command palette tiddler ${tiddler.fields.title} doesn't have a ${this.nameField} field`);
+      if (typeof name !== 'string') throw new Error(`命令菜单条目 ${tiddler.fields.title} 缺失 ${this.nameField} 字段`);
       let caption = this.translateCaption(tiddler.fields[this.captionField]);
       let type = tiddler.fields[this.typeField];
       let text = this.translateCaption(tiddler.fields.text);
@@ -311,14 +313,14 @@ class CommandPaletteWidget extends Widget {
   newCommandWizard() {
     this.blockProviderChange = true;
     this.input.value = '';
-    this.hint.innerText = 'Command Name';
+    this.hint.innerText = '命令名';
     let name = '';
     let type = '';
     let hint = '';
 
     let messageStep = () => {
       this.input.value = '';
-      this.hint.innerText = 'Enter Message';
+      this.hint.innerText = '输入信息';
       this.currentResolver = (e: AllPossibleEvent) => {
         this.tmMessageBuilder('tm-new-tiddler', {
           title: '$:/' + name,
@@ -334,7 +336,7 @@ class CommandPaletteWidget extends Widget {
 
     let hintStep = () => {
       this.input.value = '';
-      this.hint.innerText = 'Enter hint';
+      this.hint.innerText = '输入提示文本';
       this.currentResolver = (e: AllPossibleEvent) => {
         hint = this.input.value;
         messageStep();
@@ -840,20 +842,20 @@ class CommandPaletteWidget extends Widget {
   }
 
   showHistory() {
-    this.hint.innerText = 'History';
+    this.hint.innerText = '历史记录';
     this.currentProvider = (terms: string) => {
-      let results: IHistoryResult[];
+      let results: string[];
       if (terms.length === 0) {
         results = this.getHistory();
       } else {
-        results = $tw.utils.pinyinfuse(this.getHistory(), terms, ['title']).map((item) => item.item);
+        results = $tw.utils.pinyinfuse(this.getHistory(), terms).map((item: { item: string }) => item.item);
       }
       this.showResults(
-        results.map((r) => {
+        results.map((title) => {
           return {
-            name: r.title,
+            name: title,
             action: () => {
-              this.navigateTo(r);
+              this.navigateTo(title);
               this.closePalette();
             },
           };
@@ -863,7 +865,7 @@ class CommandPaletteWidget extends Widget {
 
     this.currentResolver = (e: AllPossibleEvent) => {
       if (this.currentSelection === 0) return;
-      this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1]);
+      this.getActionFromResultDiv(this.currentResults[this.currentSelection - 1])?.(e);
     };
     this.input.value = '';
     this.blockProviderChange = true;
@@ -1327,12 +1329,12 @@ class CommandPaletteWidget extends Widget {
 
   createTiddlerProvider(terms: string) {
     this.currentSelection = 0;
-    this.hint.innerText = 'Create new tiddler with title @tag(s)';
+    this.hint.innerText = '创建条目，空格隔开可以用#打多个标签';
     this.showResults([]);
   }
 
   createTiddlerResolver(e: AllPossibleEvent) {
-    let { tags, searchTerms } = this.parseTags(this.input.value.substr(1));
+    let { tags, searchTerms } = this.parseTags(this.input.value.substring(1));
     let title = searchTerms.join(' ');
     // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type 'any[]'.
     tags = tags.join(' ');
