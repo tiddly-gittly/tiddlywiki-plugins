@@ -486,9 +486,9 @@ class CommandPaletteWidget extends Widget {
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('insert-command-palette-result', (e: AllPossibleEvent) => this.insertSelectedResult(e));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('command-palette-switch-history', e => this.handleSwitchHistory(e, true));
+    $tw.rootWidget.addEventListener('command-palette-switch-history', (e) => this.handleSwitchHistory(e, true));
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-    $tw.rootWidget.addEventListener('command-palette-switch-history-back', e => this.handleSwitchHistory(e, false));
+    $tw.rootWidget.addEventListener('command-palette-switch-history-back', (e) => this.handleSwitchHistory(e, false));
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
     this.div = this.createElement('div', { className: 'commandpalette' }, { display: 'none' });
@@ -508,8 +508,8 @@ class CommandPaletteWidget extends Widget {
 
     this.symbolProviders['>'] = { searcher: (terms: string) => this.actionProvider(terms), resolver: (e) => this.actionResolver(e) };
     this.symbolProviders['》'] = this.symbolProviders['>'];
-    this.symbolProviders['#'] = { searcher: (terms: string) => this.tagListProvider(terms), resolver: (e) => this.tagListResolver(e) };
-    this.symbolProviders['@'] = { searcher: (terms: string) => this.tagProvider(terms), resolver: (e) => this.defaultResolver(e) };
+    this.symbolProviders['##'] = { searcher: (terms: string) => this.tagListProvider(terms), resolver: (e) => this.tagListResolver(e) };
+    this.symbolProviders['#'] = { searcher: (terms: string) => this.tagProvider(terms), resolver: (e) => this.defaultResolver(e) };
     this.symbolProviders['?'] = { searcher: (terms: string) => this.helpProvider(terms), resolver: (e) => this.helpResolver(e) };
     this.symbolProviders['？'] = this.symbolProviders['?'];
     this.symbolProviders['['] = { searcher: (terms: string, hint?: string) => this.filterProvider(terms, hint), resolver: (e) => this.filterResolver(e) };
@@ -517,6 +517,60 @@ class CommandPaletteWidget extends Widget {
     this.symbolProviders['|'] = { searcher: (terms: string) => this.settingsProvider(terms), resolver: (e) => this.settingsResolver(e) };
     this.currentResults = [];
     this.currentProvider = () => {};
+  }
+
+  helpProvider(terms: string) {
+    //TODO: tiddlerify?
+    this.currentSelection = 0;
+    this.hint.innerText = 'Help';
+    let searches = [
+      { name: '直接打字是搜索条目标题和内容；而以下述特殊字符开头可以执行特殊搜索', action: () => this.promptCommand('') },
+      { name: '> 查看和搜索命令列表', action: () => this.promptCommand('>') },
+      { name: '+ 创建条目，先输入条目名，然后可以带上#打标签', action: () => this.promptCommand('+') },
+      { name: '# 列出带标签的条目（标签不可包含空格，用空格隔开多个#开头的标签，不带#的作为搜索词）', action: () => this.promptCommand('#') },
+      { name: '## 搜索标签列表', action: () => this.promptCommand('##', 2) },
+      { name: '[ 筛选器语句', action: () => this.promptCommand('[') },
+      { name: '| 命令菜单设置', action: () => this.promptCommand('|') },
+      { name: '\\ 规避第一个字符是上述命令字符的情况，例如「\\#」可搜标题以「#」起头的条目', action: () => this.promptCommand('\\') },
+      { name: '? 打开帮助', action: () => this.promptCommand('?') },
+    ];
+    this.showResults(searches);
+  }
+
+  /**
+   * 解析输入，默认前两位可能是命令字符，会到 this.symbolProviders 里查找相应的 provider
+   */
+  parseCommand(text: string) {
+    let terms = '';
+    let resolver;
+    let provider;
+    let shortcut = this.triggers.find((t) => text.startsWith(t.trigger));
+    if (shortcut !== undefined) {
+      resolver = (e: AllPossibleEvent) => {
+        let inputWithoutShortcut = this.input.value.substr(shortcut!.trigger.length);
+        this.invokeActionString(shortcut!.text, this, e, { commandpaletteinput: inputWithoutShortcut });
+        this.closePalette();
+      };
+      provider = (terms: string) => {
+        this.hint.innerText = shortcut!.hint;
+        this.showResults([]);
+      };
+    } else {
+      // 从上到下找，先找长的，再找短的，以便 ## 优先匹配 ## 而不是 #
+      let providerSymbol = Object.keys(this.symbolProviders)
+        .sort((a, b) => -a.length + b.length)
+        .find((symbol) => text.startsWith(symbol));
+      if (providerSymbol === undefined) {
+        resolver = this.defaultResolver;
+        provider = this.defaultProvider;
+        terms = text;
+      } else {
+        provider = this.symbolProviders[providerSymbol].searcher;
+        resolver = this.symbolProviders[providerSymbol].resolver;
+        terms = text.replace(providerSymbol, '');
+      }
+    }
+    return { resolver, provider, terms };
   }
 
   refreshSearchSteps() {
@@ -544,12 +598,14 @@ class CommandPaletteWidget extends Widget {
       this.openPalette(event);
     }
 
-    this.onKeyDown(new KeyboardEvent('keydown', {
-      bubbles: false,
-      cancelable: true,
-      key: forward ? 'ArrowDown' : 'ArrowUp',
-      shiftKey: false
-    }));
+    this.onKeyDown(
+      new KeyboardEvent('keydown', {
+        bubbles: false,
+        cancelable: true,
+        key: forward ? 'ArrowDown' : 'ArrowUp',
+        shiftKey: false,
+      }),
+    );
 
     const onCtrlKeyUp = (keyUpEvent: KeyboardEvent) => {
       if (!keyUpEvent.ctrlKey) {
@@ -630,36 +686,6 @@ class CommandPaletteWidget extends Widget {
     this.currentProvider = provider;
     this.currentProvider(terms);
     this.setSelectionToFirst();
-  }
-  parseCommand(text: string) {
-    let terms = '';
-    let prefix = text.substr(0, 1);
-    let resolver;
-    let provider;
-    let shortcut = this.triggers.find((t) => text.startsWith(t.trigger));
-    if (shortcut !== undefined) {
-      resolver = (e: AllPossibleEvent) => {
-        let inputWithoutShortcut = this.input.value.substr(shortcut!.trigger.length);
-        this.invokeActionString(shortcut!.text, this, e, { commandpaletteinput: inputWithoutShortcut });
-        this.closePalette();
-      };
-      provider = (terms: string) => {
-        this.hint.innerText = shortcut!.hint;
-        this.showResults([]);
-      };
-    } else {
-      let providerSymbol = Object.keys(this.symbolProviders).find((p) => p === prefix);
-      if (providerSymbol === undefined) {
-        resolver = this.defaultResolver;
-        provider = this.defaultProvider;
-        terms = text;
-      } else {
-        provider = this.symbolProviders[providerSymbol].searcher;
-        resolver = this.symbolProviders[providerSymbol].resolver;
-        terms = text.substring(1);
-      }
-    }
-    return { resolver, provider, terms };
   }
 
   onClick(event: MouseEvent | PointerEvent | TouchEvent) {
@@ -900,7 +926,7 @@ class CommandPaletteWidget extends Widget {
   }
 
   defaultProvider(terms: string) {
-    this.hint.innerText = 'Search tiddlers (⇧⏎ to create)';
+    this.hint.innerText = '⏎搜索条目（⇧⏎ 创建条目）（？问号查看帮助）';
     let searches: IResult[];
     if (terms.startsWith('\\')) terms = terms.substr(1);
     if (terms.length === 0) {
@@ -932,7 +958,7 @@ class CommandPaletteWidget extends Widget {
 
   tagListProvider(terms: string) {
     this.currentSelection = 0;
-    this.hint.innerText = 'Search tags';
+    this.hint.innerText = '搜索标签列表';
     let searches;
     if (terms.length === 0) {
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
@@ -952,53 +978,59 @@ class CommandPaletteWidget extends Widget {
 
   tagListResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) {
-      let input = this.input.value.substr(1);
+      let input = (this.input.value as string).substring(2);
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
       let exist = $tw.wiki.filterTiddlers('[tag[' + input + ']]');
       if (!exist) return;
-      this.input.value = '@' + input;
+      this.input.value = '##' + input;
       return;
     }
     let result = this.currentResults[this.currentSelection - 1];
-    this.input.value = '@' + result.innerText;
+    this.input.value = '##' + result.innerText;
     this.onInput(this.input.value);
   }
 
   tagProvider(terms: string) {
+    // DEBUG: console
+    console.log(`terms`, terms);
     this.currentSelection = 0;
-    this.hint.innerText = 'Search tiddlers with @tag(s)';
-    // @ts-expect-error ts-migrate(7034) FIXME: Variable 'searches' implicitly has type 'any[]' in... Remove this comment to see the full error message
-    let searches = [];
+    this.hint.innerText = '用「#标签 #标签2」搜索条目';
+    let tiddlerNameSearchResults: string[] = [];
     if (terms.length !== 0) {
       let { tags, searchTerms, tagsFilter } = this.parseTags(this.input.value);
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
-      let taggedTiddlers = $tw.wiki.filterTiddlers(tagsFilter);
+      let taggedTiddlers: string[] = $tw.wiki.filterTiddlers(tagsFilter);
 
       if (taggedTiddlers.length !== 0) {
         if (tags.length === 1) {
           let tag = tags[0];
           let tagTiddlerExists = this.tiddlerOrShadowExists(tag);
-          if (tagTiddlerExists && searchTerms.some((s) => tag.includes(s))) searches.push(tag);
+          if (tagTiddlerExists && searchTerms.some((s) => tag.includes(s))) tiddlerNameSearchResults.push(tag);
         }
-        searches = [...searches, ...taggedTiddlers];
+        tiddlerNameSearchResults = [...tiddlerNameSearchResults, ...taggedTiddlers];
       }
     }
-    // @ts-expect-error ts-migrate(7005) FIXME: Variable 'searches' implicitly has an 'any[]' type... Remove this comment to see the full error message
-    searches = searches.map((s) => {
-      return { name: s };
-    });
-    this.showResults(searches);
+    this.showResults(
+      tiddlerNameSearchResults.map((tiddlerName) => {
+        return { name: tiddlerName };
+      }),
+    );
   }
 
+  /**
+   * @param input `'#aaa 1 #bbb#ccc'` => `['aaa', 'bbb#ccc']` and search `1`
+   */
   parseTags(input: string) {
     let splits = input.split(' ').filter((s) => s !== '');
     let tags = [];
     let searchTerms = [];
     for (let i = 0; i < splits.length; i++) {
-      if (splits[i].startsWith('@')) {
+      // 空格分隔的结果可以以 # 开头，表示标签
+      if (splits[i].startsWith('#')) {
         tags.push(splits[i].substr(1));
         continue;
       }
+      // 也可以不带 # ，表示搜索词
       searchTerms.push(splits[i]);
     }
     let tagsFilter = `[all[tiddlers+system+shadows]${tags.reduce((a, c) => {
@@ -1076,11 +1108,11 @@ class CommandPaletteWidget extends Widget {
     this.allowInputFieldSelection = false;
     this.currentProvider = (terms: string) => {
       this.currentSelection = 0;
-      this.hint.innerText = 'Choose a theme';
+      this.hint.innerText = '选择一个主题';
       let defaultValue = this.defaultSettings['theme'];
       let results = [
         {
-          name: 'Revert to default value: ' + defaultValue.match(/[^\/]*$/),
+          name: '恢复默认值: ' + defaultValue.match(/[^\/]*$/),
           action: () => {
             this.setSetting('theme', defaultValue);
             // @ts-expect-error ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
@@ -1171,7 +1203,7 @@ class CommandPaletteWidget extends Widget {
   }
   actionProvider(terms: string) {
     this.currentSelection = 0;
-    this.hint.innerText = 'Search commands';
+    this.hint.innerText = '查看和搜索命令列表';
     let results: IResult[];
     if (terms.length === 0) {
       results = this.getCommandHistory();
@@ -1189,27 +1221,9 @@ class CommandPaletteWidget extends Widget {
     this.showResults(results);
   }
 
-  helpProvider(terms: string) {
-    //TODO: tiddlerify?
-    this.currentSelection = 0;
-    this.hint.innerText = 'Help';
-    let searches = [
-      { name: '... Search', action: () => this.promptCommand('') },
-      { name: '> Commands', action: () => this.promptCommand('>') },
-      { name: '+ Create tiddler with title', action: () => this.promptCommand('+') },
-      { name: '# Search tags', action: () => this.promptCommand('#') },
-      { name: '@ List tiddlers with tag', action: () => this.promptCommand('@') },
-      { name: '[ Filter operation', action: () => this.promptCommand('[') },
-      { name: '| Command Palette Settings', action: () => this.promptCommand('|') },
-      { name: '\\ Escape first character', action: () => this.promptCommand('\\') },
-      { name: '? Help', action: () => this.promptCommand('?') },
-    ];
-    this.showResults(searches);
-  }
-
   filterProvider(terms: string, hint?: string) {
     this.currentSelection = 0;
-    this.hint.innerText = hint === undefined ? 'Filter operation' : hint;
+    this.hint.innerText = hint === undefined ? '筛选器语句' : hint;
     terms = '[' + terms;
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     let fields = $tw.wiki.filterTiddlers('[fields[]]');
@@ -1240,7 +1254,7 @@ class CommandPaletteWidget extends Widget {
           insertResult(i, { ...results[i] });
           i += 1;
         }
-        results[i].action = () => this.promptCommand('@' + initialResult.name);
+        results[i].action = () => this.promptCommand('#' + initialResult.name);
         results[i].hint = 'Tag'; //Todo more info?
         alreadyMatched = true;
       }
