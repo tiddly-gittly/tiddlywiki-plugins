@@ -61,6 +61,7 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
   const { threshold = 0.3, distance = 60, minMatchCharLength = 1, searchTiddlerByTitle = false } = options;
   const fuse = new Fuse<T>(items, {
     getFn: (object: T, keyPath: string | string[]): string => {
+      if (!keyPath) return '';
       // general usage
       let value: string;
       let realKeyPath: string;
@@ -74,7 +75,8 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
       if (searchTiddlerByTitle) {
         const title = object['title'];
         const fieldName = realKeyPath;
-        const tiddler = $tw.wiki.getTiddler(title).fields;
+        const tiddler = $tw.wiki.getTiddler(title)?.fields;
+        if (!tiddler) return '';
         const fieldValue = typeof tiddler[fieldName] === 'string' ? tiddler[fieldName] : String(tiddler[fieldName] ?? '');
         // parse pinyin for long text is time consuming
         // if use chinese to search chinese, no need for pinyin
