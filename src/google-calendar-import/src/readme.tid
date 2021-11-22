@@ -1,0 +1,22 @@
+title: $:/plugins/linonetwo/google-calendar-import/readme
+type: text/vnd.tiddlywiki
+
+!! Background
+
+我使用谷歌日历来快速记录每天发生的事件，并每天用定时任务将其转换为 TiddlyWiki 格式的文本。这个插件提供了从谷歌日历导入事件的按钮和 API。
+
+I use Google Calendar to quickly record daily events and convert them to TiddlyWiki formatted text with a timed task each day. This plugin provides buttons and APIs for importing events from Google Calendar.
+
+!! Usage
+
+!!! Button
+
+首先点击按钮来登录谷歌账号，以便获得谷歌日历的访问权限。登录后，按钮会变成导入按钮，再次点击就能导入日历了。
+
+First click the button to sign in to your Google account in order to get access to Google Calendar. After logging in, the button will change to an import button, click it again to import the calendar.
+
+!!! API
+
+!! Developer Documentation
+
+See [[$:/plugins/linonetwo/google-calendar-import/developer]]
