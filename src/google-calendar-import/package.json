@@ -1,0 +1,28 @@
+{
+  "description": "npm scripts to build plugins",
+  "license": "MIT",
+  "name": "google-calendar-import",
+  "version": "0.0.1",
+  "url": "https://github.com/tiddly-gittly/tiddlywiki-plugins",
+  "author": "lin onetwo",
+  "scripts": {
+    "clean": "rm -rf ../../dist",
+    "build": "rollup -c && zx scripts/after-build.mjs"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/pinyin": "^2.10.0",
+    "rollup": "^2.27.1",
+    "rollup-plugin-disable-packages": "^4.0.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3",
+    "zx": "^4.2.0"
+  },
+  "dependencies": {
+    "fuse.js": "^6.4.6",
+    "pinyin": "^2.10.2"
+  }
+}
