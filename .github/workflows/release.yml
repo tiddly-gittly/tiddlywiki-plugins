@@ -53,6 +53,6 @@ jobs:
         with:
           files: |
             dist/plugins.zip
-            dist/output
+            dist/output/*.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
