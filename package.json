@@ -4,6 +4,7 @@
     "clean": "rm -rf ./dist",
     "postinstall": "zx scripts/installDep.mjs",
     "build": "zx scripts/buildPlugins.mjs",
+    "buildJSON": "zx scripts/buildJSONPlugins.mjs",
     "copyToDist": "zx scripts/copyToDist.mjs",
     "zip": "zx scripts/zipDist.mjs",
     "demo-wiki": "zx scripts/build-wiki.mjs"
