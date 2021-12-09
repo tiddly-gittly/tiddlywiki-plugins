@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "make": "npm run clean && npm run build && npm run copyToDist",
+    "make": "npm run clean && npm run build && npm run copyToDist && npm run buildJSON",
     "clean": "rm -rf ./dist",
     "postinstall": "zx scripts/installDep.mjs",
     "build": "zx scripts/buildPlugins.mjs",
