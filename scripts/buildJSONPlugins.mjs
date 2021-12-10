@@ -6,5 +6,5 @@ npx cross-env \
     TIDDLYWIKI_LANGUAGE_PATH='./languages' \
     npx tiddlywiki . \
     --makelibrary $:/UpgradeLibrary \
-    --savelibrarytiddlers $:/UpgradeLibrary '[prefix[$:/plugins/linonetwo/]]' ./
+    --savelibrarytiddlers $:/UpgradeLibrary '[prefix[$:/plugins/linonetwo/]] [prefix[$:/themes/linonetwo/]]' ./
 `;
