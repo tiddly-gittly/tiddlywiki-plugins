@@ -66,6 +66,7 @@
         .subscribe((output) => {
           const prevText = $tw.wiki.getTiddlerText(stateTiddlerTitle);
           $tw.wiki.setText(stateTiddlerTitle, 'text', undefined, `${prevText ?? ''}\n${output ?? ''}`);
+          $tw.wiki.setText(stateTiddlerTitle, 'type', undefined, 'text/vnd.tiddlywiki');
         });
     }
   }
