@@ -26,6 +26,14 @@ A ViewToolbar button is added. You can click on it to execute the script inside 
 
 And the zx output will be printed below your tiddler content.
 
+!!! Demo
+
+```js
+console.log(`## Hi!`);
+```
+
+See [[$:/plugins/linonetwo/zx-script/demo]] for demo of full tiddler execution.
+
 !! Developer Documentation
 
 See [[$:/plugins/linonetwo/zx-script/developer]]
