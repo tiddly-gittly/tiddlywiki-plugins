@@ -4,8 +4,10 @@ title: $:/plugins/linonetwo/zx-script/OutputBar
 type: text/vnd.tiddlywiki
 list-before: $:/plugins/linonetwo/inverse-link-and-folder/infobar
 
-<$vars currentTiddler={{{[{!!title}addprefix[$:/state/linonetwo/zx-script/output/]is[missing]then[]]~[{!!title}addprefix[$:/state/linonetwo/zx-script/output/]] }}}>
+<$list filter="[{!!title}addprefix[$:/state/linonetwo/zx-script/output/]is[missing]then[]]~[yes]">
+<$vars currentTiddler={{{[{!!title}addprefix[$:/state/linonetwo/zx-script/output/]] }}}>
 
 {{||$:/core/ui/ViewTemplate/body}}
 
 </$vars>
+</$list>

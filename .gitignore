@@ -103,3 +103,5 @@ public-dist
 # TernJS port file
 .tern-port
 .DS_Store
+tiddlers/$__StoryList.tid
+tiddlers/$__language.tid

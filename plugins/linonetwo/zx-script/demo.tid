@@ -1,0 +1,18 @@
+title: $:/plugins/linonetwo/zx-script/demo
+type: text/vnd.tiddlywiki
+
+!! Demo
+
+```js
+console.log(`## Hi!`);
+```
+
+Result will form a tiddler.
+
+```js
+console.log(`Code block:
+\`\`\`js
+console.log(\`## Hi!\`);
+\`\`\`
+`);
+```
