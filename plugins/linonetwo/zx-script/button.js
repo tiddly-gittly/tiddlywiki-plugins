@@ -35,7 +35,7 @@
       if (!title) return;
       const type = this.getAttribute('type') || 'text/vnd.tiddlywiki';
       const stateTiddlerTitle = `$:/state/linonetwo/zx-script/output/${title}`;
-      let fileName = title;
+      let fileName = title.replace(/[/$:]/g, '-');
       let fileContent = this.getAttribute('content', '');
       // add mjs or md to the end
       if (!fileName.endsWith('.mjs') && !fileName.endsWith('.js') && !fileName.endsWith('.md')) {
@@ -66,6 +66,7 @@
         .subscribe((output) => {
           const prevText = $tw.wiki.getTiddlerText(stateTiddlerTitle);
           $tw.wiki.setText(stateTiddlerTitle, 'text', undefined, `${prevText ?? ''}\n${output ?? ''}`);
+          $tw.wiki.setText(stateTiddlerTitle, 'type', undefined, 'text/vnd.tiddlywiki');
         });
     }
   }

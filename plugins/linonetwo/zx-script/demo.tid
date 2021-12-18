@@ -4,15 +4,17 @@ type: text/vnd.tiddlywiki
 !! Demo
 
 ```js
-console.log(`## Hi!`);
+console.log(`!! Hi!`);
 ```
 
 Result will form a tiddler.
 
 ```js
-console.log(`Code block:
+console.log(`
+Code block:
+
 \`\`\`js
-console.log(\`## Hi!\`);
+console.log(\`!! Hi!\`);
 \`\`\`
 `);
 ```

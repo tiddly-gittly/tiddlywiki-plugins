@@ -54,6 +54,7 @@ BaseCodeBlockWidget.prototype.render = function (parent, nextSibling) {
 
       outputElement.innerText = '';
       outputElement.style.display = 'flex';
+      outputElement.classList.add('hljs','js','javascript');
       window.observables.native
         .executeZxScript$({
           fileContent,
