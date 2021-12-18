@@ -105,3 +105,4 @@ public-dist
 .DS_Store
 tiddlers/$__StoryList.tid
 tiddlers/$__language.tid
+tiddlers/$__Import.tid
