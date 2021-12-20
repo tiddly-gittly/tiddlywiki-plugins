@@ -229,6 +229,7 @@ a.tc-tiddlylink:hover {
 
 a.tc-tiddlylink-external, a.tc-tiddlylink-external:visited {
 	padding: 2px;
+  padding-bottom: 0px;
 	border-bottom: <<colour external-link-underline>>;
 	text-decoration: none;
   box-decoration-break: clone;
