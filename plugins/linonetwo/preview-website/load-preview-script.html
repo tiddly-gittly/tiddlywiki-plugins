@@ -1,0 +1,16 @@
+<script defer>
+  import('https://previews.hyperfov.com/js/hyperfov-link-previews.min.js').then(() => {
+    document.fonts.ready.then(() => {
+      setPagePreviews({
+        workerUrl: 'https://preview-worker.hyperfov.com',
+        assignStyles: (aElt) => {
+          return document.getElementById('itonnote-webpage-preview-popover').sheet;
+        },
+        assignPositions: (aElt) => {
+          /* if (aElt.classList.contains('blocky')) return 'cursor';
+          else  */ return 'below';
+        },
+      });
+    });
+  });
+</script>
