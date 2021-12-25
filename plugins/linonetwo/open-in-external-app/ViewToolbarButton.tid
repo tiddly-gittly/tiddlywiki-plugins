@@ -7,7 +7,8 @@ short-caption: Open external
 description: Open tiddler in external app
 
 \whitespace trim
-<$button message="tm-edit-tiddler" tooltip={{!!description}} aria-label={{$:/plugins/linonetwo/open-in-external-app/button-caption}} class=<<tv-config-toolbar-class>>>
+<$button tooltip={{!!description}} aria-label={{$:/plugins/linonetwo/open-in-external-app/button-caption}} class=<<tv-config-toolbar-class>>>
+<$action-sendmessage $message="tm-open-in-external-app" title=<<currentTiddler>> />
 <$list filter="[<tv-config-toolbar-icons>match[yes]]">
 {{$:/core/images/open-window}}
 </$list>
