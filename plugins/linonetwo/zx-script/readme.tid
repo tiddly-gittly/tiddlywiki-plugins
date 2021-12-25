@@ -8,7 +8,7 @@ type: text/vnd.tiddlywiki
 
 This tiddlywiki plugin enables you to run any tiddler with zx.
 
-!! Usage
+!! Basic Usage
 
 !!! Tiddler Type
 
@@ -33,6 +33,16 @@ console.log(`## Hi!`);
 ```
 
 See [[$:/plugins/linonetwo/zx-script/demo]] for demo of full tiddler execution.
+
+!! Wiki Scripting
+
+!!! Access filter and macros
+
+Filter function's call example is
+
+```js
+$tw.wiki.filterOperators.sum((callback) => {callback({}, '2');callback({}, '2')})
+```
 
 !! Developer Documentation
 

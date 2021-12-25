@@ -1,0 +1,21 @@
+title: $:/plugins/linonetwo/open-in-external-app/readme
+type: text/vnd.tiddlywiki
+
+!! Basic Usage
+
+After you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.
+
+Note that if you use this to open a `.tid` or `.md` file, and edit it, things won't change in the wiki, because the tiddlywiki currently doesn't reload changed files from the disk.
+
+!! Message usage
+
+```tw5
+<$button message="tm-open-in-external-app" param="SomePDFTiddlerTitle">Open that PDF</$button>
+```
+
+```tw5
+<$button>
+  <$action-sendmessage $message="tm-open-in-external-app" title="SomePDFTiddlerTitle" />
+  Open that PDF
+</$button>
+```

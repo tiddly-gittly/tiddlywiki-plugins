@@ -1,0 +1,11 @@
+{
+  "title": "$:/plugins/linonetwo/open-in-external-app",
+  "name": "Open In External App",
+  "description": "(Requires TidGi) A toolbar button to open PDF tiddler in os default reader.",
+  "author": "LinOnetwo",
+  "core-version": ">=5.1.22",
+  "plugin-type": "plugin",
+  "version": "0.0.2",
+  "dependents": [],
+  "list": "readme"
+}

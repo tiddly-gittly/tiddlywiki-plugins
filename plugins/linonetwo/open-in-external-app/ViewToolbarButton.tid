@@ -1,0 +1,19 @@
+tags: $:/tags/ViewToolbar
+title: $:/plugins/linonetwo/open-in-external-app/ViewToolbarButton
+type: text/vnd.tiddlywiki
+list-before: $:/core/ui/Buttons/close
+caption: {{$:/core/images/open-window}} {{$:/plugins/linonetwo/open-in-external-app/button-caption}}
+short-caption: Open external
+description: Open tiddler in external app
+
+\whitespace trim
+<$button message="tm-edit-tiddler" tooltip={{!!description}} aria-label={{$:/plugins/linonetwo/open-in-external-app/button-caption}} class=<<tv-config-toolbar-class>>>
+<$list filter="[<tv-config-toolbar-icons>match[yes]]">
+{{$:/core/images/open-window}}
+</$list>
+<$list filter="[<tv-config-toolbar-text>match[yes]]">
+<span class="tc-btn-text">
+<$text text={{$:/plugins/linonetwo/open-in-external-app/button-caption}}/>
+</span>
+</$list>
+</$button>
