@@ -13,7 +13,7 @@ exports.startup = function () {
           title = additionalFields.title;
         }
       }
-      await window.service.wiki.openTiddlerInExternal(title);
+      await window?.service?.wiki?.openTiddlerInExternal?.(title);
     });
   }
 };
