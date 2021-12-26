@@ -403,3 +403,10 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
 .tc-table-of-contents::-webkit-scrollbar {
   display: none;
 }
+
+/**
+* Code Mirror
+*/
+.cm-code-block-line {
+  background-color: transparent;
+}
