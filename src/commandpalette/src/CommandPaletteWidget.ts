@@ -79,7 +79,7 @@ class CommandPaletteWidget extends Widget {
     neverBasic: false,
     showHistoryOnOpen: true,
     escapeGoesBack: true,
-    alwaysPassSelection: true,
+    alwaysPassSelection: false,
     theme: '$:/plugins/linonetwo/commandpalette/Compact.css',
   };
   private settings: Partial<ISettings> = {};
