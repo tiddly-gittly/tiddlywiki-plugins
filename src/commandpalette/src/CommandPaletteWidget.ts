@@ -825,8 +825,19 @@ class CommandPaletteWidget extends Widget {
     }
     this.currentResults.push(resultDiv);
     resultDiv.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
       this.setSelection(id + 1);
       this.validateSelection(e);
+    });
+    resultDiv.addEventListener('contextmenu', (e) => {
+      e.stopPropagation();
+      if (e.ctrlKey && e.button === 0) {
+        e.preventDefault();
+        this.setSelection(id + 1);
+        this.validateSelection(e);
+      }
     });
     this.scrollDiv.appendChild(resultDiv);
   }
