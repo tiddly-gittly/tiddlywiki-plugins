@@ -34,6 +34,15 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
       this.checkInLoop();
     }
 
+    async getWorkspaces() {
+      const workspaces = await window.service.workspace.getWorkspacesAsList();
+      const activeWorkspace = await window.service.workspace.getActiveWorkspace();
+      if (activeWorkspace) {
+        return workspaces.filter((workspace) => workspace.id === activeWorkspace.id || (workspace.isSubWiki && workspace.mainWikiID === activeWorkspace.id));
+      }
+      return [];
+    }
+
     /**
      * Lifecycle method: Render this widget into the DOM
      */
@@ -97,8 +106,8 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
     }
 
     async getFolderInfo() {
-      const list = await window.service.workspace.getWorkspacesAsList();
-      return list.map(({ wikiFolderLocation: wikiPath, gitUrl }) => ({ wikiPath, gitUrl }));
+      const workspaces = await this.getWorkspaces();
+      return workspaces.map(({ wikiFolderLocation: wikiPath, gitUrl }) => ({ wikiPath, gitUrl }));
     }
 
     mapChangeTypeToText(changedType) {
