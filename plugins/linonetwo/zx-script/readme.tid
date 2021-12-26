@@ -36,6 +36,17 @@ See [[$:/plugins/linonetwo/zx-script/demo]] for demo of full tiddler execution.
 
 !! Wiki Scripting
 
+!!! Execute the code block on the $tw context
+
+You can write some code that is surrounded with `/** tw */` separator. They will be recognized as js code and executed on the context that have access to the $tw api.
+
+Global variables you can use:
+
+* `$tw` try it in your [[developer tool|https://developer.mozilla.org/en-US/docs/Tools]] to play around!
+* `_` [[lodash|https://lodash.com/docs/]]
+
+This means you can fetch some data on the zx script, and write the results to the wiki, creating new tiddlers.
+
 !!! Access filter and macros
 
 Filter function's call example is
