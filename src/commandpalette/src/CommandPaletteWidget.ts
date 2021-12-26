@@ -93,6 +93,11 @@ class CommandPaletteWidget extends Widget {
   private currentResolver: (e: AllPossibleEvent) => void = () => {};
   private currentProvider: (input: string) => void = () => {};
 
+  /**
+   * Fix IME issue in https://segmentfault.com/a/1190000012490380
+   */
+  private isIMEOpen = false;
+
   constructor(parseTreeNode: any, options: any) {
     super(parseTreeNode, options);
     this.initialise(parseTreeNode, options);
@@ -502,6 +507,22 @@ class CommandPaletteWidget extends Widget {
     this.div.append(inputAndMainHintWrapper, this.scrollDiv);
     this.input.addEventListener('keydown', (e: KeyboardEvent) => this.onKeyDown(e));
     this.input.addEventListener('input', () => this.onInput(this.input.value));
+    // Fix IME issue
+    this.input.addEventListener(
+      'compositionstart',
+      () => {
+        this.isIMEOpen = true;
+      },
+      false,
+    );
+    this.input.addEventListener(
+      'compositionend',
+      () => {
+        this.isIMEOpen = false;
+      },
+      false,
+    );
+
     document.addEventListener('click', (e: PointerEvent | MouseEvent | TouchEvent) => this.onClick(e));
     parent.insertBefore(this.mask, nextSibling);
     parent.insertBefore(this.div, nextSibling);
@@ -818,7 +839,9 @@ class CommandPaletteWidget extends Widget {
   }
 
   validateSelection(e: AllPossibleEvent) {
-    this.currentResolver(e);
+    if (!this.isIMEOpen) {
+      this.currentResolver(e);
+    }
   }
 
   defaultResolver(e: AllPossibleEvent) {
