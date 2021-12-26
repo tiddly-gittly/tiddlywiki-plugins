@@ -27,6 +27,15 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
       this.checkInLoop();
     }
 
+    async getWorkspaces() {
+      const workspaces = await window.service.workspace.getWorkspacesAsList();
+      const activeWorkspace = await window.service.workspace.getActiveWorkspace();
+      if (activeWorkspace) {
+        return workspaces.filter((workspace) => workspace.id === activeWorkspace.id || (workspace.isSubWiki && workspace.mainWikiID === activeWorkspace.id));
+      }
+      return [];
+    }
+
     /**
      * Lifecycle method: Render this widget into the DOM
      */
@@ -104,7 +113,7 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
         this.state.syncing = true;
         this.refreshSelf();
         try {
-          const workspaces = await window.service.workspace.getWorkspacesAsList();
+          const workspaces = await this.getWorkspaces();
           const tasks = workspaces.map(async ({ wikiFolderLocation, gitUrl, storageService }) => {
             const userInfo = await this.authService.getStorageServiceUserInfo(storageService);
             window.service.git.debounceCommitAndSync(wikiFolderLocation, gitUrl, userInfo);
@@ -143,7 +152,7 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
      *  Check repo git sync state and count of uncommit things
      */
     async checkGitState() {
-      const workspaces = await window.service.workspace.getWorkspacesAsList();
+      const workspaces = await this.getWorkspaces();
       const repoStatuses = [];
       for (const workspace of workspaces) {
         const modifiedListString = $tw.wiki.getTiddlerText(`$:/state/scm-modified-file-list/${workspace.wikiFolderLocation}`);
