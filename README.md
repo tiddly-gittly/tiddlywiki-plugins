@@ -2,6 +2,8 @@
 
 Plugins developed for a better [TiddlyGit](https://github.com/tiddly-gittly/TiddlyGit-Desktop).
 
+Release can be download at [Community Plugin Library](https://github.com/tiddly-gittly/TiddlyWiki-CPL).
+
 ## About
 
 ### Watch-FS
