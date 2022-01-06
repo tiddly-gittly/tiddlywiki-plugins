@@ -13,6 +13,6 @@ list-before: $:/plugins/linonetwo/inverse-link-and-folder/infobar
 
     </$transclude>
 
-    <small>[[<<currentTiddler>>]]</small>
+    <small><$link to=<<currentTiddler>> /></small>
   </$list>
 </$list>
