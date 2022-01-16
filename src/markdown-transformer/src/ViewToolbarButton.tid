@@ -1,10 +1,14 @@
 tags: $:/tags/ViewToolbar
 title: $:/plugins/linonetwo/markdown-transformer/ViewToolbarButton
-type: text/vnd.tiddlywiki
 list-before: $:/core/ui/Buttons/close
+type: text/vnd.tiddlywiki
 caption: {{$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-icon}} {{$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-caption}}
 short-caption: md to tid
 description: Transform MD to Tid wikitext
 
 \whitespace trim
-<$md-to-tid-button title={{!!title}} type={{!!type}} />
+<$let title={{!!title}} type={{!!type}}>
+<$list filter="[{!!type}match[text/x-markdown]]">
+<$md-to-tid-button title=<<title>> type=<<type>> />
+</$list>
+</$let>

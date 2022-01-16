@@ -1,39 +1,10 @@
 title: $:/plugins/linonetwo/markdown-transformer/md-to-tid-button-icon
 tags: $:/tags/Image
 
-<svg
-  width="22pt"
-  height="22pt"
-  viewBox="0 0 128 128"
-  xmlns="http://www.w3.org/2000/svg"
-  class="tc-image-bold tc-image-button"
->
-  <g>
-    <text
-      transform="matrix(2.56467, 0, 0, 6.78366, -70.4793, -361.722)"
-      font-weight="bold"
-      xml:space="preserve"
-      text-anchor="start"
-      font-size="24"
-      id="svg_5"
-      y="71.27162"
-      x="26.8242"
-      stroke-width="0"
-      >
-        →
-      </text>
-    <text
-      transform="matrix(3.88287, 0, 0, 6.21184, -350.205, -233.081)"
-      font-weight="bold"
-      xml:space="preserve"
-      text-anchor="start"
-      font-size="24"
-      y="56.16649"
-      x="106.39803"
-      stroke-width="0"
-      id="svg_2"
-    >
-      M
-    </text>
-  </g>
+<svg width="22pt" height="22pt" xmlns="http://www.w3.org/2000/svg" class="tc-image-md-to-tid-button tc-image-button" viewBox="0 0 128 128">
+ <g>
+  <text stroke-width="0" x="45.92997" y="69.06042" id="svg_5" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" transform="matrix(4.21683, 0, 0, 6.78366, -183.19, -361.722)">→</text>
+  <text stroke-width="0" x="106.85042" y="56.16649" id="svg_2" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" transform="matrix(2.2105, 0, 0, 6.21184, -143.883, -233.081)">T</text>
+  <text stroke-width="0" x="70.65951" y="56.16649" id="svg_1" font-size="24" font-family="Noto Sans JP" text-anchor="start" xml:space="preserve" transform="matrix(1.49395, 0, 0, 6.21184, -94.3778, -233.081)">MD</text>
+ </g>
 </svg>

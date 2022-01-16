@@ -21,8 +21,8 @@ class MdToTidButtonWidget extends Widget {
     transformButton.classList.add('tc-btn-invisible');
     transformButton.innerHTML = `${$tw.wiki.getTiddlerText(
       '$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-icon',
-    )}<span class="tc-btn-text tc-button-zx-script-caption">${$tw.wiki.getTiddlerText(
-      '$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-caption',
+    )}<span class="tc-btn-text tc-button-md-to-tid-button-caption">${$tw.wiki.getTiddlerText(
+      '$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-icon-caption',
     )}</span>`;
     transformButton.onclick = this.onExecuteButtonClick.bind(this);
     transformButton.title = transformButton.ariaLabel = 'MD2Tid';
@@ -38,8 +38,9 @@ class MdToTidButtonWidget extends Widget {
     if (!title) return;
     const type = this.getAttribute('type') || 'text/vnd.tiddlywiki';
     if (type !== 'text/x-markdown') return;
-    const prevMDText = $tw.wiki.getTiddlerText(title);
-    const tidText = md2tid(prevMDText);
+    const prevMDText = await $tw.wiki.getTiddlerText(title);
+    if (!prevMDText) return;
+    const tidText = await md2tid(prevMDText);
     $tw.wiki.setText(title, 'text', undefined, tidText);
     $tw.wiki.setText(title, 'type', undefined, 'text/vnd.tiddlywiki');
   }
