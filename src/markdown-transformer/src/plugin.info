@@ -1,0 +1,11 @@
+{
+  "title": "$:/plugins/linonetwo/markdown-transformer",
+  "name": "Markdown Transformer",
+  "description": "Generate wikitext from markdown file, help you migrate your markdown to wikitext.",
+  "author": "LinOnetwo",
+  "core-version": ">=5.1.22",
+  "plugin-type": "plugin",
+  "version": "0.1.0",
+  "dependents": [],
+  "list": "readme"
+}
