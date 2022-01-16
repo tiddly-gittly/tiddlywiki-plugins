@@ -39,6 +39,7 @@
     "linonetwo/service-worker",
     "linonetwo/source-control-management",
     "linonetwo/sub-wiki",
+    "linonetwo/markdown-transformer",
     "linonetwo/zx-script"
   ],
   "themes": [
