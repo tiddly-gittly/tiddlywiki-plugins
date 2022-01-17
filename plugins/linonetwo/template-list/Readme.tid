@@ -1,0 +1,7 @@
+creator: LinOnetwo
+type: text/vnd.tiddlywiki
+title: $:/plugins/linonetwo/template-list/Readme
+
+!! Features
+
+This plugin provides [[FeiShu Doc|https://www.feishu.cn/hc/zh-CN/articles/222318959624]] style template list for newly created tiddler.

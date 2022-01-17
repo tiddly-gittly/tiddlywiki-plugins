@@ -1,0 +1,10 @@
+modifier: LinOnetwo
+creator: LinOnetwo
+tags: $:/tags/ViewTemplate
+title: $:/plugins/linonetwo/template-list/ViewTemplate
+type: text/vnd.tiddlywiki
+
+
+<$list filter="[all[current]get[text]else<currentTiddler>match<currentTiddler>]">
+<<template-list targetBlankTiddler >>
+</$list>
