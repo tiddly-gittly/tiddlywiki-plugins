@@ -3,7 +3,7 @@ tags: $:/tags/Stylesheet
 title: $:/plugins/linonetwo/template-list/style.css
 type: text/vnd.tiddlywiki
 
-.gk0wk-notion-gallery-block {
+.linonetwo-template-list-item-container {
 	height: 249px;
 	width: 100%;
 	border-radius: 3px;
@@ -16,6 +16,6 @@ type: text/vnd.tiddlywiki
 	flex-direction: column;
 }
 
-.gk0wk-notion-gallery-block p {
+.linonetwo-template-list-item-container p {
 	margin: 0;
 }

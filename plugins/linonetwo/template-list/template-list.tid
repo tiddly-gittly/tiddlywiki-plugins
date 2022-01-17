@@ -12,7 +12,7 @@ type: text/vnd.tiddlywiki
 
         <$action-setfield $tiddler=<<target>> text={{!!text}} />
 
-        <div class="gk0wk-notion-gallery-block">
+        <div class="linonetwo-template-list-item-container">
           <div style="witdh: 100%; height: 180px; overflow: hidden;">
             <$reveal stateTitle=<<currentTiddler>> stateField="page-cover" type="nomatch" text="">
               <$image source={{{ [<currentTiddler>get[page-cover]] }}} width="100%" height="auto"/>
@@ -22,7 +22,7 @@ type: text/vnd.tiddlywiki
           <div style="width: 100%; padding: 8px 10px 10px; height: 69px; display: flex; flex-direction: row;">
 
             <$reveal stateTitle=<<currentTiddler>> stateField="icon" type="nomatch" text="">
-              <div class="gk0wk-backlinksbox-box-link-icon">
+              <div>
                 <$list filter="[<currentTiddler>get[icon]]" variable="icon">
                   <$list filter="[title<icon>is[shadow]]"><$transclude tiddler=<<icon>>/></$list>
                   <$list filter="[title<icon>is[tiddler]]"><$transclude tiddler=<<icon>>/></$list>
