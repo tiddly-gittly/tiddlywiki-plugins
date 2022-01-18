@@ -3,7 +3,43 @@ tags: $:/tags/Stylesheet
 title: $:/plugins/linonetwo/template-list/style.css
 type: text/vnd.tiddlywiki
 
+.linonetwo-template-list-container {
+  opacity: 0.5;
+}
+.linonetwo-template-list-container:hover {
+  opacity: 1;
+}
+
+.linonetwo-template-list-search {
+  width: 100%;
+  margin-top: 2em;
+  height: 2em;
+}
+
+.linonetwo-template-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  max-height: 400px;
+  overflow: hidden;
+}
+/**
+* only have scroll bar when hover
+*/
+.linonetwo-template-list:hover {
+  overflow-y: overlay;
+}
+
 .linonetwo-template-list-item-container {
+  background: unset !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 1px !important;
+  background-color: unset !important;
+}
+
+.linonetwo-template-list-item-content {
   height: 249px;
   width: 100%;
   border-radius: 3px;
@@ -17,20 +53,8 @@ type: text/vnd.tiddlywiki
   flex-direction: column;
 }
 
-.linonetwo-template-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  grid-auto-rows: 1fr;
-  gap: 16px;
-  max-height: 520px;
-  overflow-y: auto;
-}
-
-.linonetwo-template-list-item-container p {
-  margin: 0;
-}
-
-.linonetwo-template-list-search {
-  width: 100%;
-  margin-top: 2em;
+.linonetwo-template-list-item-content p {
+  margin: 5px;
+  margin-bottom: 0;
+  text-align: start;
 }
