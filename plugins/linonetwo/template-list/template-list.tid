@@ -12,21 +12,18 @@ type: text/vnd.tiddlywiki
 
 
 <div class="linonetwo-template-list">
-  <$let target=<<currentTiddler>> targetTitle={{{ [<target>get[draft.title]] ~[<target>get[title]] }}} search={{{ [[$:/state/search-template-list/input]get[text]] }}} >
+  <$let target=<<currentTiddler>> targetTitle={{{ [<target>get[draft.title]] ~[<target>get[title]] }}} search={{{ [[$:/state/search-template-list/input]get[text]] }}} draftOf={{{ [<target>get[draft.of]] }}} >
     <$list filter="[all[tiddlers]tag[$:/tags/TextEditor/Template]!is[draft]search:title,name,description,readme<search>]">
       <$button style="background: unset; border: none; padding-left: 0;" >
 
         <$action-createtiddler $basetitle=<<target>> $overwrite=yes $template=<<currentTiddler>> >
 
           <$action-setfield $tiddler=<<target>> $field="tags" $value={{{ [<currentTiddler>get[tags]split[ ]] +[remove[$:/tags/TextEditor/Template]] +[join[ ]] }}} />
-          <$list filter="[<target>!is[draft]count[]compare:number:gt[0]]">
-            <$log target1=<<target>> currentTiddler=<<currentTiddler>> /> 
-            <$action-setfield $tiddler=<<target>> $field="title" $value=<<targetTitle>> />
-          </$list>
-          <$list filter="[<target>is[draft]count[]compare:number:gt[0]]">
-            <$log target2=<<target>> currentTiddler=<<currentTiddler>> /> 
-            <$action-setfield $tiddler=<<target>> $field="draft.title" $value=<<targetTitle>> />
-          </$list>
+
+          <$log target22=<<target>> currentTiddler=<<currentTiddler>> createTiddlerTitle=<<createTiddler-title>> createTiddlerDraftTitle=<<createTiddler-draftTitle>> targetTitle=<<targetTitle>> draftOf=<<draftOf>> /> 
+
+          <$action-setfield $tiddler=<<target>> $field="draft.of" $value=<<draftOf>> />
+          <$action-setfield $tiddler=<<target>> $field="draft.title" $value=<<targetTitle>> />
         
         </$action-createtiddler>
 
