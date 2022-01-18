@@ -7,6 +7,7 @@ type: text/vnd.tiddlywiki
 \whitespace trim
 
 <div class="linonetwo-template-list-container">
+<!-- show search bar if there are at least one template -->
 <$list filter="[all[tiddlers+shadows]tag[$:/tags/TextEditor/Template]!is[draft]count[]compare:number:gt[0]]">
   <$edit-text tiddler="$:/state/search-template-list/input" default="" placeholder="search template name" tag=input class="linonetwo-template-list-search" />
 </$list>
@@ -19,10 +20,10 @@ type: text/vnd.tiddlywiki
 
         <$action-createtiddler $basetitle=<<target>> $overwrite=yes $template=<<currentTiddler>> >
 
+          <!-- When copy the tag, we should remove the $:/tags/TextEditor/Template , otherwise new tiddler will become a template too -->
           <$action-setfield $tiddler=<<target>> $field="tags" $value={{{ [<currentTiddler>get[tags]split[ ]] +[remove[$:/tags/TextEditor/Template]] +[join[ ]] }}} />
 
-          <$log target22=<<target>> currentTiddler=<<currentTiddler>> createTiddlerTitle=<<createTiddler-title>> createTiddlerDraftTitle=<<createTiddler-draftTitle>> targetTitle=<<targetTitle>> draftOf=<<draftOf>> /> 
-
+          <!-- Fix draft tiddler 's fields get overwrite by the createtiddler https://github.com/Jermolene/TiddlyWiki5/issues/4411#issuecomment-1015526629 -->
           <$action-setfield $tiddler=<<target>> $field="draft.of" $value=<<draftOf>> />
           <$action-setfield $tiddler=<<target>> $field="draft.title" $value=<<targetTitle>> />
         
