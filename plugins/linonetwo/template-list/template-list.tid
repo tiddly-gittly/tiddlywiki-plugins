@@ -7,14 +7,14 @@ type: text/vnd.tiddlywiki
 \whitespace trim
 
 <div class="linonetwo-template-list-container">
-<$list filter="[all[tiddlers]tag[$:/tags/TextEditor/Template]!is[draft]count[]compare:number:gt[0]]">
+<$list filter="[all[tiddlers+shadows]tag[$:/tags/TextEditor/Template]!is[draft]count[]compare:number:gt[0]]">
   <$edit-text tiddler="$:/state/search-template-list/input" default="" placeholder="search template name" tag=input class="linonetwo-template-list-search" />
 </$list>
 
 
 <div class="linonetwo-template-list">
   <$let target=<<currentTiddler>> targetTitle={{{ [<target>get[draft.title]] ~[<target>get[title]] }}} search={{{ [[$:/state/search-template-list/input]get[text]] }}} draftOf={{{ [<target>get[draft.of]] }}} >
-    <$list filter="[all[tiddlers]tag[$:/tags/TextEditor/Template]!is[draft]search:title,name,description,readme<search>]">
+    <$list filter="[all[tiddlers+shadows]tag[$:/tags/TextEditor/Template]!is[draft]search:title,name,description,readme<search>]">
       <$button class="linonetwo-template-list-item-container" >
 
         <$action-createtiddler $basetitle=<<target>> $overwrite=yes $template=<<currentTiddler>> >

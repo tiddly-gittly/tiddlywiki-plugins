@@ -2,18 +2,20 @@ creator: LinOnetwo
 type: text/vnd.tiddlywiki
 title: $:/plugins/linonetwo/template-list/Readme
 
+[[中文|$:/plugins/linonetwo/template-list/Readme-zh_CN]]
+
 !! Features
 
 This plugin provides [[FeiShu Doc|https://www.feishu.cn/hc/zh-CN/articles/222318959624]] style template list for newly created tiddler.
 
 !! Add new template
 
-`$:/tags/TextEditor/Template` is the tag for the templates. Add it to a tiddler, and that tiddler will show up in the template list.
+`$:/tags/TextEditor/Template` is the tag for the templates. Add this tag to a tiddler, and that tiddler will show up in the template list.
 
 !! Apply the template
 
 After you create an empty tiddler, that have an empty text field. You will notice that a template and a search bar show up in the bottom of the tiddler.
 
-Click on a template will apply the text field to the currentTiddler.
+Click on a template will apply all tags and all fields to the currentTiddler.
 
 You can scroll to reveal more template if you have more than two rows of templates.
