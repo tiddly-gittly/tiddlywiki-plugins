@@ -6,6 +6,7 @@ type: text/vnd.tiddlywiki
 \define template-list()
 \whitespace trim
 
+<div class="linonetwo-template-list-container">
 <$list filter="[all[tiddlers]tag[$:/tags/TextEditor/Template]!is[draft]count[]compare:number:gt[0]]">
   <$edit-text tiddler="$:/state/search-template-list/input" default="" placeholder="search template name" tag=input class="linonetwo-template-list-search" />
 </$list>
@@ -14,7 +15,7 @@ type: text/vnd.tiddlywiki
 <div class="linonetwo-template-list">
   <$let target=<<currentTiddler>> targetTitle={{{ [<target>get[draft.title]] ~[<target>get[title]] }}} search={{{ [[$:/state/search-template-list/input]get[text]] }}} draftOf={{{ [<target>get[draft.of]] }}} >
     <$list filter="[all[tiddlers]tag[$:/tags/TextEditor/Template]!is[draft]search:title,name,description,readme<search>]">
-      <$button style="background: unset; border: none; padding-left: 0;" >
+      <$button class="linonetwo-template-list-item-container" >
 
         <$action-createtiddler $basetitle=<<target>> $overwrite=yes $template=<<currentTiddler>> >
 
@@ -28,7 +29,7 @@ type: text/vnd.tiddlywiki
         </$action-createtiddler>
 
 
-        <div class="linonetwo-template-list-item-container">
+        <div class="linonetwo-template-list-item-content">
           <div style="witdh: 100%; height: 180px; overflow: hidden;">
             <$reveal stateTitle=<<currentTiddler>> stateField="page-cover" type="nomatch" text="">
               <$image source={{{ [<currentTiddler>get[page-cover]] }}} width="100%" height="auto"/>
@@ -55,6 +56,7 @@ type: text/vnd.tiddlywiki
       </$button>
     </$list>
   </$let>
+</div>
 </div>
 
 \end
