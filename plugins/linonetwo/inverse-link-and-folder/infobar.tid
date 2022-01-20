@@ -4,7 +4,7 @@ tags: $:/tags/ViewTemplate
 title: $:/plugins/linonetwo/inverse-link-and-folder/infobar
 type: text/vnd.tiddlywiki
 
- <$reveal
+<$reveal
 	state=<<folded-state>>
 	type="nomatch"
 	text="hide"
