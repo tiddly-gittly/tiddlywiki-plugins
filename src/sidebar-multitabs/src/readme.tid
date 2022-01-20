@@ -1,0 +1,13 @@
+title: $:/plugins/linonetwo/sidebar-multitabs/readme
+type: text/vnd.tiddlywiki
+
+!! Background
+
+[[Background in Chinese|https://github.com/tiddly-gittly/tiddlywiki-plugins/discussions/33]]
+
+!! Basic Usage
+
+
+!! Credit
+
+This project's resize code is based on the [[Gk0Wk/sidebar-resizer|https://github.com/Gk0Wk/TiddlySeq/blob/a778affe27d02f4628d4229588281c7d08f930ca/plugins/Gk0Wk/sidebar-resizer/hook.js]].
