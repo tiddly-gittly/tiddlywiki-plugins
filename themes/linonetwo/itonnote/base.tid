@@ -135,7 +135,6 @@ button:not(.tc-btn-invisible) svg {
 
 /** 收合栏 */
 button.tc-fold-banner {
-  position: absolute;
   padding: 0;
   margin: 0;
   background: none;
@@ -147,7 +146,7 @@ button.tc-fold-banner {
   bottom: 6px;
 }
 button.tc-unfold-banner {
-  position: absolute;
+  position: unset;
   padding: 0;
   margin: 0;
   background: none;
