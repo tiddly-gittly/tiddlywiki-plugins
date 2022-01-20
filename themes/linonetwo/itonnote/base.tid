@@ -133,8 +133,9 @@ button:not(.tc-btn-invisible) svg {
 	fill: <<colour tab-foreground>>;
 }
 
-/** 收合栏 */
+/** 收合栏，修复由于 button:not(.tc-tab-selected) 带来的样式。没法在那边 not ，因为 not 列表太长会导致优先级过高 */
 button.tc-fold-banner {
+  position: absolute;
   padding: 0;
   margin: 0;
   background: none;
