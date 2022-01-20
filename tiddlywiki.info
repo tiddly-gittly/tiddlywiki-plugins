@@ -30,6 +30,7 @@
     "linonetwo/google-calendar-import",
     "linonetwo/inverse-link-and-folder",
     "linonetwo/itonnote",
+    "linonetwo/markdown-transformer",
     "linonetwo/open-in-external-app",
     "linonetwo/opened-tiddlers-bar",
     "linonetwo/pinyin-fuzzy-search",
@@ -37,10 +38,10 @@
     "linonetwo/preview-glass",
     "linonetwo/preview-website",
     "linonetwo/service-worker",
+    "linonetwo/sidebar-multitabs",
     "linonetwo/source-control-management",
     "linonetwo/sub-wiki",
     "linonetwo/template-list",
-    "linonetwo/markdown-transformer",
     "linonetwo/zx-script"
   ],
   "themes": [
