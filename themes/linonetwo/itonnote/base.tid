@@ -29,6 +29,13 @@ pre {
   word-break: break-all;
 }
 
+div.cm-code-block-line, div.latex {
+  background: <<colour button-background>>
+}
+div.cm-code-block-line:hover, div.latex:hover {
+  background: <<colour button-background-hover>>
+}
+
 /**
   卡片、编辑器和背景样式
 */
