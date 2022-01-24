@@ -244,7 +244,7 @@
     {
         "title": "$:/themes/linonetwo/itonnote",
         "name": "ItonNote Theme",
-        "version": "0.1.14",
+        "version": "0.1.15",
         "author": "LinOnetwo",
         "core-version": ">=5.0.0",
         "plugin-type": "theme",
