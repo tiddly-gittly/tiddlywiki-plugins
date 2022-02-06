@@ -1,36 +1,11 @@
-title: $:/plugins/linonetwo/smart-field/ExampleOntology
+title: $:/plugins/ontology/sfeo
 type: text/vnd.tiddlywiki
 tags: $:/tags/Ontology
 
 !! Example Ontology
 
-This is an example "Ontology" tag that will make tiddler with this tag have some field forms.
+This is an example "Ontology" that is for demo about what an Ontology plugin looks like.
 
-Fields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.
+!!! SFEO
 
-!!! Detailed explanation for Ontology Developers
-
-For example,
-
-```tid
-title: Todo
-tags: $:/tags/Ontology
-properties.dueDate: tmo
-
-
-Here are the text field of tiddler, contains some readme content about this tag: We use task model ontology's dueDate property.
-```
-
-this ontology-tag-tiddler will look for the definition in $:/plugins/ontology/tmo and will try to read the definition in $:/plugins/ontology/tmo/dueDate.
-
-The content of $:/plugins/ontology/tmo/dueDate is a JSONSchema fragment (manually rewrite from its RDF definition to JSON), and the tag of $:/tags/Ontology/Field makes its content editable and presentable via JSONSchemaForm:
-
-```tid
-title: $:/plugins/ontology/tmo/dueDate
-tags: $:/tags/Ontology/Field
-
-{
-  "type": "string",
-  "format": "tw-date-time"
-}
-```
+"sfeo" is short for "smart-field-example-ontology", we use short-hand so using ontology name in the field is easier.

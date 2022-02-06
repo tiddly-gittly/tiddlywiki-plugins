@@ -1,4 +1,4 @@
-title: $:/plugins/linonetwo/smart-field/developer
+title: $:/plugins/linonetwo/smart-field/pluginMaintainer
 type: text/vnd.tiddlywiki
 
 !! Used technology
@@ -15,3 +15,7 @@ We use a JS macro to get tags of current tiddler:
 # filter their fields that point to an ontology plugin tiddler
 # get JSONSchema definition fragment from the ontology plugin tiddler
 # put fragments together to make a form Schema string, return to the filter caller
+
+!!! Developer Tool part
+
+$:/tags/Ontology/Field makes its content editable and presentable via JSONSchemaForm
