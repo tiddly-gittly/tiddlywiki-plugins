@@ -3,6 +3,12 @@ type: text/vnd.tiddlywiki
 
 !! Detailed explanation for Ontology Developers
 
+You will use `$:/tags/Ontology` and `$:/tags/Ontology/Field` tags in your ontology plugin. And your plugin name should start with `$:/plugins/ontology/` and ends with a short-hand of your ontology name.
+
+!!! Short-Hand
+
+We use short-hand so using ontology name in the field is easier. For example, Task Management Ontology's plugin name will be `$:/plugins/ontology/tmo`, and field using it will be like `properties.dateTime: tmo`.
+
 !!! A Todo example
 
 For example,
