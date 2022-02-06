@@ -1,0 +1,36 @@
+title: $:/plugins/linonetwo/smart-field/ExampleOntology
+type: text/vnd.tiddlywiki
+tags: $:/tags/Ontology
+
+!! Example Ontology
+
+This is an example "Ontology" tag that will make tiddler with this tag have some field forms.
+
+Fields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.
+
+!!! Detailed explanation for Ontology Developers
+
+For example,
+
+```tid
+title: Todo
+tags: $:/tags/Ontology
+properties.dueDate: tmo
+
+
+Here are the text field of tiddler, contains some readme content about this tag: We use task model ontology's dueDate property.
+```
+
+this ontology-tag-tiddler will look for the definition in $:/plugins/ontology/tmo and will try to read the definition in $:/plugins/ontology/tmo/dueDate.
+
+The content of $:/plugins/ontology/tmo/dueDate is a JSONSchema fragment (manually rewrite from its RDF definition to JSON), and the tag of $:/tags/Ontology/Field makes its content editable and presentable via JSONSchemaForm:
+
+```tid
+title: $:/plugins/ontology/tmo/dueDate
+tags: $:/tags/Ontology/Field
+
+{
+  "type": "string",
+  "format": "tw-date-time"
+}
+```
