@@ -1,0 +1,17 @@
+title: $:/plugins/linonetwo/smart-field/developer
+type: text/vnd.tiddlywiki
+
+!! Used technology
+
+!!! The widget part, located in `form.ts`
+
+This plugin depends on tw-react plugin, and is using [[https://rjsf-team.github.io/react-jsonschema-form/]].
+
+!!! The data source part, located in `schema.ts`
+
+We use a JS macro to get tags of current tiddler:
+
+# filter tags of currentTiddler with `$:/tags/Ontology` tag
+# filter their fields that point to an ontology plugin tiddler
+# get JSONSchema definition fragment from the ontology plugin tiddler
+# put fragments together to make a form Schema string, return to the filter caller
