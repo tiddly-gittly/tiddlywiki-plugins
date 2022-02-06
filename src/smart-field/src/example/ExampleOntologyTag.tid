@@ -1,4 +1,4 @@
-title: $:/plugins/linonetwo/smart-field/ExampleOntologyTag
+title: $:/plugins/linonetwo/smart-field/ExampleFormTag
 type: text/vnd.tiddlywiki
 tags: $:/tags/Ontology
 properties.favoritePhoneBrand: sfeo
@@ -6,5 +6,5 @@ properties.phoneNumber: sfeo
 
 !! Example Ontology
 
-This is an example [[OntologyTag|$:/plugins/linonetwo/smart-field/OntologyTag]] that will make tiddler with this tag have some field forms.
+This is an example [[FormTag|$:/plugins/linonetwo/smart-field/FormTag]] that will make tiddler with this tag have some field forms.
 
