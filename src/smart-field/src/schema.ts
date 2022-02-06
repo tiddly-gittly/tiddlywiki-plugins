@@ -1,3 +1,5 @@
+import { SourceIterator, IFilterOperatorParamOperator } from "tiddlywiki";
+
 /**
  *
  * @example [pinyinfuse]
@@ -6,7 +8,7 @@
  * @param options
  * @returns
  */
-export const getFormTagJSONSchema = (source: (iter: SourceIterator) => void, operator: IFilterOperatorParamOperator, options: IFilterOperatorOptions) => {
+export const getFormTagJSONSchema = (source: (iter: SourceIterator) => void, operator: IFilterOperatorParamOperator) => {
   const invert = operator.prefix === '!';
   if (operator.suffixes) {
     let hasFlag = function (flag: string) {
