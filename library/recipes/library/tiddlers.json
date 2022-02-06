@@ -174,6 +174,20 @@
         "requires-reload": "no"
     },
     {
+        "title": "$:/plugins/linonetwo/smart-field",
+        "name": "Smart Field",
+        "description": "Generate a Field editing Form, based on Tag and Ontology on your tiddler.",
+        "author": "LinOnetwo",
+        "core-version": ">=5.1.22",
+        "plugin-type": "plugin",
+        "version": "0.1.0",
+        "dependents": "",
+        "list": "readme example",
+        "type": "application/json",
+        "readme": "!! Background\n\n!! Basic Usage\n\n!!! Display form in your tiddler\n\nJust add some [[OntologyTag|$:/plugins/linonetwo/smart-field/OntologyTag]] to your wiki.\n\n!!! Add new form fields\n\nFields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.\n\nIf you are going to create an ontology tag that can add field form to user's tiddler, you can read [[$:/plugins/linonetwo/smart-field/ontologyDeveloper]].\n\n!! Developer\n\nSee [[$:/plugins/linonetwo/smart-field/pluginMaintainer]].\n",
+        "requires-reload": "yes"
+    },
+    {
         "title": "$:/plugins/linonetwo/source-control-management",
         "name": "NodeJS Wiki TiddlyGit Github Sync",
         "description": "Use TiddlyGit's NodeJS API to sync data to git on the cloud",
