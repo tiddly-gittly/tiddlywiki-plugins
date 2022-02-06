@@ -75,9 +75,9 @@ var assetList = [
         "requires-reload": "yes"
     },
     {
-        "title": "$:/plugins/linonetwo/markdown-transformer",
-        "name": "Markdown Transformer",
-        "description": "Generate wikitext from markdown file, help you migrate your markdown to wikitext.",
+        "title": "$:/plugins/linonetwo/sidebar-multitabs",
+        "name": "",
+        "description": "Simultaneously show multiple tabs on sidebar vertically (VSCode style), drag to resize height. 在侧边栏同时展示多个垂直的标签（VSCode风格），拖动可以调整高度。",
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
@@ -85,7 +85,7 @@ var assetList = [
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Background\n\n[[Web-clipper|https://github.com/webclipper/web-clipper/]] only provides the markdown output, and markdown don't have block level editor [[section-editor|https://github.com/kookma/TW-Section]] support. So we need a way to convert markdown to tiddlywiki's wikitext.\n\n!! Basic Usage\n\n!!! Button on markdown Tiddler Type\n\nIf you add filetype `text/x-markdown` to your tiddler, there will be a view toolbar icon show up, which will help you transform markdown to tiddlywiki on clicked.\n\n!! TODO\n\nWe use [[Unifiedjs|https://github.com/unifiedjs/unified]]'s [[mdast-util-from-markdown|https://github.com/syntax-tree/mdast-util-from-markdown]] to parse md, and use modified version of [[mdast-util-to-markdown|https://github.com/syntax-tree/mdast-util-to-markdown]] to generate tid file. If someday we have a tid parser that generate unified AST, we might be able to generate md file from tid.\n\n!! Developer\n\nThis project is based on the [[tiddly-gittly/md-to-tid|https://github.com/tiddly-gittly/md-to-tid]], you might want to take a look and give it a star.\n",
+        "readme": "!! Background\n\n[[Background in Chinese|https://github.com/tiddly-gittly/tiddlywiki-plugins/discussions/33]]\n\n!! Basic Usage\n\n\n!! Credit\n\nThis project's resize code is based on the [[Gk0Wk/sidebar-resizer|https://github.com/Gk0Wk/TiddlySeq/blob/a778affe27d02f4628d4229588281c7d08f930ca/plugins/Gk0Wk/sidebar-resizer/hook.js]].\n",
         "requires-reload": "yes"
     },
     {
@@ -194,7 +194,7 @@ var assetList = [
         "dependents": "",
         "list": "readme example",
         "type": "application/json",
-        "readme": "!! Background\n\n!! Basic Usage\n\n!!! Display form in your tiddler\n\nJust add some [[OntologyTag|$:/plugins/linonetwo/smart-field/OntologyTag]] to your wiki.\n\n!!! Add new form fields\n\nFields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.\n\nIf you are going to create an ontology tag that can add field form to user's tiddler, you can read [[$:/plugins/linonetwo/smart-field/ontologyDeveloper]].\n\n!! Developer\n\nSee [[$:/plugins/linonetwo/smart-field/pluginMaintainer]].\n",
+        "readme": "!! Background\n\nI hope there can be a standard way to encourage plugin developers to use similar field name in their plugins, so different plugins can be used together on a same set of data. See [[Suggestion for all Plugin developers about field name: Let’s use Ontology to maintain Interoperability|https://talk.tiddlywiki.org/t/suggestion-for-all-plugin-developers-about-field-name-lets-use-ontology-to-maintain-interoperability/1923]] for the discussion.\n\n!! Basic Usage\n\n!!! Display form in your tiddler\n\nJust add some [[FormTag|$:/plugins/linonetwo/smart-field/FormTag]] to your wiki.\n\n!!! Add new form fields\n\nFields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.\n\nIf you are going to create an ontology tag that can add field form to user's tiddler, you can read [[$:/plugins/linonetwo/smart-field/ontologyDeveloper]].\n\n!! Developer\n\nSee [[$:/plugins/linonetwo/smart-field/pluginMaintainer]].\n",
         "requires-reload": "yes"
     },
     {
