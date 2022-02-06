@@ -1,0 +1,17 @@
+title: $:/plugins/ontology/sfeo/favoritePhoneBrand
+type: text/vnd.tiddlywiki
+tags: $:/tags/Ontology
+
+{
+  "type": "string",
+  "title": "Favorite Phone Brand",
+  "default": "XiaoMi",
+  "minLength": 2,
+  "examples": [
+    "XiaoMi",
+    "iPhone",
+    "WinPhone",
+    "Oppo",
+    "Nokia"
+  ]
+}

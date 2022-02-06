@@ -5,4 +5,16 @@ type: text/vnd.tiddlywiki
 
 !! Basic Usage
 
+!!! Display form in your tiddler
+
+Just add some [[OntologyTag|$:/plugins/linonetwo/smart-field/OntologyTag]] to your wiki.
+
+!!! Add new form fields
+
+Fields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.
+
+If you are going to create an ontology tag that can add field form to user's tiddler, you can read [[$:/plugins/linonetwo/smart-field/ontologyDeveloper]].
+
 !! Developer
+
+See [[$:/plugins/linonetwo/smart-field/pluginMaintainer]].

@@ -1,0 +1,8 @@
+title: $:/plugins/ontology/sfeo/phoneNumber
+type: text/vnd.tiddlywiki
+tags: $:/tags/Ontology
+
+{
+  "title": "Phone Number",
+  "type": "integer"
+}
