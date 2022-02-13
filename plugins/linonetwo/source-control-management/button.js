@@ -116,7 +116,7 @@ Requires you are using TiddlyGit, and have install the "Inject JS" API with acce
           const workspaces = await this.getWorkspaces();
           const tasks = workspaces.map(async ({ wikiFolderLocation, gitUrl, storageService }) => {
             const userInfo = await this.authService.getStorageServiceUserInfo(storageService);
-            window.service.git.debounceCommitAndSync(wikiFolderLocation, gitUrl, userInfo);
+            window.service.git.commitAndSync(wikiFolderLocation, gitUrl, userInfo);
           });
           await Promise.all(tasks);
         } catch (error) {
