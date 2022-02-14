@@ -22,13 +22,6 @@ module.exports = {
       typescript: {
         alwaysTryTypes: true,
       },
-      alias: {
-        map: [
-          ['@', './src'],
-          ['@services', './src/services'],
-        ],
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
     },
   },
   rules: {
