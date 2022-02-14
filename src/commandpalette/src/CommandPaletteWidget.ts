@@ -201,7 +201,6 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'tiddler' implicitly has an 'any' type.
   hasTag(tiddler, tag) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     return $tw.wiki.getTiddler(tiddler).fields.tags.includes(tag);
   }
 
@@ -227,7 +226,6 @@ class CommandPaletteWidget extends Widget {
           '选择一个条目来添加标签',
           '选择一个标签来添加 (⇧⏎ 可以多次添加)',
           (tiddler: string, terms: string): string[] =>
-            // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
             $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
           true,
           'tm-add-tag',
@@ -242,7 +240,7 @@ class CommandPaletteWidget extends Widget {
           e,
           '选择一个条目来去除标签',
           '选择一个标签来去除 (⇧⏎ 可以去除多次)',
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
           (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
           false,
           'tm-remove-tag',
@@ -311,7 +309,6 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'caption' implicitly has an 'any' type.
   translateCaption(caption) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     return $tw.wiki.renderText('text/plain', 'text/vnd.tiddlywiki', caption);
   }
 
@@ -402,7 +399,7 @@ class CommandPaletteWidget extends Widget {
     this.lastExplorerInput = this.input.value;
     this.currentSelection = 0;
     let search = this.input.value.substr(url.length);
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     let tiddlers = $tw.wiki.filterTiddlers(`[removeprefix[${url}]splitbefore[/]sort[]pinyinfuse[${search}]]`);
     let folders = [];
     let files = [];
@@ -440,14 +437,14 @@ class CommandPaletteWidget extends Widget {
       if (value === 'false') (value as unknown as boolean) = false;
     }
     this.settings[name] = value;
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.wiki.setTiddlerData(this.settingsPath, this.settings);
   }
 
   //loadSettings?
   refreshSettings<K extends keyof ISettings>() {
     //get user or default settings
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     this.settings = $tw.wiki.getTiddlerData(this.settingsPath, { ...this.defaultSettings });
     //Adding eventual missing properties to current user settings
     for (let prop in this.defaultSettings) {
@@ -470,7 +467,6 @@ class CommandPaletteWidget extends Widget {
   //helper function to retrieve all tiddlers (+ their fields) with a tag
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'tag' implicitly has an 'any' type.
   getTiddlersWithTag(tag): ITiddler[] {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     let tiddlers = $tw.wiki.getTiddlersWithTag(tag);
     // @ts-expect-error ts-migrate(7006) FIXME: Parameter 't' implicitly has an 'any' type.
     return tiddlers.map((t) => $tw.wiki.getTiddler(t));
@@ -483,18 +479,17 @@ class CommandPaletteWidget extends Widget {
     if ($tw.utils.pinyinfuse === undefined) {
       throw new Error('需要安装 linonetwo/pinyin-fuzzy-search 插件以获得模糊搜索和拼音搜索的能力');
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
 
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     $tw.rootWidget.addEventListener('open-command-palette', (e: AllPossibleEvent) => this.openPalette(e, e.param));
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.rootWidget.addEventListener('open-command-palette-selection', (e: AllPossibleEvent) => this.openPaletteSelection(e));
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.rootWidget.addEventListener('insert-command-palette-result', (e: AllPossibleEvent) => this.insertSelectedResult(e));
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.rootWidget.addEventListener('command-palette-switch-history', (e) => this.handleSwitchHistory(e, true));
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.rootWidget.addEventListener('command-palette-switch-history-back', (e) => this.handleSwitchHistory(e, false));
 
     let inputAndMainHintWrapper = this.createElement('div', { className: 'inputhintwrapper' });
@@ -598,7 +593,7 @@ class CommandPaletteWidget extends Widget {
 
   refreshSearchSteps() {
     this.searchSteps = [];
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     let steps = $tw.wiki.getTiddlerData(this.searchStepsPath);
     steps = steps.steps;
     for (let step of steps) {
@@ -643,7 +638,7 @@ class CommandPaletteWidget extends Widget {
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'command' implicitly has an 'any' type.
   updateCommandHistory(command) {
     this.history = Array.from(new Set([command.name, ...this.history]));
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     $tw.wiki.setTiddlerData(this.commandHistoryPath, { history: this.history });
   }
 
@@ -653,10 +648,8 @@ class CommandPaletteWidget extends Widget {
       this.hint.innerText = hint;
       let results;
       if (mode !== undefined && mode === 'drafts') {
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
         results = $tw.wiki.filterTiddlers('[has:field[draft.of]]');
       } else if (mode !== undefined && mode === 'story') {
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
         results = $tw.wiki.filterTiddlers('[list[$:/StoryList]]');
       } else {
         results = this.getHistory();
@@ -950,19 +943,18 @@ class CommandPaletteWidget extends Widget {
 
   getHistory(): string[] {
     // TODO: what is the type here?
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     let history: string[] | undefined = $tw.wiki.getTiddlerData('$:/HistoryList');
     if (history === undefined) {
       history = [];
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     history = [...history.reverse().map((x) => x.title), ...$tw.wiki.filterTiddlers('[list[$:/StoryList]]')];
     return Array.from(new Set(history.filter((t) => this.tiddlerOrShadowExists(t))));
   }
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'title' implicitly has an 'any' type.
   tiddlerOrShadowExists(title) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
     return $tw.wiki.tiddlerExists(title) || $tw.wiki.isShadowTiddler(title);
   }
 
@@ -989,7 +981,7 @@ class CommandPaletteWidget extends Widget {
   searchStepBuilder(filter, caret, hint) {
     return (terms: string) => {
       let search = filter.substr(0, caret) + terms + filter.substr(caret);
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
       let results = $tw.wiki.filterTiddlers(search).map((s) => {
         return { name: s, hint: hint };
       });
@@ -1002,10 +994,8 @@ class CommandPaletteWidget extends Widget {
     this.hint.innerText = '搜索标签列表';
     let searches;
     if (terms.length === 0) {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
       searches = $tw.wiki.filterTiddlers('[!is[system]tags[]][is[system]tags[]][all[shadows]tags[]]');
     } else {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
       searches = $tw.wiki.filterTiddlers(
         '[all[]tags[]!is[system]pinyinfuse[' + terms + ']][all[]tags[]is[system]pinyinfuse[' + terms + ']][all[shadows]tags[]pinyinfuse[' + terms + ']]',
       );
@@ -1020,7 +1010,7 @@ class CommandPaletteWidget extends Widget {
   tagListResolver(e: AllPossibleEvent) {
     if (this.currentSelection === 0) {
       let input = (this.input.value as string).substring(2);
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
       let exist = $tw.wiki.filterTiddlers('[tag[' + input + ']]');
       if (!exist) return;
       this.input.value = '##' + input;
@@ -1037,7 +1027,7 @@ class CommandPaletteWidget extends Widget {
     let tiddlerNameSearchResults: string[] = [];
     if (terms.length !== 0) {
       let { tags, searchTerms, tagsFilter } = this.parseTags(this.input.value);
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
       let taggedTiddlers: string[] = $tw.wiki.filterTiddlers(tagsFilter);
 
       if (taggedTiddlers.length !== 0) {
@@ -1264,9 +1254,9 @@ class CommandPaletteWidget extends Widget {
     this.currentSelection = 0;
     this.hint.innerText = hint === undefined ? '筛选器语句' : hint;
     terms = '[' + terms;
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     let fields = $tw.wiki.filterTiddlers('[fields[]]');
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
     let results = $tw.wiki.filterTiddlers(terms).map((r) => {
       return { name: r };
     });
@@ -1278,7 +1268,7 @@ class CommandPaletteWidget extends Widget {
       let date = 'Invalid Date';
       if (initialResult.name.length === 17) {
         //to be sure to only match tiddly dates (17 char long)
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
         date = $tw.utils.parseDate(initialResult.name).toLocaleString();
       }
       if (date !== 'Invalid Date') {
@@ -1286,7 +1276,7 @@ class CommandPaletteWidget extends Widget {
         results[i].action = () => {};
         alreadyMatched = true;
       }
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
+
       let isTag = $tw.wiki.getTiddlersWithTag(initialResult.name).length !== 0;
       if (isTag) {
         if (alreadyMatched) {
@@ -1318,7 +1308,6 @@ class CommandPaletteWidget extends Widget {
         }
         let parsed;
         try {
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
           parsed = $tw.wiki.parseFilter(this.input.value);
         } catch (e) {} //The error is already displayed to the user
         let foundTitles = [];
@@ -1330,7 +1319,6 @@ class CommandPaletteWidget extends Widget {
         }
         let hint = 'Field';
         if (foundTitles.length === 1) {
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name '$tw'.
           hint = $tw.wiki.getTiddler(foundTitles[0]).fields[initialResult.name];
           // @ts-expect-error ts-migrate(2358) FIXME: The left-hand side of an 'instanceof' expression m... Remove this comment to see the full error message
           if (hint instanceof Date) {
