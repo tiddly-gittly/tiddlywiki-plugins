@@ -194,7 +194,7 @@
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "list": "readme",
         "dependents": "",
         "type": "application/json",
