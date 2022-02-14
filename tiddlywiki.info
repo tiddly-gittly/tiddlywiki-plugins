@@ -39,6 +39,7 @@
     "linonetwo/preview-website",
     "linonetwo/service-worker",
     "linonetwo/sidebar-multitabs",
+    "linonetwo/smart-field",
     "linonetwo/source-control-management",
     "linonetwo/sub-wiki",
     "linonetwo/template-list",
