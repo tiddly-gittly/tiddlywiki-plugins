@@ -1,6 +1,6 @@
 title: $:/plugins/ontology/sfeo/favoritePhoneBrand
 type: text/vnd.tiddlywiki
-tags: $:/tags/Ontology
+tags: $:/tags/Ontology/Field
 
 {
   "type": "string",

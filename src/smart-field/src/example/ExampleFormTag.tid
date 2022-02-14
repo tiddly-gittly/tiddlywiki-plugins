@@ -1,6 +1,6 @@
 title: $:/plugins/linonetwo/smart-field/ExampleFormTag
 type: text/vnd.tiddlywiki
-tags: $:/tags/Ontology
+tags: $:/tags/Ontology/Form
 properties.favoritePhoneBrand: sfeo
 properties.phoneNumber: sfeo
 

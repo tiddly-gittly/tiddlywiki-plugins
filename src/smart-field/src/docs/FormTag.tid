@@ -4,3 +4,13 @@ type: text/vnd.tiddlywiki
 !! Form Tag
 
 Adding `$:/tags/Ontology/Form` to your tiddler means this tiddler, when used as a tag, will provide a form for your tagged tiddler.
+
+!! Example
+
+We will look for fields like `properties.xxx`, they describes what field found will show up in our user's tiddler.
+
+```tid
+tags: $:/tags/Ontology/Form
+properties.favoritePhoneBrand: sfeo
+properties.phoneNumber: sfeo
+```
