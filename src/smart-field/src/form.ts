@@ -36,7 +36,6 @@ class FormWidget extends Widget {
     });
     // get JSONSchema from the ontology, using ontologyName.fieldName
     const schema: JSONSchema6 = {
-      title: 'Example',
       type: 'object',
       required: [],
       properties: {
@@ -48,7 +47,7 @@ class FormWidget extends Widget {
       /**
        * A tiddler tagged with `$:/tags/Ontology/Field`
        */
-      const ontologyFieldTiddler = $tw.wiki.getTiddler(`$:/tags/Ontology/${ontology}`)?.fields;
+      const ontologyFieldTiddler = $tw.wiki.getTiddler(`$:/plugins/ontology/${ontology}/${field}`)?.fields;
       if (!ontologyFieldTiddler?.tags?.includes('$:/tags/Ontology/Field')) {
         return;
       }
