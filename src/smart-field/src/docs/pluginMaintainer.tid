@@ -19,3 +19,9 @@ We use a JS macro to get tags of current tiddler:
 !!! Developer Tool part
 
 $:/tags/Ontology/Field makes its content editable and presentable via JSONSchemaForm
+
+!! Form widget
+
+More widgets:
+
+* https://github.com/RXNT

@@ -4,6 +4,8 @@ import type { JSONSchema6 } from 'json-schema';
 
 // Make modifications to the theme with your own fields and widgets
 
+// DEBUG: console
+console.log(`Mui5Theme`, Mui5Theme);
 const Form = withTheme(Mui5Theme);
 
 const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget;
@@ -13,8 +15,9 @@ const log = (type: string) => console.log.bind(console, type);
 class FormWidget extends Widget {
   reactComponent = Form;
   getProps = () => {
+    const currentTiddler = this.getAttribute('tiddler', this.getVariable('currentTiddler'));
     /** Found "form tags" of the current tiddler, we will read their fields to get fields that will show up in our user's tiddler. */
-    const formTagsFilter: string = `[<currentTiddler>tags[]tagged[$:/tags/Ontology/Form]]`;
+    const formTagsFilter: string = `${currentTiddler} +[tags[]tag[$:/tags/Ontology/Form]]`;
     const formTags: string[] = $tw.wiki.compileFilter(formTagsFilter)();
     // prepare ontology names we need to find
     /**
@@ -64,6 +67,7 @@ class FormWidget extends Widget {
     });
     return {
       schema: schema,
+      children: null,
       onChange: log('changed'),
       onSubmit: log('submitted'),
       onError: log('errors'),

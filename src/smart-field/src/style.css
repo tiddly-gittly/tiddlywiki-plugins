@@ -1,3 +1,11 @@
-.tc-tiddler-controls button .tc-button-md-to-tid-button-caption {
+.rjsf > div > button.btn {
   display: none;
+}
+form.rjsf {
+  line-height: 0px;
+}
+/* make form compact */
+.MuiGrid-item {
+  padding: 0px !important;
+  margin: 0px !important;
 }

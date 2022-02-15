@@ -1,4 +1,4 @@
-title: $:/plugins/linonetwo/smart-field/ExampleTiddlerAddedFormTag
+title: $:/plugins/linonetwo/smart-field/Example
 type: text/vnd.tiddlywiki
 tags: $:/plugins/linonetwo/smart-field/ExampleFormTag
 
@@ -6,4 +6,4 @@ tags: $:/plugins/linonetwo/smart-field/ExampleFormTag
 
 We have add [[$:/plugins/linonetwo/smart-field/ExampleFormTag]] to get our form.
 
-<$formWidget />
+You will see form appear on the bottom ↓
