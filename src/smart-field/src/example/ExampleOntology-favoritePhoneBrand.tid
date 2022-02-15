@@ -6,7 +6,7 @@ tags: $:/tags/Ontology/Field
   "type": "string",
   "title": "Favorite Phone Brand",
   "minLength": 2,
-  "examples": [
+  "enum": [
     "XiaoMi",
     "iPhone",
     "WinPhone",
