@@ -27,9 +27,9 @@ class FormWidget extends Widget {
       }
       /** We will look for fields like `properties.xxx` */
       return Object.keys(fields)
-        .filter((fieldName) => fieldName.startsWith('properties'))
+        .filter((fieldName) => fieldName.startsWith('properties.') && fields[fieldName])
         .map((fieldName) => {
-          const ontologyName = fields[fieldName];
+          const ontologyName = fields[fieldName] as string;
           const finalFieldName = fieldName.replace('properties.', '');
           return { field: finalFieldName, ontology: ontologyName };
         });
