@@ -1,21 +1,22 @@
-import { withTheme } from '@rjsf/core';
+import { withTheme, IChangeEvent } from '@rjsf/core';
 import { Theme as Mui5Theme } from '@rjsf/material-ui';
 import type { JSONSchema6 } from 'json-schema';
+import debounce from 'lodash/debounce';
+import { ITiddlerFields } from 'tiddlywiki';
 
 // Make modifications to the theme with your own fields and widgets
-
-// DEBUG: console
-console.log(`Mui5Theme`, Mui5Theme);
 const Form = withTheme(Mui5Theme);
 
 const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget;
 
 const log = (type: string) => console.log.bind(console, type);
+const DEBOUNCE_DELAY = 1000;
 
 class FormWidget extends Widget {
   reactComponent = Form;
   getProps = () => {
     const currentTiddler = this.getAttribute('tiddler', this.getVariable('currentTiddler'));
+    const formData = $tw.wiki.getTiddler(currentTiddler)?.fields ?? {};
     /** Found "form tags" of the current tiddler, we will read their fields to get fields that will show up in our user's tiddler. */
     const formTagsFilter: string = `${currentTiddler} +[tags[]tag[$:/tags/Ontology/Form]]`;
     const formTags: string[] = $tw.wiki.compileFilter(formTagsFilter)();
@@ -65,12 +66,21 @@ class FormWidget extends Widget {
         // TODO: handle error and warn user about a bad form plugin installed
       }
     });
+    const debouncedOnChange = debounce((data: IChangeEvent) => {
+      const prevFields = $tw.wiki.getTiddler(currentTiddler)?.fields ?? ({} as ITiddlerFields);
+      // prevent useless call to addTiddler
+      if (Object.keys(data.formData).length === 0 || Object.keys(data.formData).every((key) => prevFields[key] === data.formData[key])) {
+        return;
+      }
+      $tw.wiki.addTiddler({ ...prevFields, ...data.formData });
+    }, DEBOUNCE_DELAY);
     return {
-      schema: schema,
+      schema,
+      // formData,
       children: null,
-      onChange: log('changed'),
-      onSubmit: log('submitted'),
-      onError: log('errors'),
+      onChange: debouncedOnChange,
+      // onSubmit: log('submitted'),
+      // onError: log('errors'),
     };
   };
 }
