@@ -14,7 +14,7 @@ class FormWidget extends Widget {
   reactComponent = Form;
   getProps = () => {
     /** Found "form tags" of the current tiddler, we will read their fields to get fields that will show up in our user's tiddler. */
-    const formTagsFilter: string = `[<currentTiddler>tagging[]tagged[$:/tags/Ontology/Form]]`;
+    const formTagsFilter: string = `[<currentTiddler>tags[]tagged[$:/tags/Ontology/Form]]`;
     const formTags: string[] = $tw.wiki.compileFilter(formTagsFilter)();
     // prepare ontology names we need to find
     /**
