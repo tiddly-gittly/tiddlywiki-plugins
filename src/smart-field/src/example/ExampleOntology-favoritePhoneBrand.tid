@@ -5,7 +5,6 @@ tags: $:/tags/Ontology/Field
 {
   "type": "string",
   "title": "Favorite Phone Brand",
-  "default": "XiaoMi",
   "minLength": 2,
   "examples": [
     "XiaoMi",
