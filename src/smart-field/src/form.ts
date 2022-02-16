@@ -3,11 +3,12 @@ import { Theme as Mui5Theme } from '@rjsf/material-ui';
 import type { JSONSchema6 } from 'json-schema';
 import debounce from 'lodash/debounce';
 import { ITiddlerFields } from 'tiddlywiki';
+import type { ReactWidget } from 'tw-react';
 
 // Make modifications to the theme with your own fields and widgets
 const Form = withTheme(Mui5Theme);
 
-const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget;
+const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget as typeof ReactWidget;
 
 const log = (type: string) => console.log.bind(console, type);
 const DEBOUNCE_DELAY = 1000;
@@ -76,7 +77,7 @@ class FormWidget extends Widget {
     }, DEBOUNCE_DELAY);
     return {
       schema,
-      // formData,
+      formData,
       children: null,
       onChange: debouncedOnChange,
       // onSubmit: log('submitted'),
