@@ -2,6 +2,7 @@ import { withTheme, IChangeEvent } from '@rjsf/core';
 import { Theme as Mui5Theme } from '@rjsf/material-ui';
 import type { JSONSchema6 } from 'json-schema';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import { ITiddlerFields } from 'tiddlywiki';
 import type { ReactWidget } from 'tw-react';
 
@@ -70,7 +71,7 @@ class FormWidget extends Widget {
     const debouncedOnChange = debounce((data: IChangeEvent) => {
       const prevFields = $tw.wiki.getTiddler(currentTiddler)?.fields ?? ({} as ITiddlerFields);
       // prevent useless call to addTiddler
-      if (Object.keys(data.formData).length === 0 || Object.keys(data.formData).every((key) => prevFields[key] === data.formData[key])) {
+      if (Object.keys(data.formData).length === 0 || isEqual(data.formData, prevFields)) {
         return;
       }
       $tw.wiki.addTiddler({ ...prevFields, ...data.formData });
