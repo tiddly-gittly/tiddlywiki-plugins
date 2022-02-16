@@ -13,7 +13,7 @@ export default {
     sourcemap: 'inline',
     exports: 'named',
   },
-  external: ['events', 'fs', 'fsevents', 'util', 'path', 'os', 'stream'],
+  external: ['react', 'react-dom', 'events', 'fs', 'fsevents', 'util', 'path', 'os', 'stream'],
   plugins: [
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
