@@ -6,6 +6,8 @@ tags: $:/tags/Ontology
 
 This is an example "Ontology" that is for demo about what an Ontology plugin looks like.
 
+See [[the doc for ontologyDevelopers|$:/plugins/linonetwo/smart-field/ontologyDeveloper]] for details.
+
 !!! SFEO
 
 "sfeo" is short for "smart-field-example-ontology", we use short-hand so using ontology name in the field is easier.
