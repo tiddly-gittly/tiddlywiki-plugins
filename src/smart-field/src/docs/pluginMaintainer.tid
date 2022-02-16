@@ -7,14 +7,16 @@ type: text/vnd.tiddlywiki
 
 This plugin depends on tw-react plugin, and is using [[https://rjsf-team.github.io/react-jsonschema-form/]].
 
-!!! The data source part, located in `schema.ts`
+!!! The data source part, located in `getProps` method of `FormWidget`
 
-We use a JS macro to get tags of current tiddler:
+We use a filter to get tags of current tiddler:
 
 # filter tags of currentTiddler with `$:/tags/Ontology` tag
 # filter their fields that point to an ontology plugin tiddler
 # get JSONSchema definition fragment from the ontology plugin tiddler
 # put fragments together to make a form Schema string, return to the filter caller
+
+And we pass the form Schema string to the react-jsonschema-form, it will generate a form for us automatically. As you can see, this is a ReactJS component, so we rely on [[$:/plugins/linonetwo/tw-react]] plugin to make it works.
 
 !!! Developer Tool part
 
