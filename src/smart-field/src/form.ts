@@ -21,7 +21,8 @@ class FormWidget extends Widget {
     const formData = $tw.wiki.getTiddler(currentTiddler)?.fields ?? {};
     /** Found "form tags" of the current tiddler, we will read their fields to get fields that will show up in our user's tiddler. */
     const formTagsFilter: string = `${currentTiddler} +[tags[]tag[$:/tags/Ontology/Form]]`;
-    const formTags: string[] = $tw.wiki.compileFilter(formTagsFilter)();
+    // run filter to get tags. If !currentTiddler, then there will be filter error, we skip the filter run.
+    const formTags: string[] = !!currentTiddler ? $tw.wiki.compileFilter(formTagsFilter)() : [];
     // prepare ontology names we need to find
     /**
      * Fields that will show in user's tiddler, and each field's ontology name.
@@ -78,7 +79,7 @@ class FormWidget extends Widget {
     }, DEBOUNCE_DELAY);
     return {
       schema,
-      formData,
+      formData: formFieldsAndOntologies.length > 0 ? formData : {},
       children: null,
       onChange: debouncedOnChange,
       // onSubmit: log('submitted'),
