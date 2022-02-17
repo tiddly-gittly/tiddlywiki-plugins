@@ -2,12 +2,14 @@ import { withTheme, IChangeEvent } from '@rjsf/core';
 import { Theme as Mui5Theme } from '@rjsf/material-ui';
 import type { JSONSchema6 } from 'json-schema';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import { ITiddlerFields } from 'tiddlywiki';
+import type { ReactWidget } from 'tw-react';
 
 // Make modifications to the theme with your own fields and widgets
 const Form = withTheme(Mui5Theme);
 
-const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget;
+const Widget = require('$:/plugins/linonetwo/tw-react/widget.js').widget as typeof ReactWidget;
 
 const log = (type: string) => console.log.bind(console, type);
 const DEBOUNCE_DELAY = 1000;
@@ -19,7 +21,8 @@ class FormWidget extends Widget {
     const formData = $tw.wiki.getTiddler(currentTiddler)?.fields ?? {};
     /** Found "form tags" of the current tiddler, we will read their fields to get fields that will show up in our user's tiddler. */
     const formTagsFilter: string = `${currentTiddler} +[tags[]tag[$:/tags/Ontology/Form]]`;
-    const formTags: string[] = $tw.wiki.compileFilter(formTagsFilter)();
+    // run filter to get tags. If !currentTiddler, then there will be filter error, we skip the filter run.
+    const formTags: string[] = !!currentTiddler ? $tw.wiki.compileFilter(formTagsFilter)() : [];
     // prepare ontology names we need to find
     /**
      * Fields that will show in user's tiddler, and each field's ontology name.
@@ -69,14 +72,14 @@ class FormWidget extends Widget {
     const debouncedOnChange = debounce((data: IChangeEvent) => {
       const prevFields = $tw.wiki.getTiddler(currentTiddler)?.fields ?? ({} as ITiddlerFields);
       // prevent useless call to addTiddler
-      if (Object.keys(data.formData).length === 0 || Object.keys(data.formData).every((key) => prevFields[key] === data.formData[key])) {
+      if (Object.keys(data.formData).length === 0 || isEqual(data.formData, prevFields)) {
         return;
       }
       $tw.wiki.addTiddler({ ...prevFields, ...data.formData });
     }, DEBOUNCE_DELAY);
     return {
       schema,
-      // formData,
+      formData: formFieldsAndOntologies.length > 0 ? formData : {},
       children: null,
       onChange: debouncedOnChange,
       // onSubmit: log('submitted'),

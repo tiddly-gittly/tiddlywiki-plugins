@@ -5,12 +5,16 @@ type: text/vnd.tiddlywiki
 
 Adding `$:/tags/Ontology/Form` to your tiddler means this tiddler, when used as a tag, will provide a form for your tagged tiddler.
 
+Fields are defined with `properties.xxx: ontologyName` fields, it will define the `xxx` field for the tiddler, and field type is defined in the `ontologyName`.
+
 !! Example
 
-We will look for fields like `properties.xxx`, they describes what field found will show up in our user's tiddler.
+This plugin will look for fields like `properties.xxx`, they describes what field found will show up in our user's tiddler.
 
 ```tid
 tags: $:/tags/Ontology/Form
 properties.favoritePhoneBrand: sfeo
 properties.phoneNumber: sfeo
 ```
+
+The `sfeo` in the example is an `ontologyName`, see [[$:/plugins/linonetwo/smart-field/ontologyDeveloper]] for how ontology works.
