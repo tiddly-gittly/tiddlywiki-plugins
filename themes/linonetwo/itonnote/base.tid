@@ -431,3 +431,8 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
   filter: alpha(opacity=100);
   opacity: 1;
 }
+
+/** fix https://github.com/Jermolene/TiddlyWiki5/discussions/5821 */
+video::-webkit-media-controls-timeline {
+  width: 200px;
+}
