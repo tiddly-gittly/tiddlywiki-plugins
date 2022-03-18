@@ -17,7 +17,7 @@
       this.parentDomNode = parent;
       this.computeAttributes();
       const importButton = this.document.createElement('button');
-      importButton.classList.add('tc-btn-invisible');
+      $tw.utils.addClass(importButton, 'tc-btn-invisible');
       importButton.innerHTML = `${$tw.wiki.getTiddlerText(
         '$:/plugins/linonetwo/zx-script/zx-icon',
       )}<span class="tc-btn-text tc-button-zx-script-caption">${$tw.wiki.getTiddlerText('$:/plugins/linonetwo/zx-script/zx-button-caption')}</span>`;
