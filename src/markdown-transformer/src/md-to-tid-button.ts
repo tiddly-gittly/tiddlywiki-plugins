@@ -18,7 +18,7 @@ class MdToTidButtonWidget extends Widget {
     this.parentDomNode = parent;
     this.computeAttributes();
     const transformButton = this.document.createElement('button');
-    transformButton.classList.add('tc-btn-invisible');
+    $tw.utils.addClass(transformButton, 'tc-btn-invisible');
     transformButton.innerHTML = `${$tw.wiki.getTiddlerText(
       '$:/plugins/linonetwo/markdown-transformer/md-to-tid-button-icon',
     )}<span class="tc-btn-text tc-button-md-to-tid-button-caption">${$tw.wiki.getTiddlerText(
