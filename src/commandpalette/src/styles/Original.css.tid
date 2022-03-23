@@ -39,9 +39,11 @@ type: text/vnd.tiddlywiki
     background: <<colour background>>;
     opacity: 0;
     filter: contrast(130%);
-  min-width: 200px !important;
-  transition: all {{$:/config/AnimationDuration}}ms;
-  pointer-events: none;
+    min-width: 200px !important;
+    transition: all {{$:/config/AnimationDuration}}ms;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255,255,255,0.6);
 }
 .commandpalette input {
     border: 0;
