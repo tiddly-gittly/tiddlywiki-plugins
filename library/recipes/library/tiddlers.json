@@ -57,7 +57,7 @@
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.3.8",
+        "version": "0.3.9",
         "list": "readme description ControlPanel",
         "dependents": "$:/plugins/bimlas/locator",
         "type": "application/json",
@@ -65,17 +65,17 @@
         "requires-reload": "yes"
     },
     {
-        "title": "$:/plugins/linonetwo/sidebar-multitabs",
-        "name": "",
-        "description": "Simultaneously show multiple tabs on sidebar vertically (VSCode style), drag to resize height. 在侧边栏同时展示多个垂直的标签（VSCode风格），拖动可以调整高度。",
+        "title": "$:/plugins/linonetwo/markdown-transformer",
+        "name": "Markdown Transformer",
+        "description": "Generate wikitext from markdown file, help you migrate your markdown to wikitext.",
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.1.1",
+        "version": "0.1.0",
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Background\n\n[[Background in Chinese|https://github.com/tiddly-gittly/tiddlywiki-plugins/discussions/33]]\n\n!! Basic Usage\n\n\n!! Credit\n\nThis project's resize code is based on the [[Gk0Wk/sidebar-resizer|https://github.com/Gk0Wk/TiddlySeq/blob/a778affe27d02f4628d4229588281c7d08f930ca/plugins/Gk0Wk/sidebar-resizer/hook.js]].\n",
+        "readme": "!! Background\n\n[[Web-clipper|https://github.com/webclipper/web-clipper/]] only provides the markdown output, and markdown don't have block level editor [[section-editor|https://github.com/kookma/TW-Section]] support. So we need a way to convert markdown to tiddlywiki's wikitext.\n\n!! Basic Usage\n\n!!! Button on markdown Tiddler Type\n\nIf you add filetype `text/x-markdown` to your tiddler, there will be a view toolbar icon show up, which will help you transform markdown to tiddlywiki on clicked.\n\n!! TODO\n\nWe use [[Unifiedjs|https://github.com/unifiedjs/unified]]'s [[mdast-util-from-markdown|https://github.com/syntax-tree/mdast-util-from-markdown]] to parse md, and use modified version of [[mdast-util-to-markdown|https://github.com/syntax-tree/mdast-util-to-markdown]] to generate tid file. If someday we have a tid parser that generate unified AST, we might be able to generate md file from tid.\n\n!! Developer\n\nThis project is based on the [[tiddly-gittly/md-to-tid|https://github.com/tiddly-gittly/md-to-tid]], you might want to take a look and give it a star.\n",
         "requires-reload": "yes"
     },
     {
