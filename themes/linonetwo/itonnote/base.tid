@@ -304,13 +304,13 @@ a.tc-tiddlylink.tc-tiddlylink-resolves.tc-plugin-info.tc-popup-handle.tc-popup-a
   z-index: 100;
 }
 
-@media (min-width: 960px) {
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
 	.tc-sidebar-scrollable {
 	  padding: 40px 10px 0px 15px;
 	}
 }
 
-@media (max-width: 960px) {
+@media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
 	.tc-sidebar-header {
 	  margin-top: 20px;
 	}
@@ -350,7 +350,7 @@ a.tc-tiddlylink.tc-tiddlylink-resolves.tc-plugin-info.tc-popup-handle.tc-popup-a
 	卡片流
 */
 
-@media (min-width: 960px) {
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
 	.tc-story-river {
 	  padding: 10px 10px 0px 10px;
 	}
@@ -360,7 +360,7 @@ a.tc-tiddlylink.tc-tiddlylink-resolves.tc-plugin-info.tc-popup-handle.tc-popup-a
 	宽屏时隐藏顶部 MenuBar
 */
 
-@media (min-width: 960px) {
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
 	nav.tc-menubar {
 	display: none !important;
 	}
@@ -438,4 +438,14 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
 /** fix https://github.com/Jermolene/TiddlyWiki5/discussions/5821 */
 video::-webkit-media-controls-timeline {
   width: 200px;
+}
+
+/** Sidebar on mobile, make it sidebar instead of top bar */
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+  .tc-sidebar-scrollable {
+    height: 100vh;
+    z-index: 1000;
+    position: fixed;
+    background: <<colour page-background>>;
+  }
 }
