@@ -161,7 +161,6 @@ button.tc-unfold-banner {
   border: none;
   width: 100%;
   width: calc(100% + 2px);
-  margin-left: -43px;
   text-align: center;
   border-top: 2px solid #f8f8f8;
   margin-top: 4px;
