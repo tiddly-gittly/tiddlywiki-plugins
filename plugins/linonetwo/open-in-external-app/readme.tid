@@ -9,6 +9,8 @@ Note that if you use this to open a `.tid` or `.md` file, and edit it, things wo
 
 !! Message usage
 
+You can use `param` or `$param` to passing the parameter. Or use `title` in `tm-open-in-external-app` and `filePath` in `tm-open-path`.
+
 !!! tm-open-in-external-app
 
 ```tw5
@@ -18,7 +20,7 @@ Note that if you use this to open a `.tid` or `.md` file, and edit it, things wo
 ```tw5
 <$button>
   <$action-sendmessage $message="tm-open-in-external-app" title="SomePDFTiddlerTitle" />
-  Open that PDF
+  Open that PDF with tiddler title
 </$button>
 ```
 
@@ -34,14 +36,14 @@ Or use relative path from the current wiki folder (that contains the `tiddlers` 
 
 ```tw5
 <$button>
-  <$action-sendmessage $message="tm-open-path" title="tiddlers/File/relative/Path/from/Wiki/Folder" />
-  Open that PDF
+  <$action-sendmessage $message="tm-open-path" filePath="tiddlers/File/relative/Path/from/Wiki/Folder" />
+  Open that PDF with filePath
 </$button>
 ```
 
 Try this to open the info file:
 
 <$button>
-  <$action-sendmessage $message="tm-open-path" title="tiddlywiki.info" />
+  <$action-sendmessage $message="tm-open-path" filePath="tiddlywiki.info" />
   Open tiddlywiki.info
 </$button>
