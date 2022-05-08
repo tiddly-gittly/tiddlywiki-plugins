@@ -75,9 +75,9 @@ var assetList = [
         "requires-reload": "yes"
     },
     {
-        "title": "$:/plugins/linonetwo/markdown-transformer",
-        "name": "Markdown Transformer (md2tid)",
-        "description": "Generate wikitext from markdown file, help you migrate your md to tid wikitext.",
+        "title": "$:/plugins/linonetwo/sidebar-multitabs",
+        "name": "",
+        "description": "Simultaneously show multiple tabs on sidebar vertically (VSCode style), drag to resize height. 在侧边栏同时展示多个垂直的标签（VSCode风格），拖动可以调整高度。",
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
@@ -85,7 +85,7 @@ var assetList = [
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Background\n\n[[Web-clipper|https://github.com/webclipper/web-clipper/]] only provides the markdown output, and markdown don't have block level editor [[section-editor|https://github.com/kookma/TW-Section]] support. So we need a way to convert markdown to tiddlywiki's wikitext.\n\n!! Basic Usage\n\n!!! Button on markdown Tiddler Type\n\nIf you add filetype `text/x-markdown` to your tiddler, there will be a view toolbar icon show up, which will help you transform markdown to tiddlywiki on clicked.\n\n!! TODO\n\nWe use [[Unifiedjs|https://github.com/unifiedjs/unified]]'s [[mdast-util-from-markdown|https://github.com/syntax-tree/mdast-util-from-markdown]] to parse md, and use modified version of [[mdast-util-to-markdown|https://github.com/syntax-tree/mdast-util-to-markdown]] to generate tid file. If someday we have a tid parser that generate unified AST, we might be able to generate md file from tid.\n\n!! Developer\n\nThis project is based on the [[tiddly-gittly/md-to-tid|https://github.com/tiddly-gittly/md-to-tid]], you might want to take a look and give it a star.\n",
+        "readme": "!! Background\n\n[[Background in Chinese|https://github.com/tiddly-gittly/tiddlywiki-plugins/discussions/33]]\n\n!! Basic Usage\n\n\n!! Credit\n\nThis project's resize code is based on the [[Gk0Wk/sidebar-resizer|https://github.com/Gk0Wk/TiddlySeq/blob/a778affe27d02f4628d4229588281c7d08f930ca/plugins/Gk0Wk/sidebar-resizer/hook.js]].\n",
         "requires-reload": "yes"
     },
     {
@@ -95,11 +95,11 @@ var assetList = [
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Basic Usage\n\nAfter you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.\n\nNote that if you use this to open a `.tid` or `.md` file, and edit it, things won't change in the wiki, because the tiddlywiki currently doesn't reload changed files from the disk.\n\n!! Message usage\n\n!!! tm-open-in-external-app\n\n```tw5\n<$button message=\"tm-open-in-external-app\" param=\"SomePDFTiddlerTitle\">Open that PDF</$button>\n```\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-in-external-app\" title=\"SomePDFTiddlerTitle\" />\n  Open that PDF\n</$button>\n```\n\n!!! tm-open-path\n\nYou can use absolute path:\n\n```tw5\n<$button message=\"tm-open-path\" param=\"SomePDF/File/Absolute/Path\">Open that PDF</$button>\n```\n\nOr use relative path from the current wiki folder (that contains the `tiddlers` folder and `tiddler.info` file).\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" title=\"tiddlers/File/relative/Path/from/Wiki/Folder\" />\n  Open that PDF\n</$button>\n```\n\nTry this to open the info file:\n\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" title=\"tiddlywiki.info\" />\n  Open tiddlywiki.info\n</$button>\n",
+        "readme": "!! Basic Usage\n\nAfter you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.\n\nNote that if you use this to open a `.tid` or `.md` file, and edit it, things won't change in the wiki, because the tiddlywiki currently doesn't reload changed files from the disk.\n\n!! Message usage\n\nYou can use `param` or `$param` to passing the parameter. Or use `title` in `tm-open-in-external-app` and `filePath` in `tm-open-path`.\n\n!!! tm-open-in-external-app\n\n```tw5\n<$button message=\"tm-open-in-external-app\" param=\"SomePDFTiddlerTitle\">Open that PDF</$button>\n```\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-in-external-app\" title=\"SomePDFTiddlerTitle\" />\n  Open that PDF with tiddler title\n</$button>\n```\n\n!!! tm-open-path\n\nYou can use absolute path:\n\n```tw5\n<$button message=\"tm-open-path\" param=\"SomePDF/File/Absolute/Path\">Open that PDF</$button>\n```\n\nOr use relative path from the current wiki folder (that contains the `tiddlers` folder and `tiddler.info` file).\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" filePath=\"tiddlers/File/relative/Path/from/Wiki/Folder\" />\n  Open that PDF with filePath\n</$button>\n```\n\nTry this to open the info file:\n\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" filePath=\"tiddlywiki.info\" />\n  Open tiddlywiki.info\n</$button>\n",
         "requires-reload": "yes"
     },
     {
