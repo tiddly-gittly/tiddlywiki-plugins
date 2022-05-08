@@ -9,6 +9,8 @@ Note that if you use this to open a `.tid` or `.md` file, and edit it, things wo
 
 !! Message usage
 
+!!! tm-open-in-external-app
+
 ```tw5
 <$button message="tm-open-in-external-app" param="SomePDFTiddlerTitle">Open that PDF</$button>
 ```
@@ -19,3 +21,27 @@ Note that if you use this to open a `.tid` or `.md` file, and edit it, things wo
   Open that PDF
 </$button>
 ```
+
+!!! tm-open-path
+
+You can use absolute path:
+
+```tw5
+<$button message="tm-open-path" param="SomePDF/File/Absolute/Path">Open that PDF</$button>
+```
+
+Or use relative path from the current wiki folder (that contains the `tiddlers` folder and `tiddler.info` file).
+
+```tw5
+<$button>
+  <$action-sendmessage $message="tm-open-path" title="tiddlers/File/relative/Path/from/Wiki/Folder" />
+  Open that PDF
+</$button>
+```
+
+Try this to open the info file:
+
+<$button>
+  <$action-sendmessage $message="tm-open-path" title="tiddlywiki.info" />
+  Open tiddlywiki.info
+</$button>
