@@ -448,3 +448,7 @@ video::-webkit-media-controls-timeline {
     background: <<colour page-background>>;
   }
 }
+/** fix z-index */
+.tc-modal-wrapper {
+  z-index: 1400;
+}
