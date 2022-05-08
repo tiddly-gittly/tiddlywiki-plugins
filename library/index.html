@@ -95,11 +95,11 @@ var assetList = [
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.0.2",
+        "version": "0.0.3",
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Basic Usage\n\nAfter you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.\n\nNote that if you use this to open a `.tid` or `.md` file, and edit it, things won't change in the wiki, because the tiddlywiki currently doesn't reload changed files from the disk.\n\n!! Message usage\n\n```tw5\n<$button message=\"tm-open-in-external-app\" param=\"SomePDFTiddlerTitle\">Open that PDF</$button>\n```\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-in-external-app\" title=\"SomePDFTiddlerTitle\" />\n  Open that PDF\n</$button>\n```\n",
+        "readme": "!! Basic Usage\n\nAfter you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.\n\nNote that if you use this to open a `.tid` or `.md` file, and edit it, things won't change in the wiki, because the tiddlywiki currently doesn't reload changed files from the disk.\n\n!! Message usage\n\n!!! tm-open-in-external-app\n\n```tw5\n<$button message=\"tm-open-in-external-app\" param=\"SomePDFTiddlerTitle\">Open that PDF</$button>\n```\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-in-external-app\" title=\"SomePDFTiddlerTitle\" />\n  Open that PDF\n</$button>\n```\n\n!!! tm-open-path\n\nYou can use absolute path:\n\n```tw5\n<$button message=\"tm-open-path\" param=\"SomePDF/File/Absolute/Path\">Open that PDF</$button>\n```\n\nOr use relative path from the current wiki folder (that contains the `tiddlers` folder and `tiddler.info` file).\n\n```tw5\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" title=\"tiddlers/File/relative/Path/from/Wiki/Folder\" />\n  Open that PDF\n</$button>\n```\n\nTry this to open the info file:\n\n<$button>\n  <$action-sendmessage $message=\"tm-open-path\" title=\"tiddlywiki.info\" />\n  Open tiddlywiki.info\n</$button>\n",
         "requires-reload": "yes"
     },
     {
