@@ -6,7 +6,7 @@
       // [::1] is the IPv6 localhost address.
       window.location.hostname === '[::1]' ||
       // 127.0.0.0/8 are considered localhost for IPv4.
-      window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+      window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/),
   );
 
   function register(config) {
@@ -21,10 +21,7 @@
           // Add some additional logging to localhost, pointing developers to the
           // service worker/PWA documentation.
           navigator.serviceWorker.ready.then(() => {
-            console.log(
-              'This web app is being served cache-first by a service ' +
-                'worker. To learn more, visit https://bit.ly/CRA-PWA'
-            );
+            console.log('This web app is being served cache-first by a service ' + 'worker. To learn more, visit https://bit.ly/CRA-PWA');
           });
         } else {
           // Is not localhost. Just register service worker
@@ -39,15 +36,15 @@
     navigator.serviceWorker
       .register(swUrl)
       .then((registration) => {
-        console.log('Service worker is speeding up this wiki.')
-        registration.onupdatefound = () => {
+        console.log('Service worker is speeding up this wiki.');
+        registration.addEventListener('updatefound', () => {
           console.log('New content is found, prepare to fetch', registration);
           const installingWorker = registration.installing;
           if (installingWorker == null) {
             return;
           }
-          installingWorker.onstatechange = () => {
-            if (installingWorker.state === 'installed') {
+          installingWorker.addEventListener('statechange', (event) => {
+            if (event.target.state === 'installed') {
               if (navigator.serviceWorker.controller) {
                 // At this point, the updated precached content has been fetched,
                 // but normally the previous service worker will still serve the older
@@ -71,8 +68,8 @@
                 }
               }
             }
-          };
-        };
+          });
+        });
       })
       .catch((error) => {
         console.error('Error during service worker registration:', error);
@@ -118,12 +115,11 @@
 
   function informUserToReloadToGetLatestContent() {
     const body = document.querySelector('body');
-    const infoElement = document.createElement('div');
+    const existingFooter = document.querySelector('footer');
+    const infoElement = existingFooter ? document.createElement('footer') : document.createElement('div');
     infoElement.className = 'ask-user-reload';
     infoElement.innerHTML =
-      navigator.language === 'zh-CN'
-        ? '新内容已准备好，点击此处刷新页面更新到新版。'
-        : 'New content available. Click here to Refresh this page to get update.';
+      navigator.language === 'zh-CN' ? '新内容已准备好，点击此处刷新页面更新到新版。' : 'New content available. Click here to Refresh this page to get update.';
     infoElement.onclick = () => location.reload();
     infoElement.onKeyDown = () => location.reload();
     infoElement.tabindex = 1;
