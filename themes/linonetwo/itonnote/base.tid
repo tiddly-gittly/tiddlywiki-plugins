@@ -440,12 +440,17 @@ video::-webkit-media-controls-timeline {
 }
 
 /** Sidebar on mobile, make it sidebar instead of top bar */
-@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+@media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
   .tc-sidebar-scrollable {
     height: 100vh;
     z-index: 1000;
     position: fixed;
     background: <<colour page-background>>;
+  }
+  /** make close sidebar button bigger */
+  .tc-topbar.tc-topbar-right > button.tc-hide-sidebar-btn {
+    width: 2em;
+    height: 2em;
   }
 }
 /** fix z-index */
