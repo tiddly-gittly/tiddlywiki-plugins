@@ -7,8 +7,9 @@
       if (!element.className || !element.className.toLowerCase) return false;
     }
     const isTextEditor = element.className.toLowerCase().includes('codemirror');
+    const isSlateEditor = element.dataset.slateEditor || element.dataset.slateNode || element.dataset.slateLeaf || element.dataset.slateString
 
-    return isEditableElement || isTextEditor;
+    return isEditableElement || isTextEditor || isSlateEditor;
   }
   // if we start selection on editor, we prevent the following execution of this script
   let copyOnSelectPreventNextCopy = false;
