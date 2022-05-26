@@ -300,7 +300,7 @@ a.tc-tiddlylink.tc-tiddlylink-resolves.tc-plugin-info.tc-popup-handle.tc-popup-a
 
 /** 顶栏 */
 .tc-topbar {
-  z-index: 100;
+  z-index: 1001;
 }
 
 @media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
