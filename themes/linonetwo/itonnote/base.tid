@@ -457,3 +457,7 @@ video::-webkit-media-controls-timeline {
 .tc-modal-wrapper {
   z-index: 1400;
 }
+/** fix tag on top of dropdown */
+.tc-tag-list-item {
+  z-index: -1;
+}
