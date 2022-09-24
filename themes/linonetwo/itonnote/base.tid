@@ -49,9 +49,13 @@ div.cm-code-block-line:hover, div.latex:hover {
   --menubar-height: 29px;
 }
 
-.tc-tiddler-title {
+div.tc-tiddler-title {
   background: <<colour tiddler-title-background>>;
   backdrop-filter: blur(10px);
+  /** fix tag on top of dropdown */
+  top: 0px;
+  z-index: 1;
+  position: relative;
   /** fix menubar with sticky title https://github.com/Jermolene/TiddlyWiki5/issues/4471#issuecomment-594456486*/
   top: var(--menubar-height);
 }
@@ -417,6 +421,10 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
   background-color: transparent;
 }
 
+.tc-titlebar {
+  display: flex;
+  flex-direction: column-reverse;
+}
 /**
 * Hide toolbar buttons if not hover
 * Disable this effect on Tiddloid mobile, otherwise it will be hard to find the button
@@ -456,8 +464,4 @@ video::-webkit-media-controls-timeline {
 /** fix z-index */
 .tc-modal-wrapper {
   z-index: 1400;
-}
-/** fix tag on top of dropdown */
-.tc-tag-list-item {
-  z-index: -1;
 }

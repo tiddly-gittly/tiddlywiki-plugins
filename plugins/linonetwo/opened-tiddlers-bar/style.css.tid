@@ -64,10 +64,6 @@ section.story-backdrop button.tc-tab:nth-child(2) {
 div.tc-page-container {
   margin-top: 30px;
 }
-
-div.tc-tiddler-title {
-  top: 24px;
-}
 div.tc-editor-toolbar {
   top: calc(35px + 24px);
 }
