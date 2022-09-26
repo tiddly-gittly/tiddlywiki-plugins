@@ -421,10 +421,6 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
   background-color: transparent;
 }
 
-.tc-titlebar {
-  display: flex;
-  flex-direction: column-reverse;
-}
 /**
 * Hide toolbar buttons if not hover
 * Disable this effect on Tiddloid mobile, otherwise it will be hard to find the button
