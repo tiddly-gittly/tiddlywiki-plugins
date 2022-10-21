@@ -1,3 +1,4 @@
+import uniq from 'lodash/uniq';
 import debounce from 'lodash/debounce';
 
 const Widget = require('$:/core/modules/widgets/widget.js').widget;
@@ -21,6 +22,19 @@ export interface IAction extends IResult {
 export interface ITrigger extends IResult {
   trigger: string;
   text: string;
+}
+
+/**
+ * The data stored in the searchStepsPath , are filter templates for default searcher. caret means where to put the terms, usually inside the filter like `search[${here}]`
+ * filterFallback means the filter to use when pinyinfuse not installed
+ */
+export interface IRawSearchStep {
+  steps: Array<{ caret: string; filter: string; caretFallback: string; filterFallback: string; hint: string }>;
+}
+export interface ISearchStep {
+  caret: number;
+  filter: string;
+  hint: string;
 }
 
 export interface ITiddler {
@@ -91,7 +105,10 @@ class CommandPaletteWidget extends Widget {
 
   /** current item's click/enter handler function */
   private currentResolver: (e: AllPossibleEvent) => void = () => {};
+  /** basically means defaultProvider */
   private currentProvider: (input: string) => void = () => {};
+
+  private searchSteps: Array<(term: string) => IResult[]> = [];
 
   /**
    * Fix IME issue in https://segmentfault.com/a/1190000012490380
@@ -201,7 +218,7 @@ class CommandPaletteWidget extends Widget {
 
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'tiddler' implicitly has an 'any' type.
   hasTag(tiddler, tag) {
-    return $tw.wiki.getTiddler(tiddler).fields.tags.includes(tag);
+    return !!$tw.wiki.getTiddler(tiddler)?.fields?.tags?.includes(tag);
   }
 
   refreshCommands() {
@@ -226,7 +243,9 @@ class CommandPaletteWidget extends Widget {
           '选择一个条目来添加标签',
           '选择一个标签来添加 (⇧⏎ 可以多次添加)',
           (tiddler: string, terms: string): string[] =>
-            $tw.wiki.filterTiddlers(`[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
+            $tw.wiki.filterTiddlers(
+              `[!is[system]tags[]] [is[system]tags[]] -[[${tiddler}]tags[]] +[${$tw.utils.pinyinfuse ? 'pinyinfuse' : 'search'}[${terms}]]`,
+            ),
           true,
           'tm-add-tag',
         ),
@@ -241,7 +260,8 @@ class CommandPaletteWidget extends Widget {
           '选择一个条目来去除标签',
           '选择一个标签来去除 (⇧⏎ 可以去除多次)',
 
-          (tiddler: string, terms: string): string[] => $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[pinyinfuse[${terms}]]`),
+          (tiddler: string, terms: string): string[] =>
+            $tw.wiki.filterTiddlers(`[[${tiddler}]tags[]] +[${$tw.utils.pinyinfuse ? 'pinyinfuse' : 'search'}[${terms}]]`),
           false,
           'tm-remove-tag',
         ),
@@ -400,7 +420,7 @@ class CommandPaletteWidget extends Widget {
     this.currentSelection = 0;
     let search = this.input.value.substr(url.length);
 
-    let tiddlers = $tw.wiki.filterTiddlers(`[removeprefix[${url}]splitbefore[/]sort[]pinyinfuse[${search}]]`);
+    let tiddlers = $tw.wiki.filterTiddlers(`[removeprefix[${url}]splitbefore[/]sort[]${$tw.utils.pinyinfuse ? 'pinyinfuse' : 'search'}[${search}]]`);
     let folders = [];
     let files = [];
     for (let tiddler of tiddlers) {
@@ -477,7 +497,7 @@ class CommandPaletteWidget extends Widget {
     this.parentDomNode = parent;
     this.execute();
     if ($tw.utils.pinyinfuse === undefined) {
-      throw new Error('需要安装 linonetwo/pinyin-fuzzy-search 插件以获得模糊搜索和拼音搜索的能力');
+      console.warn('需要安装 linonetwo/pinyin-fuzzy-search 插件以获得模糊搜索和拼音搜索的能力');
     }
 
     this.history = $tw.wiki.getTiddlerData(this.commandHistoryPath, { history: [] }).history;
@@ -593,11 +613,15 @@ class CommandPaletteWidget extends Widget {
 
   refreshSearchSteps() {
     this.searchSteps = [];
-
-    let steps = $tw.wiki.getTiddlerData(this.searchStepsPath);
-    steps = steps.steps;
+    const steps = $tw.wiki.getTiddlerData<IRawSearchStep>(this.searchStepsPath).steps;
     for (let step of steps) {
-      this.searchSteps.push(this.searchStepBuilder(step.filter, step.caret, step.hint));
+      this.searchSteps.push(
+        this.searchStepBuilder(
+          $tw.utils.pinyinfuse ? step.filter : step.filterFallback,
+          Number($tw.utils.pinyinfuse ? step.caret : step.caretFallback),
+          step.hint,
+        ),
+      );
     }
   }
 
@@ -613,7 +637,7 @@ class CommandPaletteWidget extends Widget {
     // we have history list in palette by default, if we have showHistoryOnOpen === true
     // TODO: handle this if !showHistoryOnOpen
     if (!this.isOpened) {
-      this.openPalette(event);
+      this.openPalette(event, undefined);
     }
 
     this.onKeyDown(
@@ -654,7 +678,6 @@ class CommandPaletteWidget extends Widget {
       } else {
         results = this.getHistory();
       }
-      // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'r' implicitly has an 'any' type.
       results = results.map((r) => {
         return { name: r };
       });
@@ -715,6 +738,8 @@ class CommandPaletteWidget extends Widget {
     this.openPalette(event, selection);
   }
   openPalette(e: AllPossibleEvent, selection?: string) {
+    // call currentProvider first to ask currentProvider load latest history. Otherwise it will load history after open, which will show old one and refresh.
+      this.currentProvider('');
     this.isOpened = true;
     this.allowInputFieldSelection = false;
     this.goBack = undefined;
@@ -737,7 +762,7 @@ class CommandPaletteWidget extends Widget {
     this.onInput(this.input.value); //Trigger results on open
     this.div.style.display = 'flex';
     this.mask.style.opacity = '0.6';
-    this.input.focus();
+    // this.input.focus();
   }
 
   insertSelectedResult() {
@@ -880,7 +905,11 @@ class CommandPaletteWidget extends Widget {
       if (terms.length === 0) {
         results = this.getHistory();
       } else {
-        results = $tw.utils.pinyinfuse(this.getHistory(), terms).map((item: { item: string }) => item.item);
+        if ($tw.utils.pinyinfuse) {
+          results = $tw.utils.pinyinfuse(this.getHistory(), terms).map((item: { item: string }) => item.item);
+        } else {
+          results = this.getHistory().filter((item) => item.toLowerCase().includes(terms));
+        }
       }
       this.showResults(
         results.map((title) => {
@@ -942,22 +971,19 @@ class CommandPaletteWidget extends Widget {
   }
 
   getHistory(): string[] {
-    // TODO: what is the type here?
-
-    let history: string[] | undefined = $tw.wiki.getTiddlerData('$:/HistoryList');
-    if (history === undefined) {
-      history = [];
-    }
-
-    history = [...history.reverse().map((x) => x.title), ...$tw.wiki.filterTiddlers('[list[$:/StoryList]]')];
-    return Array.from(new Set(history.filter((t) => this.tiddlerOrShadowExists(t))));
+    const historyData = $tw.wiki.getTiddlerData<Array<{ title: string }>>('$:/HistoryList') ?? [];
+    const [first, second, ...rest] = uniq([...historyData.reverse().map((x) => x.title), ...$tw.wiki.filterTiddlers('[list[$:/StoryList]]')]).filter((t) =>
+      this.tiddlerOrShadowExists(t),
+    );
+    // swap first and second, so its easier to switch to second, like using ctrl + tab in vscode
+    return [second, first, ...rest];
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'title' implicitly has an 'any' type.
-  tiddlerOrShadowExists(title) {
+  tiddlerOrShadowExists(title: string) {
     return $tw.wiki.tiddlerExists(title) || $tw.wiki.isShadowTiddler(title);
   }
 
+  /** This is opened when you click on the menu icon. */
   defaultProvider(terms: string) {
     this.hint.innerText = '⏎搜索条目（⇧⏎ 创建条目）（？问号查看帮助）';
     let searches: IResult[];
@@ -971,16 +997,14 @@ class CommandPaletteWidget extends Widget {
         searches = [];
       }
     } else {
-      searches = this.searchSteps.reduce((a, c) => [...a, ...c(terms)], []);
-      searches = Array.from(new Set(searches));
+      searches = uniq(this.searchSteps.reduce((acc: IResult[], current) => [...acc, ...current(terms)], []));
     }
     this.showResults(searches);
   }
 
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'filter' implicitly has an 'any' type.
-  searchStepBuilder(filter, caret, hint) {
+  searchStepBuilder(filter: string, caret: number, hint: string): (term: string) => IResult[] {
     return (terms: string) => {
-      let search = filter.substr(0, caret) + terms + filter.substr(caret);
+      let search = filter.substring(0, caret) + terms + filter.substring(caret);
 
       let results = $tw.wiki.filterTiddlers(search).map((s) => {
         return { name: s, hint: hint };
@@ -997,10 +1021,11 @@ class CommandPaletteWidget extends Widget {
       searches = $tw.wiki.filterTiddlers('[!is[system]tags[]][is[system]tags[]][all[shadows]tags[]]');
     } else {
       searches = $tw.wiki.filterTiddlers(
-        '[all[]tags[]!is[system]pinyinfuse[' + terms + ']][all[]tags[]is[system]pinyinfuse[' + terms + ']][all[shadows]tags[]pinyinfuse[' + terms + ']]',
+        $tw.utils.pinyinfuse
+          ? `[all[]tags[]!is[system]pinyinfuse[${terms}]][all[]tags[]is[system]pinyinfuse[${terms}]][all[shadows]tags[]pinyinfuse[${terms}]]`
+          : `[all[]tags[]!is[system]search[${terms}]][all[]tags[]is[system]search[${terms}]][all[shadows]tags[]search[${terms}]]`,
       );
     }
-    // @ts-expect-error ts-migrate(7006) FIXME: Parameter 's' implicitly has an 'any' type.
     searches = searches.map((s) => {
       return { name: s };
     });
@@ -1066,8 +1091,8 @@ class CommandPaletteWidget extends Widget {
       return a + 'tag[' + c + ']';
     }, '')}]`;
     if (searchTerms.length !== 0) {
-      tagsFilter = tagsFilter.substr(0, tagsFilter.length - 1); //remove last ']'
-      tagsFilter += `pinyinfuse[${searchTerms.join(' ')}]]`;
+      tagsFilter = tagsFilter.substring(0, tagsFilter.length - 1); //remove last ']'
+      tagsFilter += `${$tw.utils.pinyinfuse ? 'pinyinfuse' : 'search'}[${searchTerms.join(' ')}]]`;
     }
     return { tags, searchTerms, tagsFilter };
   }
@@ -1238,14 +1263,20 @@ class CommandPaletteWidget extends Widget {
       results = this.getCommandHistory();
     } else {
       /**
-       * {
+       * $tw.utils.pinyinfuse: (xxx) => {
               item: T;
               refIndex: number;
               score?: number | undefined;
               matches?: readonly Fuse.FuseResultMatch[] | undefined;
-          }
+          }[]
        */
-      results = $tw.utils.pinyinfuse(this.actions, terms.toLowerCase(), ['name', 'caption']).map((item) => item.item);
+      if ($tw.utils.pinyinfuse) {
+        results = $tw.utils.pinyinfuse(this.actions, terms.toLowerCase(), ['name', 'caption']).map((item: { item: string }) => item.item);
+      } else {
+        results = this.actions.filter(
+          (item) => item.name.toLowerCase().includes(terms.toLowerCase()) || item.caption?.toLowerCase()?.includes(terms.toLowerCase()),
+        );
+      }
     }
     this.showResults(results);
   }
