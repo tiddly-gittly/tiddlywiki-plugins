@@ -317,6 +317,10 @@ a.tc-tiddlylink.tc-tiddlylink-resolves.tc-plugin-info.tc-popup-handle.tc-popup-a
 	.tc-sidebar-header {
 	  margin-top: 20px;
 	}
+  /** solve collision with tc-sidebar-scrollable in mobile */
+  .tc-topbar {
+    z-index: 1002;
+  }
 }
 
 /**
@@ -423,20 +427,20 @@ textarea, input[type=text], input[type=search], input[type=""], input:not([type]
 
 /**
 * Hide toolbar buttons if not hover
-* Disable this effect on Tiddloid mobile, otherwise it will be hard to find the button
+* Disable this effect on mobile, otherwise it will be hard to find the button
 * From tb_demo_onhover-toolbar-styles
 */
-<$reveal type="nomatch" state="$:/info/url/protocol" text="content:">
-.tc-tiddler-frame .tc-titlebar button {
-  opacity: 0;
-  transition: opacity .5s ease-in-out;
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+  .tc-tiddler-frame .tc-titlebar button {
+    opacity: 0;
+    transition: opacity .5s ease-in-out;
+  }
+  .tc-tiddler-frame:hover .tc-titlebar button {
+    zoom: 1;
+    filter: alpha(opacity=100);
+    opacity: 1;
+  }
 }
-.tc-tiddler-frame:hover .tc-titlebar button {
-  zoom: 1;
-  filter: alpha(opacity=100);
-  opacity: 1;
-}
-</$reveal>
 
 /** fix https://github.com/Jermolene/TiddlyWiki5/discussions/5821 */
 video::-webkit-media-controls-timeline {
@@ -447,17 +451,34 @@ video::-webkit-media-controls-timeline {
 @media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
   .tc-sidebar-scrollable {
     height: 100vh;
-    z-index: 1000;
+    z-index: 1001;
     position: fixed;
+    overflow: auto;
+    overflow: overlay;
+    top: 0;
     background: <<colour page-background>>;
   }
   /** make close sidebar button bigger */
-  .tc-topbar.tc-topbar-right > button.tc-hide-sidebar-btn {
+  .tc-topbar.tc-topbar-right > button.tc-hide-sidebar-btn,button.tc-show-sidebar-btn {
     width: 2em;
     height: 2em;
+    box-sizing: content-box;
+    border-radius: 999px;
+  }
+  /** move sidebar close button to top right */
+  span.tc-topbar.tc-topbar-right {
+    top: 0px;
+    right: 0px;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(2px);
   }
 }
 /** fix z-index */
 .tc-modal-wrapper {
   z-index: 1400;
+}
+
+/** fix long badge on mobile */
+.dbadge > span {
+  white-space: initial;
 }
