@@ -10,17 +10,18 @@
     "build": "rollup -c && zx scripts/after-build.mjs"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^15.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-typescript": "^8.2.5",
+    "@rollup/plugin-commonjs": "^23.0.1",
+    "@rollup/plugin-json": "^5.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^9.0.1",
+    "@types/lodash": "^4.14.186",
     "@types/pinyin": "^2.10.0",
-    "rollup": "^2.27.1",
+    "rollup": "^3.2.3",
     "rollup-plugin-disable-packages": "^4.0.1",
-    "tslib": "^2.3.1",
-    "tw5-typed": "^0.0.8",
-    "typescript": "^4.4.3",
-    "zx": "^4.2.0"
+    "tslib": "^2.4.0",
+    "tw5-typed": "^0.2.9",
+    "typescript": "^4.8.4",
+    "zx": "^7.1.1"
   },
   "dependencies": {
     "fuse.js": "^6.4.6",
