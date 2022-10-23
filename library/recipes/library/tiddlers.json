@@ -3,7 +3,7 @@
         "title": "$:/plugins/linonetwo/commandpalette",
         "description": "Command palette Chinese translated",
         "author": "linonetwo",
-        "version": "0.2.3",
+        "version": "0.3.0",
         "core-version": ">=5.0.8",
         "list": "readme",
         "source": "https://github.com/tiddly-gittly/tiddlywiki-plugins",
@@ -14,15 +14,15 @@
     },
     {
         "title": "$:/plugins/linonetwo/copy-on-select",
-        "description": "Copy what you are selecting inside the wiki into the clipboard",
+        "description": "Copy what you are selecting inside the wiki into the clipboard when holding mouse for 1 second",
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
-        "version": "0.0.2",
+        "version": "0.1.0",
         "list": "readme",
         "dependents": "",
         "type": "application/json",
-        "readme": "!! 动机\n\n我已经习惯了用方便的[[Copy On Select|https://addons.mozilla.org/en-US/firefox/addon/copy-on-select]] Firefox 插件，现在到了 TiddlyWiki 里我经常还是以为选中了就复制了，然后黏贴到别的地方才发现其实并没有复制，很不习惯。\n\n所以我自己重新写了一个适配 TiddlyWiki 的选中即复制脚本。\n\n!! 用法\n\n选中编辑器、按钮等区域以外的任何文本都会直接复制。\n\n这个插件里的条件语句让它在编辑器等特殊区域内不会起作用，以免干扰「全选黏贴覆盖原有内容」等操作。\n",
+        "readme": "Copy what you are selecting inside the wiki into the clipboard when holding mouse for 1 second\n\n!! 动机 Motivation\n\n我已经习惯了用方便的[[Copy On Select|https://addons.mozilla.org/en-US/firefox/addon/copy-on-select]] Firefox 插件，现在到了 TiddlyWiki 里我经常还是以为选中了就复制了，然后黏贴到别的地方才发现其实并没有复制，很不习惯。\n\n所以我自己重新写了一个适配 TiddlyWiki 的选中即复制脚本。\n\nI've gotten used to using the handy [[Copy On Select|https://addons.mozilla.org/en-US/firefox/addon/copy-on-select]] Firefox plugin, but now in TiddlyWiki I often still think I've copied it when I select it, and then I found out that I hadn't copied it until I pasted it somewhere else, which was very uncomfortable.\n\nSo I rewrote my own copy-on-selection script for TiddlyWiki.\n\n!! 用法 Usage\n\n选中编辑器、按钮等区域以外的任何文本，并保持按住鼠标一秒，就复制选中的内容。\n\n这个插件里的条件语句让它在编辑器等特殊区域内不会起作用，以免干扰「全选黏贴覆盖原有内容」等操作。\n\nSelect any text outside the editor, buttons, etc., and hold the mouse down for a second to copy the selected content.\n\nThe conditional statement in this plugin makes it not work in special areas like the editor, so as not to interfere with operations like \"select all and paste overwrite\".\n",
         "requires-reload": "no"
     },
     {
@@ -65,9 +65,9 @@
         "requires-reload": "yes"
     },
     {
-        "title": "$:/plugins/linonetwo/sidebar-multitabs",
-        "name": "",
-        "description": "Simultaneously show multiple tabs on sidebar vertically (VSCode style), drag to resize height. 在侧边栏同时展示多个垂直的标签（VSCode风格），拖动可以调整高度。",
+        "title": "$:/plugins/linonetwo/markdown-transformer",
+        "name": "Markdown Transformer (md2tid)",
+        "description": "Generate wikitext from markdown file, help you migrate your md to tid wikitext.",
         "author": "LinOnetwo",
         "core-version": ">=5.1.22",
         "plugin-type": "plugin",
@@ -75,7 +75,7 @@
         "dependents": "",
         "list": "readme",
         "type": "application/json",
-        "readme": "!! Background\n\n[[Background in Chinese|https://github.com/tiddly-gittly/tiddlywiki-plugins/discussions/33]]\n\n!! Basic Usage\n\n\n!! Credit\n\nThis project's resize code is based on the [[Gk0Wk/sidebar-resizer|https://github.com/Gk0Wk/TiddlySeq/blob/a778affe27d02f4628d4229588281c7d08f930ca/plugins/Gk0Wk/sidebar-resizer/hook.js]].\n",
+        "readme": "!! Background\n\n[[Web-clipper|https://github.com/webclipper/web-clipper/]] only provides the markdown output, and markdown don't have block level editor [[section-editor|https://github.com/kookma/TW-Section]] support. So we need a way to convert markdown to tiddlywiki's wikitext.\n\n!! Basic Usage\n\n!!! Button on markdown Tiddler Type\n\nIf you add filetype `text/x-markdown` to your tiddler, there will be a view toolbar icon show up, which will help you transform markdown to tiddlywiki on clicked.\n\n!! TODO\n\nWe use [[Unifiedjs|https://github.com/unifiedjs/unified]]'s [[mdast-util-from-markdown|https://github.com/syntax-tree/mdast-util-from-markdown]] to parse md, and use modified version of [[mdast-util-to-markdown|https://github.com/syntax-tree/mdast-util-to-markdown]] to generate tid file. If someday we have a tid parser that generate unified AST, we might be able to generate md file from tid.\n\n!! Developer\n\nThis project is based on the [[tiddly-gittly/md-to-tid|https://github.com/tiddly-gittly/md-to-tid]], you might want to take a look and give it a star.\n",
         "requires-reload": "yes"
     },
     {
@@ -258,7 +258,7 @@
     {
         "title": "$:/themes/linonetwo/itonnote",
         "name": "ItonNote Theme",
-        "version": "0.2.6",
+        "version": "0.2.7",
         "author": "LinOnetwo",
         "core-version": ">=5.0.0",
         "plugin-type": "theme",
