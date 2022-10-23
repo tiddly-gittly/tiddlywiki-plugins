@@ -18,6 +18,13 @@
   /** 1s */
   const copyTimeout = 1;
   let copyTimeoutHandler = 0;
+
+  const cleanUp = () => {
+    copyTimeoutNotDone = true;
+    copyOnSelectPreventCopy = false;
+    clearTimeout(copyTimeoutHandler);
+  };
+
   /**
    * remove the tailing \n when copying title
    * And display a notification
@@ -46,9 +53,8 @@
 
     const copyPrevented =
       copyTimeoutNotDone || copyOnSelectPreventCopy || !elementsUnderMouse?.length || Array.from(elementsUnderMouse).some(checkIfElementIsEditor);
+    cleanUp();
     if (copyPrevented) {
-      copyOnSelectPreventNextCopy = false;
-      copyTimeoutNotDone = true;
       return;
     }
 
@@ -72,7 +78,6 @@
   });
 
   document.addEventListener('mouseup', () => {
-    copyTimeoutNotDone = true;
-    clearTimeout(copyTimeoutHandler);
+    cleanUp();
   });
 </script>
