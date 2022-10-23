@@ -15,7 +15,7 @@ jobs:
           node-version: '16'
 
       - name: Install Dependency
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Make Plugins
         run: npm run build && npm run copyToDist
       - name: Make DemoPage
