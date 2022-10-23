@@ -739,7 +739,7 @@ class CommandPaletteWidget extends Widget {
   }
   openPalette(e: AllPossibleEvent, selection?: string) {
     // call currentProvider first to ask currentProvider load latest history. Otherwise it will load history after open, which will show old one and refresh.
-      this.currentProvider('');
+    this.currentProvider('');
     this.isOpened = true;
     this.allowInputFieldSelection = false;
     this.goBack = undefined;
@@ -762,7 +762,7 @@ class CommandPaletteWidget extends Widget {
     this.onInput(this.input.value); //Trigger results on open
     this.div.style.display = 'flex';
     this.mask.style.opacity = '0.6';
-    // this.input.focus();
+    this.input.focus();
   }
 
   insertSelectedResult() {
