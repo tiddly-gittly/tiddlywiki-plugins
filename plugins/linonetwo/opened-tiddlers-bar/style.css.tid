@@ -14,6 +14,9 @@ section.story-backdrop {
   white-space: nowrap;
   overflow: -moz-scrollbars-none;
   scrollbar-width: none;
+
+  /** make it possible to drag the app using this bar in TiddlyGit */
+  -webkit-app-region: drag;
 }
 section.story-backdrop::-webkit-scrollbar {
   display: none;
@@ -26,8 +29,6 @@ section.story-backdrop > p, section.story-backdrop > p > div.tc-tab-buttons {
   background-color: white;
   backdrop-filter: blur(3px);
   background: <<colour button-background>>;
-  /** make it possible to drag the app using this bar in TiddlyGit */
-  -webkit-app-region: drag;
 }
 
 
@@ -71,3 +72,11 @@ div.tc-editor-toolbar {
 .tc-topbar-right {
   top: 18px;
 }
+
+<$reveal type="match" state="$:/state/titleBarOpened" text="no">
+/** move right a bit to avoid collision with close button on macOS when title bar hide */
+section.story-backdrop {
+  width: 100vw;
+  padding-left: 68px;
+}
+</$reveal>
