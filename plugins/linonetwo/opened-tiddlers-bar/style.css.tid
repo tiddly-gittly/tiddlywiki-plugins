@@ -73,10 +73,13 @@ div.tc-editor-toolbar {
   top: 18px;
 }
 
-<$reveal type="match" state="$:/state/titleBarOpened" text="no">
+/** when hide titlebar and hide sidebar (and on macOS, windows not tested), move bar right to avoid collision with close button on the left top of app */
 /** move right a bit to avoid collision with close button on macOS when title bar hide */
+<$reveal type="match" state="$:/state/titleBarOpened" text="no">
+<$reveal type="match" state="$:/state/sideBarOpened" text="no">
 section.story-backdrop {
   width: 100vw;
   padding-left: 68px;
 }
+</$reveal>
 </$reveal>
