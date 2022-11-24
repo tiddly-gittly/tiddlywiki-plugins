@@ -23,7 +23,7 @@ section.story-backdrop::-webkit-scrollbar {
 section.story-backdrop div.opened-tiddlers-bar div.opened-tiddlers-bar-tabs {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
 }
 /** make it possible to drag the app using this bar in TidGi, when titleBar is closed */
 <$reveal type="match" state="$:/state/titleBarOpened" text="no">
