@@ -14,10 +14,13 @@ section.story-backdrop {
   white-space: nowrap;
   overflow: -moz-scrollbars-none;
   scrollbar-width: none;
-
-  /** make it possible to drag the app using this bar in TiddlyGit */
+}
+/** make it possible to drag the app using this bar in TidGi, when titleBar is closed */
+<$reveal type="match" state="$:/state/titleBarOpened" text="no">
+div.opened-tiddlers-bar {
   -webkit-app-region: drag;
 }
+</$reveal>
 section.story-backdrop::-webkit-scrollbar {
   display: none;
 }
@@ -40,7 +43,7 @@ section.story-backdrop button {
   padding-right: 2px;
 }
 /** x button */
-section.story-backdrop button:not(.tc-tab) {
+section.story-backdrop button.opened-tiddlers-bar-close-button {
   border: none;
   border-radius: 0;
   margin: 0;
@@ -48,7 +51,8 @@ section.story-backdrop button:not(.tc-tab) {
   opacity: 0;
   background-color: transparent;
 }
-section.story-backdrop button:not(.tc-tab):hover {
+/** show x when tab is hovered */
+tc-tab-buttons:hover button.opened-tiddlers-bar-close-button {
   opacity: 1;
 }
 section.story-backdrop button.tc-tab:not(.tc-tab-selected):hover {
