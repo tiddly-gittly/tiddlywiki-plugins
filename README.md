@@ -1,6 +1,6 @@
 # plugins
 
-Plugins developed for a better [TiddlyGit](https://github.com/tiddly-gittly/TiddlyGit-Desktop).
+Plugins developed for a better [TidGi Desktop](https://github.com/tiddly-gittly/TidGi-Desktop).
 
 Release can be download at [Community Plugin Library](https://github.com/tiddly-gittly/TiddlyWiki-CPL).
 
