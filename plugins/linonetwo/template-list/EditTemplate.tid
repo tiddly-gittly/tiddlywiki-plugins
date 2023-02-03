@@ -1,9 +1,0 @@
-modifier: LinOnetwo
-creator: LinOnetwo
-tags: $:/tags/EditTemplate
-title: $:/plugins/linonetwo/template-list/EditTemplate
-type: text/vnd.tiddlywiki
-
-<$list filter="[all[current]get[text]else<currentTiddler>match<currentTiddler>]">
-<<template-list targetBlankTiddler >>
-</$list>
