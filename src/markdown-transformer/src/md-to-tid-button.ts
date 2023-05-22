@@ -37,7 +37,7 @@ class MdToTidButtonWidget extends Widget {
     const title = this.getAttribute('title');
     if (!title) return;
     const type = this.getAttribute('type') || 'text/vnd.tiddlywiki';
-    if (type !== 'text/x-markdown') return;
+    if (!['text/x-markdown', 'text/markdown', 'application/markdown'].includes(type)) return;
     const prevMDText = await $tw.wiki.getTiddlerText(title);
     if (!prevMDText) return;
     const tidText = await md2tid(prevMDText);
