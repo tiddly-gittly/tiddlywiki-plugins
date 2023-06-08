@@ -41,8 +41,7 @@
     "linonetwo/smart-field",
     "linonetwo/source-control-management",
     "linonetwo/sub-wiki",
-    "linonetwo/template-list",
-    "linonetwo/zx-script"
+    "linonetwo/template-list"
   ],
   "themes": [
     "tiddlywiki/vanilla",
