@@ -1,6 +1,8 @@
 title: $:/plugins/linonetwo/smart-field/readme
 type: text/vnd.tiddlywiki
 
+! Archived, use [[SuperTag|https://github.com/tiddly-gittly/super-tag]] instead
+
 !! Background
 
 I hope there can be a standard way to encourage plugin developers to use similar field name in their plugins, so different plugins can be used together on a same set of data. See [[Suggestion for all Plugin developers about field name: Let’s use Ontology to maintain Interoperability|https://talk.tiddlywiki.org/t/suggestion-for-all-plugin-developers-about-field-name-lets-use-ontology-to-maintain-interoperability/1923]] for the discussion.
