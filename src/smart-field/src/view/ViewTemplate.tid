@@ -1,5 +1,0 @@
-tags: $:/tags/ViewTemplate
-title: $:/plugins/linonetwo/smart-field/infobar
-type: text/vnd.tiddlywiki
-
-<$formWidget />

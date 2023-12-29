@@ -1,9 +1,0 @@
-title: $:/plugins/linonetwo/smart-field/Example
-type: text/vnd.tiddlywiki
-tags: $:/plugins/linonetwo/smart-field/ExampleFormTag
-
-!! Example
-
-We have add [[$:/plugins/linonetwo/smart-field/ExampleFormTag]] to get our form.
-
-You will see form appear on the bottom ↓
