@@ -4,25 +4,53 @@ on:
   push:
     branches:
       - master
+      - main
 
 jobs:
   deploy:
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: '18'
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install Dependency
-        run: npm install --legacy-peer-deps
-      - name: Make Plugins
-        run: npm run build && npm run copyToDist
-      - name: Make DemoPage
-        run: npm run demo-wiki
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public-dist
+          node-version: 18
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 'latest'
+          run_install: false
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            ~/.pnpm-store
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Library and static website
+        run: pnpm run publish
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: ./dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
