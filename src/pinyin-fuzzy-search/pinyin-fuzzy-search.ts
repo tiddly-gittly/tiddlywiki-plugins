@@ -1,13 +1,7 @@
-import Fuse from 'fuse.js';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import Fuse, { FuseResult } from 'fuse.js';
 import pinyin from 'pinyin';
-import type { ISearchOptions, SourceIterator, IFilterOperatorParamOperator } from 'tiddlywiki';
-
-export interface IFilterOperatorOptions {
-  /** The `$tw.Wiki` object; */
-  wiki: Object;
-  /** (optional) a widget node. */
-  widget: Object;
-}
+import type { IFilterOperatorParamOperator, ISearchOptions, SourceIterator } from 'tiddlywiki';
 
 /** Regex equivalent to \p{Han} in other programming languages. */
 const HAN_REGEX = /[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303B\u3400-\u4DB5\u4E00-\u9FD5\uF900-\uFA6D\uFA70-\uFAD9]/;
@@ -24,7 +18,7 @@ function containsChinese(text: string) {
     return false;
   }
   // Check for any match using regex; cast boolean
-  return !!text.match(HAN_REGEX);
+  return !!HAN_REGEX.test(text);
 }
 $tw.utils.containsChinese = containsChinese;
 
@@ -40,28 +34,27 @@ export function hasPinyinMatchOrFuseMatch<T extends Record<string, string>, Ks e
   items: T[],
   input: string,
   keys: Ks[] = [],
-  options: { threshold?: number; distance?: number; minMatchCharLength?: number; searchTiddlerByTitle?: boolean } = {},
-): Fuse.FuseResult<T>[] {
+  options: { distance?: number; minMatchCharLength?: number; searchTiddlerByTitle?: boolean; threshold?: number } = {},
+): Array<FuseResult<T>> {
   const { threshold = 0.3, distance = 60, minMatchCharLength = 1, searchTiddlerByTitle = false } = options;
   const fuse = new Fuse<T>(items, {
     getFn: (object: T, keyPath: string | string[]): string => {
       if (!keyPath) return '';
       // general usage
-      let value: string;
       let realKeyPath: string;
       if (Array.isArray(keyPath)) {
         realKeyPath = keyPath[0] as 'any';
       } else {
         realKeyPath = keyPath as 'any';
       }
-      value = object[realKeyPath];
+      const value = object[realKeyPath];
       // tiddler search usage, should provide { title: string } to work
       if (searchTiddlerByTitle) {
-        const title = object['title'];
+        const title = object.title;
         const fieldName = realKeyPath;
         const tiddler = $tw.wiki.getTiddler(title)?.fields;
         if (!tiddler) return '';
-        const fieldValue = typeof tiddler[fieldName] === 'string' ? tiddler[fieldName] : String(tiddler[fieldName] ?? '');
+        const fieldValue = typeof tiddler[fieldName] === 'string' ? tiddler[fieldName] as string : String(tiddler[fieldName] ?? '');
         // parse pinyin for long text is time consuming
         // if use chinese to search chinese, no need for pinyin
         if (fieldName === 'text' || containsChinese(input)) {
@@ -109,31 +102,29 @@ The search mode is determined by the first of these boolean flags to be true:
 
 */
 export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}): string[] {
-  const { exclude } = options;
+  const { exclude, field, excludeField, source } = options;
   // Accumulate the array of fields to be searched or excluded from the search
-  let fields: string[] = [];
-  if (options.field) {
-    if (Array.isArray(options.field)) {
-      options.field.forEach((fieldName) => {
+  const fields: string[] = [];
+  if (field) {
+    if (Array.isArray(field)) {
+      field.forEach((fieldName) => {
         if (fieldName) {
           fields.push(fieldName);
         }
       });
     } else {
-      fields.push(options.field);
+      fields.push(field);
     }
   }
   // Use default fields if none specified and we're not excluding fields (excluding fields with an empty field array is the same as searching all fields)
-  if (fields.length === 0 && !options.excludeField) {
-    fields.push('title');
-    fields.push('tags');
-    fields.push('text');
+  if (fields.length === 0 && !excludeField) {
+    fields.push('title', 'tags', 'text');
   }
 
   // get tiddler list to search
   let tiddlerTitlesToSearch: string[] = [];
-  if (typeof options.source === 'function') {
-    options.source((tiddler, title) => {
+  if (typeof source === 'function') {
+    source((tiddler, title) => {
       tiddlerTitlesToSearch.push(title);
     });
   } else {
@@ -146,7 +137,7 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
   const inputKeywords: string[] = searchText
     .toLowerCase()
     .split(' ')
-    .filter((item) => item);
+    .filter(Boolean);
   const exactMatches = tiddlerTitlesToSearch.filter((title) => {
     const lowerCaseTitle = title.toLowerCase();
     return inputKeywords.every((keyword) => lowerCaseTitle.includes(keyword));
@@ -165,18 +156,17 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
   ).map((item) => item.item.title);
   // Remove any of the results we have to exclude
   if (exclude) {
-    for (let excludeIndex = 0; excludeIndex < exclude.length; excludeIndex += 1) {
-      let p = results.findIndex((item) => item.includes(exclude[excludeIndex]));
+    for (const element of exclude) {
+      const p = results.findIndex((item) => item.includes(element));
       if (p !== -1) {
         results.splice(p, 1);
       }
     }
   }
-  return results.filter((item) => item);
+  return results.filter(Boolean);
 }
 
 /**
- *
  * @example [pinyinfuse]
  * @param source
  * @param operator
@@ -186,13 +176,13 @@ export function fuzzySearchWiki(searchText: string, options: ISearchOptions = {}
 export const pinyinfuse = (source: (iter: SourceIterator) => void, operator: IFilterOperatorParamOperator, options: IFilterOperatorOptions) => {
   const invert = operator.prefix === '!';
   if (operator.suffixes) {
-    let hasFlag = function (flag: string) {
-      return (operator.suffixes?.[1] ?? []).indexOf(flag) !== -1;
+    const hasFlag = function(flag: string): boolean {
+      return (operator.suffixes?.[1] ?? []).includes(flag);
     };
     let excludeFields = false;
-    let fieldList = operator.suffixes[0] || [];
-    let firstField = fieldList[0] || '';
-    let firstChar = firstField.charAt(0);
+    const fieldList = operator.suffixes[0] || [];
+    const firstField = fieldList[0] || '';
+    const firstChar = firstField.charAt(0);
     let fields: string[];
     if (firstChar === '-') {
       fields = [firstField.slice(1)].concat(fieldList.slice(1));
@@ -201,11 +191,11 @@ export const pinyinfuse = (source: (iter: SourceIterator) => void, operator: IFi
       fields = [];
       excludeFields = true;
     } else {
-      fields = fieldList.slice(0);
+      fields = [...fieldList];
     }
     return fuzzySearchWiki(operator.operand, {
-      source: source,
-      invert: invert,
+      source,
+      invert,
       field: fields,
       excludeField: excludeFields,
       caseSensitive: hasFlag('casesensitive'),
@@ -216,8 +206,8 @@ export const pinyinfuse = (source: (iter: SourceIterator) => void, operator: IFi
     });
   } else {
     return fuzzySearchWiki(operator.operand, {
-      source: source,
-      invert: invert,
+      source,
+      invert,
     });
   }
 };
