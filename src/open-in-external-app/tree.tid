@@ -1,4 +1,4 @@
-title: $:/plugins/your-name/plugin-name/tree
+title: $:/plugins/linonetwo/open-in-external-app/tree
 type: text/vnd.tiddlywiki
 
-<<tree prefix:"$:/plugins/your-name/plugin-name/">>
+<<tree prefix:"$:/plugins/linonetwo/open-in-external-app/">>

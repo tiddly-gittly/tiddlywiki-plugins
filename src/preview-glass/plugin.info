@@ -4,7 +4,7 @@
   "author": "LinOnetwo",
   "version": "0.5.7",
   "core-version": ">=5.1.22",
-  "list": "readme config motivation",
+  "list": "readme tree config motivation",
   "source": "https://github.com/tobibeer/tw5-preview",
   "documentation": "https://tobibeer.github.io/tw5-preview",
   "plugin-type": "plugin",

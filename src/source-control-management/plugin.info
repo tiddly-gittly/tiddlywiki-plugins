@@ -1,10 +1,10 @@
 {
   "title": "$:/plugins/linonetwo/source-control-management",
-  "name": "NodeJS Wiki TiddlyGit Github Sync",
-  "description": "Use TiddlyGit's NodeJS API to sync data to git on the cloud",
+  "name": "Source Control Management (git) for TidGi Desktop",
+  "description": "Use TidGi's NodeJS API to sync data to git on the cloud",
   "author": "LinOnetwo",
   "core-version": ">=5.1.22",
   "plugin-type": "plugin",
-  "version": "0.1.4",
-  "list": "readme"
+  "version": "0.2.0",
+  "list": "readme tree"
 }

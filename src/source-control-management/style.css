@@ -1,7 +1,7 @@
 button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync.git-sync {
   cursor: not-allowed;
 }
-span.tiddlygit-scm-count {
+span.tidgi-scm-count {
   position: relative;
   background: dimgrey;
   color: white;
@@ -14,7 +14,7 @@ span.tiddlygit-scm-count {
   padding-right: 0.5em;
   width: fit-content;
 }
-span.tiddlygit-scm-count-small {
+span.tidgi-scm-count-small {
   font-size: 0.6em;
   padding-left: 0.2em;
   padding-right: 0.2em;
@@ -45,12 +45,13 @@ button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync.syncing 
   animation: rotation 2s infinite linear;
 }
 
-div.file-info {
+div.tidgi-scm-file-info {
   margin-bottom: 5px;
 }
-span.file-changed-type {
+span.tidgi-scm-file-changed-type {
   margin-right: 5px;
 }
-span.file-name {
+span.tidgi-scm-file-name {
   color: #333;
+  cursor: pointer;
 }

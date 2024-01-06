@@ -7,5 +7,5 @@
   "plugin-type": "plugin",
   "version": "0.1.0",
   "dependents": [],
-  "list": "readme"
+  "list": "readme tree"
 }
