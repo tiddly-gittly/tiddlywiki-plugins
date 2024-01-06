@@ -3,6 +3,7 @@ import type { ModifiedFileList } from 'git-sync-js';
 declare global {
   interface Window {
     // methods copy from TidGi-Desktop, should update if it changes
+    meta: () => IBrowserViewMetaData;
     service: {
       auth: {
         getStorageServiceUserInfo(serviceName: SupportedStorageServices): Promise<IGitUserInfos | undefined>;
@@ -19,6 +20,11 @@ declare global {
       };
       wiki: {
         getTiddlerFilePath(title: string, workspaceID?: string): Promise<string | undefined>;
+        wikiOperationInBrowser<OP extends keyof ISendWikiOperationsToBrowser>(
+          operationType: OP,
+          workspaceID: string,
+          arguments_: Parameters<ISendWikiOperationsToBrowser[OP]>,
+        ): Promise<ReturnType<ISendWikiOperationsToBrowser[OP]>>;
       };
       workspace: {
         getActiveWorkspace: () => Promise<IWorkspace | undefined>;
@@ -26,6 +32,15 @@ declare global {
       };
     };
   }
+}
+
+export interface IBrowserViewMetaData {
+  isPopup?: boolean;
+  workspaceID?: string;
+}
+
+interface ISendWikiOperationsToBrowser {
+  readonly 'wiki-open-tiddler': (tiddlerName: string) => void;
 }
 
 export interface ICommitAndSyncConfigs {

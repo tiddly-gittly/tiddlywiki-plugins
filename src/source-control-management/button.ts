@@ -67,7 +67,7 @@ class NodeJSGitSyncWidget extends Widget {
       // all commit and sync to cloud
       syncStateButton.className += 'git-sync';
       // tooltip
-      const label = '需要配置TiddlyGit';
+      const label = '需要配置TidGi';
       syncStateButton.title = label;
       syncStateButton.ariaLabel = label;
       // icon
@@ -109,7 +109,7 @@ class NodeJSGitSyncWidget extends Widget {
       // icon
       const iconSVG = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/icons/git-pull-request.svg') ?? '';
       // add count indicator badge
-      const countIndicator = `<span class="tiddlygit-scm-count tiddlygit-scm-count-small">${this.state.count}</span>`;
+      const countIndicator = `<span class="tidgi-scm-count tidgi-scm-count-small">${this.state.count}</span>`;
       syncStateButton.innerHTML = `<span>${iconSVG}${countIndicator}</span>`;
     }
 
@@ -143,7 +143,7 @@ class NodeJSGitSyncWidget extends Widget {
    * Check state every a few time
    */
   checkInLoop() {
-    // check if API from TiddlyGit is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
+    // check if API from TidGi is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
     if (
       !window.service.git ||
       typeof window.service.git.commitAndSync !== 'function' ||

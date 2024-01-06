@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { widget as Widget } from '$:/core/modules/widgets/widget.js';
 import { IParseTreeNode, IWidgetInitialiseOptions } from 'tiddlywiki';
+import './style.css';
 
 declare let exports: {
   ['git-sync-scm-tab']: typeof NodeJSGitSyncSCMTabWidget;
@@ -81,7 +82,7 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
       const workspaceInfoContainer = this.document.createElement('div');
       const workspaceTitle = this.document.createElement('h4');
       const workspaceTitleChangedCount = this.document.createElement('span');
-      workspaceTitleChangedCount.className = 'tiddlygit-scm-count';
+      workspaceTitleChangedCount.className = 'tidgi-scm-count';
       workspaceTitleChangedCount.innerText = String(changedFileInfoList.length);
 
       const workspaceName = workspaceFullPath.split('/').pop();
@@ -92,16 +93,18 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
       // changed files
       for (const changedFileInfo of changedFileInfoList) {
         const fileInfoContainer = this.document.createElement('div');
-        fileInfoContainer.className = 'file-info';
+        fileInfoContainer.className = 'tidgi-scm-file-info';
         const fileChangedTypeElement = this.document.createElement('span');
-        fileChangedTypeElement.className = 'file-changed-type';
+        fileChangedTypeElement.className = 'tidgi-scm-file-changed-type';
         fileChangedTypeElement.innerText = this.mapChangeTypeToText(changedFileInfo.type);
 
         const fileNameElement = this.document.createElement('a');
-        fileNameElement.className = 'file-name tc-tiddlylink tc-tiddlylink-resolves tc-popup-handle tc-popup-absolute';
+        fileNameElement.className = 'tidgi-scm-file-name tc-tiddlylink tc-tiddlylink-resolves tc-popup-handle tc-popup-absolute';
         const tiddlerTitle = this.getTitleByPath(changedFileInfo.fileRelativePath);
         fileNameElement.innerText = tiddlerTitle;
-        fileNameElement.addEventListener('click', this.onChangedFileNameClicked.bind(this, tiddlerTitle));
+        fileNameElement.addEventListener('click', () => {
+          this.onChangedFileNameClicked(tiddlerTitle);
+        });
 
         fileInfoContainer.append(fileChangedTypeElement);
         fileInfoContainer.append(fileNameElement);
@@ -111,15 +114,15 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
       container.append(workspaceInfoContainer);
     }
 
-    nextSibling.before(container);
+    parent.insertBefore(container, nextSibling);
     this.domNodes.push(container);
   }
 
   onChangedFileNameClicked(title: string): void {
-    $tw.rootWidget.dispatchEvent({
-      type: 'tm-navigate',
-      navigateTo: title,
-    });
+    const workspaceID = window.meta()?.workspaceID;
+    if (workspaceID) {
+      void window.service.wiki.wikiOperationInBrowser('wiki-open-tiddler', workspaceID, [title]);
+    }
   }
 
   getTitleByPath(fileRelativePath: string) {
@@ -153,7 +156,7 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
    * Check state every a few time
    */
   async checkInLoop() {
-    // check if API from TiddlyGit is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
+    // check if API from TidGi is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
     if (
       !window.service.git ||
       typeof window.service.git.commitAndSync !== 'function' ||
