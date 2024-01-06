@@ -1,4 +1,4 @@
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync.git-sync {
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync.git-sync {
   cursor: not-allowed;
 }
 span.tiddlygit-scm-count {
@@ -21,13 +21,13 @@ span.tiddlygit-scm-count-small {
   line-height: 1.3em;
   margin-left: -1em;
 }
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync > span > svg,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync > svg {
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync > span > svg,
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync > svg {
   fill: none;
   color: #aaa;
 }
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync > span > svg:hover,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync > svg:hover {
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync > span > svg:hover,
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync > svg:hover {
   fill: none;
   color: #444;
 }
@@ -40,8 +40,8 @@ button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync > svg
     transform: rotate(359deg);
   }
 }
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync.syncing > span > svg,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-nodejs-tiddlygit-git-sync.syncing > svg {
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync.syncing > span > svg,
+button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync.syncing > svg {
   animation: rotation 2s infinite linear;
 }
 

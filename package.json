@@ -36,6 +36,7 @@
     "@types/node": "^20.10.5",
     "dprint": "^0.45.0",
     "eslint-config-tidgi": "^1.1.5",
+    "git-sync-js": "^2.0.4",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "postcss": "^8.4.32",

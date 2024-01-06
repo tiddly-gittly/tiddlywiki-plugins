@@ -4,19 +4,7 @@ import { IWidgetEvent } from 'tiddlywiki';
 declare var exports: {
   startup: () => void;
 };
-declare global {
-  interface Window {
-    // methods copy from TidGi-Desktop, should update if it changes
-    service: {
-      native: {
-        openPath(filePath: string, showItemInFolder?: boolean): Promise<void>;
-      };
-      wiki: {
-        getTiddlerFilePath(title: string, workspaceID?: string): Promise<string | undefined>;
-      };
-    };
-  }
-}
+
 
 // Listen for the tm-home message
 exports.startup = () => {

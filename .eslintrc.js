@@ -8,4 +8,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   extends: ['eslint-config-tidgi'],
+  rules: {
+    'unicorn/prefer-dom-node-text-content': 'off',
+  },
 };
