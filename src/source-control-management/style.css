@@ -51,7 +51,7 @@ div.tidgi-scm-file-info {
 span.tidgi-scm-file-changed-type {
   margin-right: 5px;
 }
-span.tidgi-scm-file-name {
+a.tidgi-scm-file-name {
   color: #333;
   cursor: pointer;
 }
