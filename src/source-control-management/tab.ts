@@ -77,6 +77,13 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
 
     // workspaces
     for (const workspaceFullPath of Object.keys(this.state.repoInfo).sort((a, b) => a.length - b.length)) {
+      /**
+       * changed files
+       * ```jsonl
+       *  {type: 'M', fileRelativePath: 'tiddlers/$__palette.tid', filePath: "C:\Users\linonetwo\Documents\repo-c\TidGi-Desktop\wiki-dev\wiki\tiddlers\$__language.tid"}
+          {type: '??', fileRelativePath: 'tiddlers/$__plugins_Gk0Wk_CPL-Repo_config_popup-readme-at-startup.tid', filePath: 'C:\Users\linonetwo\Documents\repo-c\TidGi-Desktop\wiki-dev\wiki\tiddlers\$__plugins_Gk0Wk_CPL-Repo_config_popup-readme-at-startup.tid'}
+        ```
+       */
       const changedFileInfoList = this.state.repoInfo[workspaceFullPath];
 
       const workspaceInfoContainer = this.document.createElement('div');
@@ -90,7 +97,6 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
       workspaceTitle.append(workspaceTitleChangedCount);
       workspaceInfoContainer.append(workspaceTitle);
 
-      // changed files
       for (const changedFileInfo of changedFileInfoList) {
         const fileInfoContainer = this.document.createElement('div');
         fileInfoContainer.className = 'tidgi-scm-file-info';
@@ -105,9 +111,17 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
         fileNameElement.addEventListener('click', () => {
           this.onChangedFileNameClicked(tiddlerTitle);
         });
+        const fileOpenInFolderElement = this.document.createElement('a');
+        fileOpenInFolderElement.className = 'tidgi-scm-file-open-in-folder tc-tiddlylink tc-tiddlylink-resolves tc-popup-handle tc-popup-absolute';
+        const openInFolderIcon = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/open-in-external-app/icons/open-in-folder') ?? 'O';
+        fileOpenInFolderElement.innerHTML = openInFolderIcon;
+        fileOpenInFolderElement.addEventListener('click', () => {
+          this.onOpenInFolderClicked(changedFileInfo.filePath);
+        });
 
         fileInfoContainer.append(fileChangedTypeElement);
         fileInfoContainer.append(fileNameElement);
+        fileInfoContainer.append(fileOpenInFolderElement);
         workspaceInfoContainer.append(fileInfoContainer);
       }
 
@@ -123,6 +137,10 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
     if (workspaceID) {
       void window.service.wiki.wikiOperationInBrowser('wiki-open-tiddler', workspaceID, [title]);
     }
+  }
+
+  onOpenInFolderClicked(filePath: string): void {
+    void window?.service?.native?.openPath?.(filePath, true);
   }
 
   getTitleByPath(fileRelativePath: string) {

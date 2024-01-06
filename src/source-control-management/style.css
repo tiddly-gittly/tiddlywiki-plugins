@@ -55,3 +55,12 @@ a.tidgi-scm-file-name {
   color: #333;
   cursor: pointer;
 }
+a.tidgi-scm-file-open-in-folder {
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+}
+a.tidgi-scm-file-open-in-folder > svg {
+  padding: 0;
+  height: 1em;
+}
