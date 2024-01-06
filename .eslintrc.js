@@ -10,5 +10,6 @@ module.exports = {
   extends: ['eslint-config-tidgi'],
   rules: {
     'unicorn/prefer-dom-node-text-content': 'off',
+    'unicorn/prefer-modern-dom-apis': 'off',
   },
 };

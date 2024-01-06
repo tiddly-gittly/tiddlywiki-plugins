@@ -114,7 +114,7 @@ class NodeJSGitSyncWidget extends Widget {
     }
 
     // boilerplate
-    nextSibling.before(syncStateButton);
+    parent.insertBefore(syncStateButton, nextSibling);
     this.domNodes.push(syncStateButton);
   }
 
