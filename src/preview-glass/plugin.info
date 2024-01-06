@@ -2,7 +2,7 @@
   "title": "$:/plugins/linonetwo/preview-glass",
   "description": "Glassify Modification to the tobibeer/preview plugin, add inverse links, and make it auto-close",
   "author": "LinOnetwo",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "core-version": ">=5.1.22",
   "list": "readme tree config motivation",
   "source": "https://github.com/tobibeer/tw5-preview",
