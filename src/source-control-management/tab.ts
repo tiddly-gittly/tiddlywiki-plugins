@@ -55,9 +55,9 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
   }
 
   async getWorkspaces() {
-    const workspaces = await window.service.workspace.getWorkspacesAsList();
-    const activeWorkspace = await window.service.workspace.getActiveWorkspace();
-    if (activeWorkspace) {
+    const workspaces = await window?.service?.workspace?.getWorkspacesAsList?.();
+    const activeWorkspace = await window?.service?.workspace?.getActiveWorkspace?.();
+    if (activeWorkspace && workspaces) {
       return workspaces.filter((workspace) => workspace.id === activeWorkspace.id || (workspace.isSubWiki && workspace.mainWikiID === activeWorkspace.id));
     }
     return [];
@@ -133,9 +133,9 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
   }
 
   onChangedFileNameClicked(title: string): void {
-    const workspaceID = window.meta()?.workspaceID;
+    const workspaceID = window.meta?.()?.workspaceID;
     if (workspaceID) {
-      void window.service.wiki.wikiOperationInBrowser('wiki-open-tiddler', workspaceID, [title]);
+      void window?.service?.wiki?.wikiOperationInBrowser?.('wiki-open-tiddler', workspaceID, [title]);
     }
   }
 
@@ -176,10 +176,10 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
   async checkInLoop() {
     // check if API from TidGi is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
     if (
-      !window.service.git ||
-      typeof window.service.git.commitAndSync !== 'function' ||
-      typeof window.service.git.getModifiedFileList !== 'function' ||
-      typeof window.service.workspace.getWorkspacesAsList !== 'function'
+      !(window?.service?.git) ||
+      typeof window?.service?.git?.commitAndSync !== 'function' ||
+      typeof window?.service?.git?.getModifiedFileList !== 'function' ||
+      typeof window?.service?.workspace?.getWorkspacesAsList !== 'function'
     ) {
       this.state.needSetUp = true;
     } else {
@@ -201,17 +201,17 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
     this.state.repoInfo = {};
 
     const folderInfo = await this.getFolderInfo();
-    await Promise.all(
-      folderInfo.map(async ({ wikiPath }) => {
-        const modifiedList = await window.service.git.getModifiedFileList(wikiPath);
-        modifiedList.sort((changedFileInfoA, changedFileInfoB) => changedFileInfoA.fileRelativePath > changedFileInfoB.fileRelativePath ? 1 : -1);
-        $tw.wiki.addTiddler({
-          title: `$:/state/scm-modified-file-list/${wikiPath}`,
-          text: JSON.stringify(modifiedList),
-        });
-        this.state.repoInfo[wikiPath] = modifiedList;
-      }),
-    );
+    const tasks = folderInfo.map(async ({ wikiPath }) => {
+      const modifiedList = await window?.service?.git?.getModifiedFileList?.(wikiPath);
+      if (!modifiedList) return;
+      modifiedList.sort((changedFileInfoA, changedFileInfoB) => changedFileInfoA.fileRelativePath > changedFileInfoB.fileRelativePath ? 1 : -1);
+      $tw.wiki.addTiddler({
+        title: `$:/state/scm-modified-file-list/${wikiPath}`,
+        text: JSON.stringify(modifiedList),
+      });
+      this.state.repoInfo[wikiPath] = modifiedList;
+    });
+    await Promise.all(tasks);
 
     return this.refreshSelf(); // method from super class, this is like React forceUpdate, we use it because it is not fully reactive on this.state change
   }

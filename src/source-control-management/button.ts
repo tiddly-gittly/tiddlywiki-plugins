@@ -41,9 +41,9 @@ class NodeJSGitSyncWidget extends Widget {
   }
 
   async getWorkspaces() {
-    const workspaces = await window.service.workspace.getWorkspacesAsList();
-    const activeWorkspace = await window.service.workspace.getActiveWorkspace();
-    if (activeWorkspace) {
+    const workspaces = await window?.service?.workspace?.getWorkspacesAsList?.();
+    const activeWorkspace = await window?.service?.workspace?.getActiveWorkspace?.();
+    if (activeWorkspace && workspaces) {
       return workspaces.filter((workspace) => workspace.id === activeWorkspace.id || (workspace.isSubWiki && workspace.mainWikiID === activeWorkspace.id));
     }
     return [];
@@ -128,7 +128,7 @@ class NodeJSGitSyncWidget extends Widget {
       try {
         const workspaces = await this.getWorkspaces();
         const tasks = workspaces.map(async (workspace) => {
-          await window.service.sync.syncWikiIfNeeded(workspace);
+          await window?.service?.sync?.syncWikiIfNeeded?.(workspace);
         });
         await Promise.all(tasks);
       } catch (error) {
@@ -145,10 +145,10 @@ class NodeJSGitSyncWidget extends Widget {
   checkInLoop() {
     // check if API from TidGi is available, first time it is Server Side Rendening so window.xxx from the electron ContextBridge will be missing
     if (
-      !window.service.git ||
-      typeof window.service.git.commitAndSync !== 'function' ||
-      typeof window.service.git.getModifiedFileList !== 'function' ||
-      typeof window.service.workspace.getWorkspacesAsList !== 'function'
+      !(window?.service?.git) ||
+      typeof window?.service?.git?.commitAndSync !== 'function' ||
+      typeof window?.service?.git?.getModifiedFileList !== 'function' ||
+      typeof window?.service?.workspace?.getWorkspacesAsList !== 'function'
     ) {
       this.state.needSetUp = true;
     } else {
