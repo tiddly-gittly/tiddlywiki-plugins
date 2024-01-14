@@ -66,7 +66,7 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
   /**
    * Lifecycle method: Render this widget into the DOM
    */
-  render(parent: Element, nextSibling: Element) {
+  render(parent: Element, nextSibling: Element | null) {
     // boilerplate
     this.parentDomNode = parent;
     this.computeAttributes();
@@ -128,7 +128,7 @@ class NodeJSGitSyncSCMTabWidget extends Widget {
       container.append(workspaceInfoContainer);
     }
 
-    parent.insertBefore(container, nextSibling);
+    nextSibling === null ? parent.append(container) : nextSibling.before(container);
     this.domNodes.push(container);
   }
 

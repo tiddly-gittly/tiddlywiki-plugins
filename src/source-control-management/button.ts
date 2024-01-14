@@ -52,7 +52,7 @@ class NodeJSGitSyncWidget extends Widget {
   /**
    * Lifecycle method: Render this widget into the DOM
    */
-  render(parent: Element, nextSibling: Element) {
+  render(parent: Element, nextSibling: Element | null) {
     // boilerplate
     this.parentDomNode = parent;
     this.computeAttributes();
@@ -114,7 +114,7 @@ class NodeJSGitSyncWidget extends Widget {
     }
 
     // boilerplate
-    parent.insertBefore(syncStateButton, nextSibling);
+    nextSibling === null ? parent.append(syncStateButton) : nextSibling.before(syncStateButton);
     this.domNodes.push(syncStateButton);
   }
 
