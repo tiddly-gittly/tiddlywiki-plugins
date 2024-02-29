@@ -1,0 +1,9 @@
+{
+  "title": "$:/plugins/linonetwo/auto-switch-language",
+  "name": "auto-switch-language",
+  "author": "linonetwo",
+  "description": "Use browser info to auto switch language",
+  "plugin-type": "plugin",
+  "version": "0.0.1",
+  "list": "readme"
+}

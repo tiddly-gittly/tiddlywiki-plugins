@@ -1,0 +1,10 @@
+title: $:/plugins/linonetwo/auto-switch-language/readme
+type: text/vnd.tiddlywiki
+
+! auto-switch-language
+
+Use browser info to auto switch language
+
+Copy from https://github.com/tiddly-gittly/Modern.TiddlyDev/blob/2d784fa1da0fc197ad31f61f87d9a0f3dfb7413b/wiki/tiddlers/%24__Modern.TiddlyDev_Startup.tid
+
+Only support zh-Hans and en-GB now. PR is welcome.

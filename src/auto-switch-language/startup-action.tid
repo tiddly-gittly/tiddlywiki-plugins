@@ -1,0 +1,5 @@
+title: $:/plugins/linonetwo/auto-switch-language/readme
+tags: $:/tags/StartupAction/Browser
+
+<!-- Switch language -->
+<$action-setfield $tiddler="$:/language" text={{{ [{$:/info/browser/language}search:title[zh]then[zh-Hans]else[en-GB]addprefix[$:/languages/]] }}}/>
