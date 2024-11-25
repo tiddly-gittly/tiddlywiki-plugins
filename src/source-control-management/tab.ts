@@ -149,6 +149,8 @@ if ($tw.browser) {
         return `$:/${fileRelativePath}`;
       } else if (fileRelativePath.startsWith('tiddlers/')) {
         return fileRelativePath.replace('tiddlers/', '').replace(/\.tid$/, '');
+      } else if (fileRelativePath.endsWith('.tid')) {
+        return fileRelativePath.replace(/\.tid$/, '');
       }
       return fileRelativePath;
     }
