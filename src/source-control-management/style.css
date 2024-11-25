@@ -1,6 +1,3 @@
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button.git-sync {
-  cursor: not-allowed;
-}
 span.tidgi-scm-count {
   position: relative;
   background: dimgrey;
@@ -20,29 +17,6 @@ span.tidgi-scm-count-small {
   padding-right: 0.2em;
   line-height: 1.3em;
   margin-left: -1em;
-}
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button > span > svg,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button > svg {
-  fill: none;
-  color: #aaa;
-}
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button > span > svg:hover,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button > svg:hover {
-  fill: none;
-  color: #444;
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button.syncing > span > svg,
-button.tc-btn-invisible.tc-btn-plugins-linonetwo-tidgi-desktop-git-sync-button.syncing > svg {
-  animation: rotation 2s infinite linear;
 }
 
 div.tidgi-scm-file-info {
