@@ -7,17 +7,21 @@ declare var exports: {
 
 async function getFilePath(event: IWidgetEvent): Promise<string | undefined> {
   let title = '';
+  let filePath: string | undefined;
   if (typeof event.param === 'string') {
     // for button usage
     title = event.param;
   } else if (typeof event.paramObject === 'object') {
     // Get the specified additional fields, for message usage
-    const additionalFields = event.paramObject as { title?: string };
+    const additionalFields = event.paramObject as { filePath?: string; title?: string };
     if (additionalFields?.title) {
       title = additionalFields.title;
     }
+    if (additionalFields?.filePath) {
+      filePath = additionalFields.filePath;
+    }
   }
-  const filePath = await window?.service?.wiki?.getTiddlerFilePath?.(title);
+  filePath = await window?.service?.wiki?.getTiddlerFilePath?.(title);
   return filePath;
 }
 

@@ -8,7 +8,11 @@ description: Open tiddler in external app
 
 \whitespace trim
 <$button tooltip={{!!description}} aria-label={{$:/plugins/linonetwo/open-in-external-app/button-caption-open-in-external-app}} class=<<tv-config-toolbar-class>>>
-  <$action-sendmessage $message="tm-open-in-external-app" title=<<currentTiddler>> />
+  <% if [<currentTiddler>has[_canonical_uri]] %>
+    <$action-sendmessage $message="tm-open-in-external-app" filePath={{{[<currentTiddler>get[_canonical_uri]]}}} />
+  <% else %>
+    <$action-sendmessage $message="tm-open-in-external-app" title=<<currentTiddler>> />
+  <% endif %>
   <$list filter="[<tv-config-toolbar-icons>match[yes]]">
     {{$:/plugins/linonetwo/open-in-external-app/icons/open-in-app}}
   </$list>
