@@ -27,6 +27,11 @@ declare global {
         ): Promise<ReturnType<ISendWikiOperationsToBrowser[OP]>>;
       };
       workspace: {
+        get(workspaceID: string): Promise<
+          {
+            wikiFolderLocation: string;
+          } | undefined
+        >;
         getActiveWorkspace: () => Promise<IWorkspace | undefined>;
         getWorkspacesAsList(): Promise<IWorkspace[]>;
       };

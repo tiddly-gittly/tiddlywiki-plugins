@@ -21,7 +21,20 @@ async function getFilePath(event: IWidgetEvent): Promise<string | undefined> {
       filePath = additionalFields.filePath;
     }
   }
-  filePath = await window?.service?.wiki?.getTiddlerFilePath?.(title);
+  if (title) {
+    filePath = await window?.service?.wiki?.getTiddlerFilePath?.(title);
+  }
+  if (!filePath) return;
+  // Check if filePath is a relative path (i.e., not starting with a drive letter or "/" for Mac/Linux) and prepend wikiFolderLocation
+  const isRelativePath = !/^(?:[A-Za-z]:[/\\]|\/)/.test(filePath);
+  if (isRelativePath) {
+    const workspaceID = window?.meta?.()?.workspaceID;
+    if (!workspaceID) return;
+    const workspace = await window?.service?.workspace?.get(workspaceID);
+    const wikiFolderLocation = workspace?.wikiFolderLocation;
+    if (!wikiFolderLocation) return;
+    filePath = decodeURI(`${wikiFolderLocation}/${filePath}`);
+  }
   return filePath;
 }
 
