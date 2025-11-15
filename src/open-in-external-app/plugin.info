@@ -6,7 +6,7 @@
   "core-version": ">=5.1.22",
   "plugin-type": "plugin",
   "stability": "STABILITY_1_EXPERIMENTAL",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "dependents": [],
-  "list": "readme tree"
+  "list": "readme changelog tree"
 }

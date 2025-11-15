@@ -28,9 +28,7 @@ async function getFilePath(event: IWidgetEvent): Promise<string | undefined> {
   // Check if filePath is a relative path (i.e., not starting with a drive letter or "/" for Mac/Linux) and prepend wikiFolderLocation
   const isRelativePath = !/^(?:[A-Za-z]:[/\\]|\/)/.test(filePath);
   if (isRelativePath) {
-    const workspaceID = window?.meta?.()?.workspaceID;
-    if (!workspaceID) return;
-    const workspace = await window?.service?.workspace?.get(workspaceID);
+    const workspace = window?.meta?.()?.workspace;
     const wikiFolderLocation = workspace?.wikiFolderLocation;
     if (!wikiFolderLocation) return;
     filePath = decodeURI(`${wikiFolderLocation}/${filePath}`);

@@ -1,6 +1,10 @@
 title: $:/plugins/linonetwo/open-in-external-app/readme
 type: text/vnd.tiddlywiki
 
+!! Compatibility
+
+- Requires TidGi Desktop >= 0.13.0.
+
 !! Basic Usage
 
 After you import a PDF or image file into your wiki, you can open that tiddler, and click on the button to open that file in external PDF viewer or image reader.
