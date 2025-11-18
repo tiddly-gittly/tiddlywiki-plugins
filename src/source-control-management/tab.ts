@@ -133,7 +133,7 @@ if ($tw.browser) {
     }
 
     onChangedFileNameClicked(title: string): void {
-      const workspaceID = window.meta?.()?.workspaceID;
+      const workspaceID = window.meta?.()?.workspace?.id;
       if (workspaceID) {
         void window?.service?.wiki?.wikiOperationInBrowser?.('wiki-open-tiddler', workspaceID, [title]);
       }

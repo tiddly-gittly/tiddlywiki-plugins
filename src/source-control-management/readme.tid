@@ -1,6 +1,18 @@
 title: $:/plugins/linonetwo/source-control-management/readme
 type: text/vnd.tiddlywiki
 
+!! ⚠️ DEPRECATED
+
+This plugin is **deprecated** and no longer maintained. Modern versions of TidGi-Desktop include built-in history and backup management features. You can uninstall this plugin and use TidGi's native functionality instead.
+
+**Recommended:** Right-click on a workspace and select "View history backups" to access TidGi's built-in history management functionality. This is now the preferred way to manage version history and backups.
+
+!! 弃用
+
+随着 TidGi-Desktop 的不断发展，已经内置了历史和备份管理功能。建议卸载本插件，改用 TidGi 自带的功能。
+
+---
+
 !! 功能
 
 [[WebCatalog|https://webcatalogapp.com/]] 除了[[能将 TiddlyWiki 包装成桌面应用|https://onetwo.ren/%E7%94%A8tiddlywiki%E6%9B%BF%E4%BB%A3notion%E5%92%8Cevernote%E7%AE%A1%E7%90%86%E7%9F%A5%E8%AF%86/]]以外，还提供了自定义 API 并暴露给网页的功能，让我们可以在 Wiki 网页里使用一些高级功能。
