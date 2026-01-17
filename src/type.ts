@@ -1,4 +1,6 @@
-import type { ModifiedFileList } from 'git-sync-js';
+// import type { ModifiedFileList } from 'git-sync-js';
+export type ModifiedFileList = { path: string; status: string }; // Placeholder to avoid missing dependency
+
 
 declare global {
   interface Window {
@@ -11,6 +13,10 @@ declare global {
       git: {
         commitAndSync(workspace: IWorkspace, configs: ICommitAndSyncConfigs): Promise<boolean>;
         getModifiedFileList(wikiFolderPath: string): Promise<ModifiedFileList[]>;
+        callGitOp<K extends keyof IGitOperations>(
+          method: K,
+          ...arguments_: Parameters<IGitOperations[K]>
+        ): Promise<Awaited<ReturnType<IGitOperations[K]>>>;
       };
       native: {
         openPath(filePath: string, showItemInFolder?: boolean): Promise<void>;
@@ -202,6 +208,56 @@ export enum SupportedStorageServices {
   local = 'local',
   /** SocialLinkedData, a privacy first DApp platform leading by Tim Berners-Lee, you can run a server by you own  */
   solid = 'solid',
+}
+
+export type GitFileStatus = 'added' | 'modified' | 'deleted' | 'renamed' | 'copied' | 'untracked' | 'unknown';
+
+export interface IGitLogEntry {
+  hash: string;
+  parents: string[];
+  branch: string;
+  message: string;
+  committerDate: string;
+  author?: {
+    name: string;
+    email?: string;
+  };
+  authorDate?: string;
+}
+
+export interface IGitLogResult {
+  entries: IGitLogEntry[];
+  currentBranch: string;
+  totalCount: number;
+}
+
+export interface IFileWithStatus {
+  path: string;
+  status: GitFileStatus;
+}
+
+export interface IFileDiffResult {
+  content: string;
+  isTruncated: boolean;
+}
+
+export type GitLogSearchMode = 'message' | 'file' | 'dateRange' | 'none';
+
+export interface IGitLogOptions {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  searchMode?: GitLogSearchMode;
+  filePath?: string;
+  since?: string;
+  until?: string;
+}
+
+export interface IGitOperations {
+  getGitLog: (repoPath: string, options?: IGitLogOptions) => Promise<IGitLogResult>;
+  getCommitFiles: (repoPath: string, commitHash: string) => Promise<IFileWithStatus[]>;
+  getFileContent: (repoPath: string, commitHash: string, filePath: string, maxLines?: number, maxChars?: number) => Promise<IFileDiffResult>;
+  getFileDiff: (repoPath: string, commitHash: string, filePath: string, maxLines?: number, maxChars?: number) => Promise<IFileDiffResult>;
 }
 
 export {};
