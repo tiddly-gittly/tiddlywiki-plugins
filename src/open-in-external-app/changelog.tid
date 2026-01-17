@@ -4,5 +4,5 @@ title: $:/plugins/linonetwo/open-in-external-app/changelog
 
 !! Version 0.3.0
 
-* **Breaking Change**: Requires TidGi-Desktop version 0.13.0 or higher
+* **Breaking Change**: Requires [ext[TidGi-Desktop|https://github.com/tiddly-gittly/TidGi-Desktop/]] version 0.13.0 or higher
 ** Updated API usage: replaced `window?.meta?.()?.workspaceID` with `window?.meta?.()?.workspace`
