@@ -1,0 +1,31 @@
+title: $:/plugins/linonetwo/source-control-management/language/en-GB/
+
+Name: Version History
+Description: View and manage Git version history with commit search and file content inspection.
+SideBarTab/Caption: History
+SideBarTab/Description: View and manage Git version history
+ViewTiddler/Button: View
+Search/Placeholder: Search commits by message...
+Search/Button: Search
+Search/Clear: Clear
+CommitList/Empty: No commits found
+CommitList/Loading: Loading...
+CommitList/Uncommitted: Uncommitted Changes
+CommitList/Author: Author
+CommitList/Date: Date
+CommitList/Message: Message
+FileList/Title: Changed Files
+FileList/Empty: No files changed
+FileContent/Title: File Content
+FileContent/NoSelection: Select a file to view its content
+FileContent/Loading: Loading file content...
+FileContent/OpenInStory: Open in Story
+FileContent/Apply: Apply this version
+FileContent/ApplyConfirm: Are you sure you want to apply this historic version? This will replace the current content.
+FileContent/ShowDiff: Show Diff
+FileContent/ShowRendered: Rendered View
+FileContent/ShowOtherFiles: View other files
+FileContent/HideOtherFiles: Hide other files
+Configs/Caption: Settings
+Configs/Debug/Caption: Debug Mode
+Configs/Debug/Description: Enable debug mode to use mock data for testing UI without real Git backend.

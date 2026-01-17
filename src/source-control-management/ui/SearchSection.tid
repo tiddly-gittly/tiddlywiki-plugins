@@ -1,0 +1,21 @@
+title: $:/plugins/linonetwo/source-control-management/SearchSection
+type: text/vnd.tiddlywiki
+
+\define lingo-base() $:/plugins/linonetwo/source-control-management/language/
+
+<!-- Search Section -->
+<div class="tidgi-scm-search-section">
+  <$wikify name="searchPlaceholder" text=<<lingo Search/Placeholder>>>
+    <$edit-text tiddler="$:/state/scm/search" default="" placeholder=<<searchPlaceholder>> tag="input" class="tidgi-scm-search-input tc-edit-texteditor" />
+  </$wikify>
+  
+  <$button class="tc-btn-invisible" message="tm-scm-reload">
+    <<lingo Search/Button>>
+  </$button>
+  
+  <$button class="tc-btn-invisible">
+    <$action-setfield $tiddler="$:/state/scm/search" text="" />
+    <$action-sendmessage $message="tm-scm-reload" />
+    <<lingo Search/Clear>>
+  </$button>
+</div>

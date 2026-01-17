@@ -1,0 +1,39 @@
+title: $:/plugins/linonetwo/source-control-management/CommitListSection
+type: text/vnd.tiddlywiki
+
+\define lingo-base() $:/plugins/linonetwo/source-control-management/language/
+
+<!-- Commit List Section -->
+<div class="tidgi-scm-commit-section">
+  <$list filter="[[$:/state/scm/viewing-tiddler]get[text]]" variable="viewingTiddler">
+    
+    <$git-commit-list tiddler=<<viewingTiddler>> search={{$:/state/scm/search}}>
+
+      <!-- Loading Indicator -->
+      <$list filter="[[$:/state/scm/loading]text[yes]]">
+        <div class="tidgi-scm-loading"><<lingo CommitList/Loading>></div>
+      </$list>
+      
+      <!-- Filter Commits -->
+      <$set name="commitsTiddler" value={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/commits]] }}}>
+        <$list filter="[list<commitsTiddler>]" variable="commitHash">
+          <$tiddler tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/commit/]addsuffix<commitHash>] }}}>
+          <div class={{{ [[tidgi-scm-commit-item]] [[$:/state/scm/selected-commit]text<commitHash>then[selected]] +[join[ ]] }}}>
+            <$button class="tidgi-scm-commit-button" message="tm-scm-load-files" param=<<commitHash>>>
+              <div class="tidgi-scm-commit-message"><$text text={{!!text}} /></div>
+              <div class="tidgi-scm-commit-meta">
+                <$text text={{!!author}} /> • <$view field="date" format="date" template="YYYY-MM-DD 0hh:0mm:0ss" />
+              </div>
+            </$button>
+          </div>
+        </$tiddler>
+        </$list>
+      
+        <!-- Empty State -->
+        <$list filter="[<commitsTiddler>!has[list]] [<commitsTiddler>get[list]is[blank]] +[limit[1]]">
+          <div class="tidgi-scm-empty"><<lingo CommitList/Empty>></div>
+        </$list>
+      </$set>
+    </$git-commit-list>
+  </$list>
+</div>

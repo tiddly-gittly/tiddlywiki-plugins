@@ -1,0 +1,109 @@
+title: $:/plugins/linonetwo/source-control-management/FilesSection
+type: text/vnd.tiddlywiki
+
+\define lingo-base() $:/plugins/linonetwo/source-control-management/language/
+
+<!-- Files Section (Revealed when commit selected) -->
+<$list filter="[[$:/state/scm/selected-commit]has[text]]" variable="selectedCommit">
+  <$list filter="[[$:/state/scm/viewing-tiddler]get[text]]" variable="viewingTiddler">
+    <div class="tidgi-scm-content-section">
+
+      <!-- Content Preview -->
+      <$list filter="[[$:/state/scm/selected-file]has[text]]">
+        <h4><<lingo FileContent/Title>></h4>
+
+        <!-- Loading Content -->
+        <$list filter="[[$:/state/scm/loading-content]text[yes]]">
+          <div class="tidgi-scm-loading"><<lingo FileContent/Loading>></div>
+        </$list>
+
+        <div class="tidgi-scm-button-bar">
+          <$button class="tidgi-scm-btn" message="tm-open-in-story" param={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}}>
+            <<lingo FileContent/OpenInStory>>
+            <$action-sendmessage $message="tm-add-to-history" $param={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} />
+            <$action-navigate $to={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} />
+          </$button>
+
+          <$button class="tidgi-scm-btn" message="tm-scm-apply-content">
+            <<lingo FileContent/Apply>>
+          </$button>
+
+          <$button class="tidgi-scm-btn">
+            <$list filter="[[$:/state/scm/show-file-list]text[yes]]">
+              <$action-setfield $tiddler="$:/state/scm/show-file-list" text="no" />
+              <<lingo FileContent/HideOtherFiles>>
+            </$list>
+            <$list filter="[[$:/state/scm/show-file-list]!text[yes]]">
+              <$action-setfield $tiddler="$:/state/scm/show-file-list" text="yes" />
+              <<lingo FileContent/ShowOtherFiles>>
+            </$list>
+          </$button>
+
+          <$checkbox tiddler="$:/state/scm/show-diff" field="text" checked="yes" unchecked="no" class="tidgi-scm-checkbox">
+            <<lingo FileContent/ShowDiff>>
+          </$checkbox>
+          
+          <$list filter="[[$:/state/scm/show-diff]!text[yes]]" variable="null">
+            <$checkbox tiddler="$:/state/scm/show-rendered" field="text" checked="yes" unchecked="no" class="tidgi-scm-checkbox">
+              <<lingo FileContent/ShowRendered>>
+            </$checkbox>
+          </$list>
+        </div>
+
+        <$list filter="[[$:/state/scm/show-diff]text[yes]]" variable="null">
+          <$diff-text
+            source={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]get[scm-current-content]] }}}
+            dest={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]get[text]] }}}
+          />
+        </$list>
+
+        <$list filter="[[$:/state/scm/show-diff]!text[yes]]" variable="null">
+          <$list filter="[[$:/state/scm/show-rendered]text[yes]]" variable="null">
+            <div class="tidgi-scm-content-preview tidgi-scm-rendered-content">
+              <$transclude tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="text" mode="block" />
+            </div>
+          </$list>
+          <$list filter="[[$:/state/scm/show-rendered]!text[yes]]" variable="null">
+            <pre class="tidgi-scm-content-preview"><$view tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="text" /></pre>
+          </$list>
+        </$list>
+      </$list>
+
+      <!-- Empty Content Selection -->
+      <$list filter="[[$:/state/scm/selected-file]!has[text]]">
+        <div class="tidgi-scm-empty"><<lingo FileContent/NoSelection>></div>
+      </$list>
+
+      <!-- Files List Section -->
+      <$list filter="[[$:/state/scm/selected-file]!has[text]] [[$:/state/scm/show-file-list]text[yes]] +[limit[1]]">
+        <div class="tidgi-scm-files-section">
+          <h4><<lingo FileList/Title>></h4>
+
+          <!-- Loading Files -->
+          <$list filter="[[$:/state/scm/loading-files]text[yes]]">
+            <div class="tidgi-scm-loading"><<lingo FileContent/Loading>></div>
+          </$list>
+
+          <div class="tidgi-scm-files-list">
+            <$set name="filesTiddler" value={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/files]] }}}>
+              <$list filter="[list<filesTiddler>]" variable="fileTiddler">
+                <$tiddler tiddler=<<fileTiddler>>>
+                  <div class={{{ [[tidgi-scm-file-item]] [[$:/state/scm/selected-file]text{!!path}then[selected]] +[join[ ]] }}}>
+                    <$button class="tidgi-scm-file-button" message="tm-scm-load-content" param={{!!path}}>
+                      <$action-setfield $tiddler="$:/state/scm/show-file-list" text="no" />
+                      <span class={{{ [[tidgi-scm-file-status]] [[tidgi-scm-status-]addsuffix{!!status}] +[join[ ]] }}}>
+                        <$view field="status" />
+                      </span>
+                      <span class="tidgi-scm-file-name"><$view field="path" /></span>
+                    </$button>
+                  </div>
+                </$tiddler>
+              </$list>
+            </$set>
+          </div>
+        </div>
+      </$list>
+
+    </div>
+  </$list>
+</$list>

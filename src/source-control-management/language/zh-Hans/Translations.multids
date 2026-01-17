@@ -1,0 +1,31 @@
+title: $:/plugins/linonetwo/source-control-management/language/zh-Hans/
+
+Name: 版本历史
+Description: 查看和管理 Git 版本历史，支持提交搜索和文件内容查看。
+SideBarTab/Caption: 历史记录
+SideBarTab/Description: 查看和管理 Git 版本历史
+ViewTiddler/Button: 查看
+Search/Placeholder: 搜索提交消息...
+Search/Button: 搜索
+Search/Clear: 清除
+CommitList/Empty: 未找到提交
+CommitList/Loading: 加载中...
+CommitList/Uncommitted: 未提交的更改
+CommitList/Author: 作者
+CommitList/Date: 日期
+CommitList/Message: 消息
+FileList/Title: 更改的文件
+FileList/Empty: 没有文件更改
+FileContent/Title: 文件内容
+FileContent/NoSelection: 选择一个文件以查看其内容
+FileContent/Loading: 加载文件内容中...
+FileContent/OpenInStory: 在故事流中打开
+FileContent/Apply: 应用此版本
+FileContent/ApplyConfirm: 您确定要应用此历史版本吗？这将替换当前内容。
+FileContent/ShowDiff: 显示差异
+FileContent/ShowRendered: 渲染视图
+FileContent/ShowOtherFiles: 查看其他文件
+FileContent/HideOtherFiles: 隐藏其他文件
+Configs/Caption: 设置
+Configs/Debug/Caption: 调试模式
+Configs/Debug/Description: 启用调试模式以使用模拟数据测试 UI，无需真实 Git 后端。
