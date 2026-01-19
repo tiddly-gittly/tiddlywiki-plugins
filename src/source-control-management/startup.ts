@@ -33,9 +33,6 @@ export const startup = () => {
     // Get viewing tiddler from state
     const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
     if (!viewingTiddler) return; // No tiddler selected to view
-
-    // Check debug mode
-    const isDebug = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/configs/debug') === 'yes';
     
     const searchQuery = $tw.wiki.getTiddlerText('$:/state/scm/search');
     
@@ -46,7 +43,7 @@ export const startup = () => {
     const workspace = win?.meta?.()?.workspace;
     currentWikiFolder = workspace?.wikiFolderLocation || null;
 
-    if (!isDebug && (!currentWikiFolder || !win?.service?.git?.callGitOp)) {
+    if (!currentWikiFolder || !win?.service?.git?.callGitOp) {
        return;
     }
 
@@ -58,24 +55,13 @@ export const startup = () => {
       const newCommits: IGitLogEntry[] = [];
       let totalCount = 0;
 
-      if (isDebug) {
-          // Debug Mock Data
-          console.log('[SCM] Debug Mode: Using Mock Git Log');
-          await new Promise(r => setTimeout(r, 500)); // Simulate delay
-          newCommits.push(
-              { hash: 'mock1', message: 'Initial Commit', committerDate: new Date().toISOString(), author: { name: 'Debug User' }, parents: [], branch: 'main' },
-              { hash: 'mock2', message: 'Update README', committerDate: new Date().toISOString(), author: { name: 'Debug User' }, parents: ['mock1'], branch: 'main' },
-              { hash: 'mock3', message: 'Fix Bug', committerDate: new Date().toISOString(), author: { name: 'Debug User' }, parents: ['mock2'], branch: 'main' }
-          );
-          totalCount = 3;
-      } else {
-        // Resolve file path if tiddlerTitle is present
-        
-        console.log('[SCM] Viewing tiddler:', viewingTiddler);
-        
-        // Get file path for the viewing tiddler
-        const absoluteFilePath = await win.service.wiki.getTiddlerFilePath(viewingTiddler);
-        console.log('[SCM] Absolute file path:', absoluteFilePath);
+      // Resolve file path if tiddlerTitle is present
+      
+      console.log('[SCM] Viewing tiddler:', viewingTiddler);
+      
+      // Get file path for the viewing tiddler
+      const absoluteFilePath = await win.service.wiki.getTiddlerFilePath(viewingTiddler);
+      console.log('[SCM] Absolute file path:', absoluteFilePath);
         
         // If tiddler has no file path (e.g., shadow/system tiddler), show nothing
         if (!absoluteFilePath) {
@@ -85,32 +71,31 @@ export const startup = () => {
             $tw.wiki.addTiddler({ title: commitsTitle, list: [] });
             return;
         }
-        
-        // Convert absolute path to relative path (relative to wiki folder)
-        filePath = absoluteFilePath.replace(currentWikiFolder!, '').replace(/^[\\\/]+/, '');
-        console.log('[SCM] Relative file path:', filePath);
+      
+      // Convert absolute path to relative path (relative to wiki folder)
+      filePath = absoluteFilePath.replace(currentWikiFolder!, '').replace(/^[\\\/]+/, '');
+      console.log('[SCM] Relative file path:', filePath);
 
-        // API Call
-        console.log('[SCM] Calling getGitLog with:', {
-            folder: currentWikiFolder,
-            page: currentPage,
-            searchQuery,
-            filePath
-        });
-        
-        const result = await win.service.git.callGitOp('getGitLog', currentWikiFolder!, {
-            page: currentPage,
-            pageSize: 50,
-            searchQuery: searchQuery || undefined,
-            searchMode: searchQuery ? 'message' : 'file',
-            filePath: filePath 
-        });
-        
-        console.log('[SCM] Git log result:', result);
+      // API Call
+      console.log('[SCM] Calling getGitLog with:', {
+          folder: currentWikiFolder,
+          page: currentPage,
+          searchQuery,
+          filePath
+      });
+      
+      const result = await win.service.git.callGitOp('getGitLog', currentWikiFolder!, {
+          page: currentPage,
+          pageSize: 50,
+          searchQuery: searchQuery || undefined,
+          searchMode: searchQuery ? 'message' : 'file',
+          filePath: filePath 
+      });
+      
+      console.log('[SCM] Git log result:', result);
 
-        newCommits.push(...(result as IGitLogResult).entries);
-        totalCount = (result as IGitLogResult).totalCount;
-      }
+      newCommits.push(...(result as IGitLogResult).entries);
+      totalCount = (result as IGitLogResult).totalCount;
       
       // Update internal state
       currentCommits = newCommits;
@@ -125,6 +110,26 @@ export const startup = () => {
            title: commitsTitle,
            list: hashList
       });
+
+      // Check if current tiddler file has uncommitted changes
+      try {
+        const uncommittedFiles = await win.service.git.callGitOp('getCommitFiles', currentWikiFolder!, '');
+        const absoluteFilePath = await win.service.wiki.getTiddlerFilePath(viewingTiddler);
+        
+        if (absoluteFilePath) {
+          const normalize = (p: string) => p.replace(/\\/g, '/');
+          const folder = normalize(currentWikiFolder!);
+          const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
+          
+          const hasUncommitted = uncommittedFiles.some(f => normalize(f.path) === relativePath);
+          $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, hasUncommitted ? 'yes' : 'no');
+        } else {
+          $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, 'no');
+        }
+      } catch (error) {
+        console.error('[SCM] Error checking uncommitted changes:', error);
+        $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, 'no');
+      }
 
 
       // Batch add commit details with new path structure
@@ -151,14 +156,89 @@ export const startup = () => {
     }
   });
 
+  $tw.rootWidget.addEventListener('tm-scm-load-uncommitted', async (event) => {
+    const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
+    if (!viewingTiddler) return;
+
+    console.log('[SCM] Loading uncommitted changes for:', viewingTiddler);
+
+    $tw.wiki.setText('$:/state/scm/selected-commit', 'text', undefined, 'uncommitted');
+    const filesTitle = `$:/temp/source-control-management/${viewingTiddler}/files`;
+    
+    $tw.wiki.deleteTiddler(filesTitle);
+    $tw.wiki.setText('$:/state/scm/loading-files', 'text', undefined, 'yes');
+
+    const workspace = win?.meta?.()?.workspace;
+    const wikiFolderLocation = workspace?.wikiFolderLocation;
+    if (!wikiFolderLocation) return;
+
+    try {
+      // Get uncommitted files using getCommitFiles with empty commitHash
+      console.log('[SCM] Calling getCommitFiles with empty hash for uncommitted changes');
+      const files = await win.service.git.callGitOp('getCommitFiles', wikiFolderLocation!, '');
+      console.log('[SCM] Uncommitted files:', files);
+
+      const fileTiddlers = files.map((file) => {
+        const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
+        return {
+          title: safeTitle,
+          text: file.path,
+          status: file.status,
+          path: file.path,
+        };
+      });
+
+      fileTiddlers.forEach((t) => $tw.wiki.addTiddler(t));
+
+      $tw.wiki.addTiddler({
+        title: filesTitle,
+        list: fileTiddlers.map((t) => t.title),
+      });
+      
+      // Store has uncommitted flag
+      $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, files.length > 0 ? 'yes' : 'no');
+
+      // Auto-select the viewing tiddler's file if present
+      const absoluteFilePath = await win.service.wiki.getTiddlerFilePath(viewingTiddler);
+      let matchFound = false;
+      if (absoluteFilePath) {
+         const normalize = (p: string) => p.replace(/\\/g, '/');
+         const folder = normalize(wikiFolderLocation!);
+         const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
+         
+         const match = files.find(f => normalize(f.path) === relativePath);
+         
+         if (match) {
+             console.log('[SCM] Auto-selecting uncommitted file:', match.path);
+             $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, match.path);
+             $tw.wiki.setText('$:/state/scm/show-file-list', 'text', undefined, 'no');
+             // For uncommitted, load working copy
+             $tw.rootWidget.dispatchEvent({ type: 'tm-scm-load-working-copy', param: match.path });
+             matchFound = true;
+         }
+      } 
+      
+      if (!matchFound) {
+          $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, '');
+          $tw.wiki.setText('$:/state/scm/show-file-list', 'text', undefined, 'yes');
+      }
+      
+    } catch (error) {
+      console.error('[SCM] Error loading uncommitted changes:', error);
+      console.error('[SCM] Error details:', {
+        message: error?.message,
+        stack: error?.stack,
+        wikiFolderLocation
+      });
+    } finally {
+      $tw.wiki.setText('$:/state/scm/loading-files', 'text', undefined, 'no');
+    }
+  });
 
   $tw.rootWidget.addEventListener('tm-scm-load-files', async (event) => {
     const commitHash = event.param || event.tiddlerTitle;
     const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
     if (!commitHash || !viewingTiddler) return;
-
-    // Check debug mode
-    const isDebug = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/configs/debug') === 'yes';
 
     console.log('[SCM] Loading files for commit:', commitHash, 'viewing:', viewingTiddler);
 
@@ -171,23 +251,13 @@ export const startup = () => {
 
     const workspace = win?.meta?.()?.workspace;
     const wikiFolderLocation = workspace?.wikiFolderLocation;
-    if (!isDebug && !wikiFolderLocation) return;
+    if (!wikiFolderLocation) return;
     
     console.log('[SCM] Using WikiFolder:', wikiFolderLocation);
 
     try {
-      let files: IFileWithStatus[];
-      if (isDebug) {
-          console.log('[SCM] Debug Mode: Using Mock Files');
-          await new Promise(r => setTimeout(r, 500));
-          files = [
-              { path: 'tiddlers/System.tid', status: 'modified' },
-              { path: 'tiddlers/NewFeature.tid', status: 'added' },
-              { path: 'readme.md', status: 'modified' }
-          ];
-      } else {
-          files = await win.service.git.callGitOp('getCommitFiles', wikiFolderLocation!, commitHash);
-      }
+      console.log('[SCM] Calling getCommitFiles with:', { wikiFolderLocation, commitHash });
+      const files = await win.service.git.callGitOp('getCommitFiles', wikiFolderLocation!, commitHash);
       
       console.log('[SCM] Loaded files:', files);
 
@@ -211,15 +281,15 @@ export const startup = () => {
       console.log('[SCM] Saved file list to:', filesTitle, 'List:', fileTiddlers.map((t) => t.title));
       
       // Auto-select logic
-      const absoluteFilePath = isDebug ? 'tiddlers/System.tid' : await win.service.wiki.getTiddlerFilePath(viewingTiddler);
+      const absoluteFilePath = await win.service.wiki.getTiddlerFilePath(viewingTiddler);
       let matchFound = false;
       if (absoluteFilePath) {
          // Normalize paths to forward slashes for comparison
          const normalize = (p: string) => p.replace(/\\/g, '/');
-         const folder = isDebug ? '' : normalize(wikiFolderLocation!);
+         const folder = normalize(wikiFolderLocation!);
          const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
          
-         const match = files.find(f => normalize(f.path) === relativePath || (isDebug && f.path.includes('System')));
+         const match = files.find(f => normalize(f.path) === relativePath);
          
          if (match) {
              console.log('[SCM] Auto-selecting file:', match.path);
@@ -238,8 +308,71 @@ export const startup = () => {
       
     } catch (error) {
       console.error('[SCM] Error loading files:', error);
+      console.error('[SCM] Error details:', {
+        message: error?.message,
+        stack: error?.stack,
+        commitHash,
+        wikiFolderLocation
+      });
     } finally {
       $tw.wiki.setText('$:/state/scm/loading-files', 'text', undefined, 'no');
+    }
+  });
+
+  $tw.rootWidget.addEventListener('tm-scm-load-working-copy', async (event) => {
+    const filePath = event.param;
+    const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
+
+    if (!filePath || !viewingTiddler) return;
+
+    $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, filePath);
+    $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'yes');
+
+    try {
+      // For working copy, use the current tiddler content
+      const originalTitle = getTiddlerTitle(filePath);
+      const currentTiddler = $tw.wiki.getTiddler(originalTitle);
+      
+      if (!currentTiddler) {
+        throw new Error(`Tiddler not found: ${originalTitle}`);
+      }
+      
+      const content = currentTiddler.fields.text || '';
+      
+      // Parse fields from the tiddler - preserve TiddlyWiki date format
+      const fields: Record<string, string> = {};
+      Object.keys(currentTiddler.fields).forEach(key => {
+        if (key !== 'text' && key !== 'title') {
+          const value = currentTiddler.fields[key];
+          // Keep string values as-is (they're already in TiddlyWiki format)
+          if (typeof value === 'string') {
+            fields[key] = value;
+          }
+          // Convert Date objects to TiddlyWiki format (YYYYMMDDhhmmssSSS)
+          else if (value instanceof Date) {
+            fields[key] = $tw.utils.stringifyDate(value);
+          }
+          // For other types, convert to string without JSON encoding
+          else if (value !== undefined && value !== null) {
+            fields[key] = String(value);
+          }
+        }
+      });
+
+      const tempTitle = `$:/temp/source-control-management/${viewingTiddler}/file-content`;
+      
+      $tw.wiki.addTiddler({
+        title: tempTitle,
+        text: content,
+        'scm-original-path': filePath,
+        'scm-original-title': originalTitle,
+        'scm-current-content': content,
+        'scm-fields': JSON.stringify(fields),
+      });
+    } catch (error) {
+      console.error('[SCM] Error loading working copy:', error);
+    } finally {
+      $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'no');
     }
   });
 
@@ -249,29 +382,48 @@ export const startup = () => {
     const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
     const workspace = win?.meta?.()?.workspace;
     const wikiFolderLocation = workspace?.wikiFolderLocation;
-    
-    // Check debug mode
-    const isDebug = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/configs/debug') === 'yes';
 
-    if (!filePath || !commitHash || (!isDebug && !wikiFolderLocation) || !viewingTiddler) return;
+    if (!filePath || !commitHash || !wikiFolderLocation || !viewingTiddler) return;
 
     $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, filePath);
     $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'yes');
 
     try {
-      let content = '';
-      if (isDebug) {
-          console.log('[SCM] Debug Mode: Using Mock Content');
-          await new Promise(r => setTimeout(r, 300));
-          content = `! Mock Content for ${filePath}\n\nThis is a mocked content for testing purposes.\nIt simulates a file revision from history.`;
-      } else {
-        const result = await win.service.git.callGitOp(
-            'getFileContent',
-            wikiFolderLocation!,
-            commitHash,
-            filePath,
-        );
-        content = result.content;
+      const result = await win.service.git.callGitOp(
+          'getFileContent',
+          wikiFolderLocation!,
+          commitHash,
+          filePath,
+      );
+      const content = result.content;
+
+      // Parse .tid file format: fields separated by newlines, empty line before text
+      let fields: Record<string, string> = {};
+      let textContent = content;
+      
+      if (filePath.endsWith('.tid')) {
+        const lines = content.split('\n');
+        let i = 0;
+        
+        // Parse fields (key: value format)
+        while (i < lines.length) {
+          const line = lines[i];
+          if (line.trim() === '') {
+            // Empty line marks end of fields
+            i++;
+            break;
+          }
+          const colonIndex = line.indexOf(':');
+          if (colonIndex > 0) {
+            const key = line.substring(0, colonIndex).trim();
+            const value = line.substring(colonIndex + 1).trim();
+            fields[key] = value;
+          }
+          i++;
+        }
+        
+        // Rest is text content
+        textContent = lines.slice(i).join('\n');
       }
 
       const tempTitle = `$:/temp/source-control-management/${viewingTiddler}/file-content`;
@@ -281,10 +433,11 @@ export const startup = () => {
       
       $tw.wiki.addTiddler({
         title: tempTitle,
-        text: content,
+        text: textContent,
         'scm-original-path': filePath,
         'scm-original-title': originalTitle,
-        'scm-current-content': currentContent, // Store current content for diff
+        'scm-current-content': currentContent,
+        'scm-fields': JSON.stringify(fields), // Store fields as JSON
       });
     } catch (error) {
       console.error(error);
@@ -303,7 +456,9 @@ export const startup = () => {
 
     const originalTitle = tempTiddler.fields['scm-original-title'];
     if (typeof originalTitle === 'string' && originalTitle) {
-      const confirmMessage = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/language/FileContent/ApplyConfirm') || 'Are you sure?';
+      const confirmMessage = $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/language/zh-Hans/FileContent/ApplyConfirm') 
+        || $tw.wiki.getTiddlerText('$:/plugins/linonetwo/source-control-management/language/en-GB/FileContent/ApplyConfirm')
+        || 'Are you sure you want to apply this historical version? This will replace the current content.';
       if (!confirm(confirmMessage)) return;
 
       const existing = $tw.wiki.getTiddler(originalTitle);

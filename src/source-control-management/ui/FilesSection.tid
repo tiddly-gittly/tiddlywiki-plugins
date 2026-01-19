@@ -17,38 +17,85 @@ type: text/vnd.tiddlywiki
           <div class="tidgi-scm-loading"><<lingo FileContent/Loading>></div>
         </$list>
 
+        <$wikify name="tooltipOpenInStory" text="<<lingo FileContent/OpenInStory>>">
+        <$wikify name="tooltipApply" text="<<lingo FileContent/Apply>>">
+        <$wikify name="tooltipShowFiles" text="<<lingo FileContent/ShowOtherFiles>>">
+        <$wikify name="tooltipHideFiles" text="<<lingo FileContent/HideOtherFiles>>">
+        <$wikify name="tooltipShowDiff" text="<<lingo FileContent/ShowDiff>>">
+        <$wikify name="tooltipShowRendered" text="<<lingo FileContent/ShowRendered>>">
+        <$wikify name="tooltipShowMetadata" text="<<lingo FileContent/ShowMetadata>>">
         <div class="tidgi-scm-button-bar">
-          <$button class="tidgi-scm-btn" message="tm-open-in-story" param={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}}>
-            <<lingo FileContent/OpenInStory>>
+          <$button class="tidgi-scm-btn tc-btn-invisible" message="tm-open-in-story" param={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} tooltip=<<tooltipOpenInStory>>>
+            {{$:/plugins/linonetwo/source-control-management/images/open-in-story}}
             <$action-sendmessage $message="tm-add-to-history" $param={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} />
             <$action-navigate $to={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} />
           </$button>
 
-          <$button class="tidgi-scm-btn" message="tm-scm-apply-content">
-            <<lingo FileContent/Apply>>
+          <$button class="tidgi-scm-btn tc-btn-invisible" message="tm-scm-apply-content" tooltip=<<tooltipApply>>>
+            {{$:/plugins/linonetwo/source-control-management/images/apply-version}}
           </$button>
 
-          <$button class="tidgi-scm-btn">
-            <$list filter="[[$:/state/scm/show-file-list]text[yes]]">
+          <$list filter="[[$:/state/scm/show-file-list]text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipHideFiles>>>
               <$action-setfield $tiddler="$:/state/scm/show-file-list" text="no" />
-              <<lingo FileContent/HideOtherFiles>>
-            </$list>
-            <$list filter="[[$:/state/scm/show-file-list]!text[yes]]">
+              {{$:/plugins/linonetwo/source-control-management/images/view-files}}
+            </$button>
+          </$list>
+          <$list filter="[[$:/state/scm/show-file-list]!text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowFiles>>>
               <$action-setfield $tiddler="$:/state/scm/show-file-list" text="yes" />
-              <<lingo FileContent/ShowOtherFiles>>
-            </$list>
-          </$button>
+              {{$:/plugins/linonetwo/source-control-management/images/view-files}}
+            </$button>
+          </$list>
 
-          <$checkbox tiddler="$:/state/scm/show-diff" field="text" checked="yes" unchecked="no" class="tidgi-scm-checkbox">
-            <<lingo FileContent/ShowDiff>>
-          </$checkbox>
+          <$list filter="[[$:/state/scm/show-diff]text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowDiff>>>
+              <$action-setfield $tiddler="$:/state/scm/show-diff" text="no" />
+              {{$:/plugins/linonetwo/source-control-management/images/diff}}
+            </$button>
+          </$list>
+          <$list filter="[[$:/state/scm/show-diff]!text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowDiff>>>
+              <$action-setfield $tiddler="$:/state/scm/show-diff" text="yes" />
+              {{$:/plugins/linonetwo/source-control-management/images/diff}}
+            </$button>
+          </$list>
           
           <$list filter="[[$:/state/scm/show-diff]!text[yes]]" variable="null">
-            <$checkbox tiddler="$:/state/scm/show-rendered" field="text" checked="yes" unchecked="no" class="tidgi-scm-checkbox">
-              <<lingo FileContent/ShowRendered>>
-            </$checkbox>
+            <$list filter="[[$:/state/scm/show-rendered]text[yes]]" variable="null">
+              <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowRendered>>>
+                <$action-setfield $tiddler="$:/state/scm/show-rendered" text="no" />
+                {{$:/core/images/preview-open}}
+              </$button>
+            </$list>
+            <$list filter="[[$:/state/scm/show-rendered]!text[yes]]" variable="null">
+              <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowRendered>>>
+                <$action-setfield $tiddler="$:/state/scm/show-rendered" text="yes" />
+                {{$:/core/images/preview-open}}
+              </$button>
+            </$list>
+          </$list>
+          
+          <$list filter="[[$:/state/scm/show-metadata]text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowMetadata>>>
+              <$action-setfield $tiddler="$:/state/scm/show-metadata" text="no" />
+              {{$:/core/images/info-button}}
+            </$button>
+          </$list>
+          <$list filter="[[$:/state/scm/show-metadata]!text[yes]]" variable="null">
+            <$button class="tidgi-scm-btn tc-btn-invisible" tooltip=<<tooltipShowMetadata>>>
+              <$action-setfield $tiddler="$:/state/scm/show-metadata" text="yes" />
+              {{$:/core/images/info-button}}
+            </$button>
           </$list>
         </div>
+        </$wikify>
+        </$wikify>
+        </$wikify>
+        </$wikify>
+        </$wikify>
+        </$wikify>
+        </$wikify>
 
         <$list filter="[[$:/state/scm/show-diff]text[yes]]" variable="null">
           <$diff-text
@@ -62,9 +109,49 @@ type: text/vnd.tiddlywiki
             <div class="tidgi-scm-content-preview tidgi-scm-rendered-content">
               <$transclude tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="text" mode="block" />
             </div>
+            
+            <!-- Metadata Table -->
+            <$list filter="[[$:/state/scm/show-metadata]text[yes]]" variable="null">
+              <$set name="fieldsJson" tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="scm-fields">
+                <$list filter="[<fieldsJson>!is[blank]]" variable="null">
+                  <div class="tidgi-scm-metadata-section">
+                    <table class="tidgi-scm-metadata-table">
+                      <tbody>
+                        <$list filter="[<fieldsJson>jsonindexes[]]" variable="fieldName">
+                          <tr>
+                            <td class="tidgi-scm-field-name"><$text text=<<fieldName>> /></td>
+                            <td class="tidgi-scm-field-value"><$text text={{{ [<fieldsJson>jsonget<fieldName>] }}} /></td>
+                          </tr>
+                        </$list>
+                      </tbody>
+                    </table>
+                  </div>
+                </$list>
+              </$set>
+            </$list>
           </$list>
           <$list filter="[[$:/state/scm/show-rendered]!text[yes]]" variable="null">
             <pre class="tidgi-scm-content-preview"><$view tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="text" /></pre>
+            
+            <!-- Metadata Table for code view -->
+            <$list filter="[[$:/state/scm/show-metadata]text[yes]]" variable="null">
+              <$set name="fieldsJson" tiddler={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/file-content]] }}} field="scm-fields">
+                <$list filter="[<fieldsJson>!is[blank]]" variable="null">
+                  <div class="tidgi-scm-metadata-section">
+                    <table class="tidgi-scm-metadata-table">
+                      <tbody>
+                        <$list filter="[<fieldsJson>jsonindexes[]]" variable="fieldName">
+                          <tr>
+                            <td class="tidgi-scm-field-name"><$text text=<<fieldName>> /></td>
+                            <td class="tidgi-scm-field-value"><$text text={{{ [<fieldsJson>jsonget<fieldName>] }}} /></td>
+                          </tr>
+                        </$list>
+                      </tbody>
+                    </table>
+                  </div>
+                </$list>
+              </$set>
+            </$list>
           </$list>
         </$list>
       </$list>
@@ -88,15 +175,14 @@ type: text/vnd.tiddlywiki
             <$set name="filesTiddler" value={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/files]] }}}>
               <$list filter="[list<filesTiddler>]" variable="fileTiddler">
                 <$tiddler tiddler=<<fileTiddler>>>
-                  <div class={{{ [[tidgi-scm-file-item]] [[$:/state/scm/selected-file]text{!!path}then[selected]] +[join[ ]] }}}>
-                    <$button class="tidgi-scm-file-button" message="tm-scm-load-content" param={{!!path}}>
-                      <$action-setfield $tiddler="$:/state/scm/show-file-list" text="no" />
+                  <$eventcatcher $click="""<$action-sendmessage $message='tm-scm-load-content' $param={{!!path}} /><$action-setfield $tiddler='$:/state/scm/show-file-list' text='no' />""">
+                    <div class={{{ [[tidgi-scm-file-item]] [[$:/state/scm/selected-file]text{!!path}then[selected]] +[join[ ]] }}}>
                       <span class={{{ [[tidgi-scm-file-status]] [[tidgi-scm-status-]addsuffix{!!status}] +[join[ ]] }}}>
                         <$view field="status" />
                       </span>
                       <span class="tidgi-scm-file-name"><$view field="path" /></span>
-                    </$button>
-                  </div>
+                    </div>
+                  </$eventcatcher>
                 </$tiddler>
               </$list>
             </$set>

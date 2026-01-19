@@ -4,6 +4,7 @@ Name: 版本历史
 Description: 查看和管理 Git 版本历史，支持提交搜索和文件内容查看。
 SideBarTab/Caption: 历史记录
 SideBarTab/Description: 查看和管理 Git 版本历史
+History/SectionTitle: 历史提交
 ViewTiddler/Button: 查看
 Search/Placeholder: 搜索提交消息...
 Search/Button: 搜索
@@ -26,6 +27,7 @@ FileContent/ShowDiff: 显示差异
 FileContent/ShowRendered: 渲染视图
 FileContent/ShowOtherFiles: 查看其他文件
 FileContent/HideOtherFiles: 隐藏其他文件
+FileContent/ShowMetadata: 切换元信息显示
 Configs/Caption: 设置
 Configs/Debug/Caption: 调试模式
 Configs/Debug/Description: 启用调试模式以使用模拟数据测试 UI，无需真实 Git 后端。

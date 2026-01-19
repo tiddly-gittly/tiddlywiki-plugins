@@ -7,89 +7,30 @@ description: <<lingo "SideBarTab/Description" "$:/plugins/linonetwo/source-contr
 \define lingo-base() $:/plugins/linonetwo/source-control-management/language/
 
 <div class="tidgi-scm-history-container">
-  
   <!-- API Error Check -->
-  <$list filter="[[$:/plugins/linonetwo/source-control-management/configs/debug]!text[yes]]">
-    <$list filter="[[$:/info/tidgi/git-api-available]!text[yes]]">
-      <div class="tidgi-scm-error">
-        Git API not available. Please use [ext[TidGi-Desktop|https://github.com/tiddly-gittly/TidGi-Desktop/]] 0.13.0+
-      </div>
-    </$list>
-  </$list>
-  
-  <!-- Debug Mode Data Injector -->
-  <$list filter="[[$:/plugins/linonetwo/source-control-management/configs/debug]text[yes]]">
-    <div class="tidgi-scm-debug-mode" style="background:#fff3e0; color:orange; font-size:0.8em; text-align:center;">
-       ⚠ DEBUG MODE ACTIVE ⚠
-       <$button>
-         Load Sample Data
-         <$action-setfield $tiddler="$:/state/scm/viewing-tiddler" text="MockTiddler" />
-         <$action-setfield $tiddler="$:/state/scm/selected-commit" text="mock1" />
-         <$action-setfield $tiddler="$:/state/scm/selected-file" text="tiddlers/System.tid" />
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/commits" list="mock1 mock2 mock3" />
-         
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/commit/mock1" 
-           text="Fix: layout alignment on mobile devices" 
-           author="LinOnetwo" 
-           date="20231024103000" />
-           
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/commit/mock2" 
-           text="Feat: add new feature" 
-           author="TidGi" 
-           date="20231023090000" />
-           
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/commit/mock3" 
-           text="Chore: dependency update" 
-           author="Bot" 
-           date="20231022121500" />
-
-         <!-- Files for mock1 -->
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/files" 
-           list="$:/temp/source-control-management/MockTiddler/file/tiddlers%2FSystem.tid $:/temp/source-control-management/MockTiddler/file/tiddlers%2FNewFeature.tid $:/temp/source-control-management/MockTiddler/file/readme.md" />
-         
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/file/tiddlers%2FSystem.tid" 
-           path="tiddlers/System.tid" 
-           status="modified" />
-           
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/file/tiddlers%2FNewFeature.tid" 
-           path="tiddlers/NewFeature.tid" 
-           status="added" />
-         
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/file/readme.md" 
-           path="readme.md" 
-           status="modified" />
-         
-         <!-- Mock file content -->
-         <$action-setfield $tiddler="$:/temp/source-control-management/MockTiddler/file-content" 
-           text="! Mock Content for tiddlers/System.tid
-
-This is a mocked content for testing purposes.
-It simulates a file revision from history.
-
-!! Example Section
-
-* Item 1
-* Item 2
-* Item 3
-
-```javascript
-console.log('Hello from history!');
-```
-"
-           scm-original-path="tiddlers/System.tid"
-           scm-original-title="System"
-           scm-current-content="Current content of System tiddler" />
-         
-         <$action-sendmessage $message="tm-scm-load-files" param="mock1" />
-       </$button>
+  <$list filter="[[$:/info/tidgi/git-api-available]!text[yes]]">
+    <div class="tidgi-scm-error">
+      Git API not available. Please use [ext[TidGi-Desktop|https://github.com/tiddly-gittly/TidGi-Desktop/]] 0.13.0+
     </div>
   </$list>
 
-  {{$:/plugins/linonetwo/source-control-management/FilesSection}}
-  
   {{$:/plugins/linonetwo/source-control-management/TiddlerInputSection}}
   
-  {{$:/plugins/linonetwo/source-control-management/SearchSection}}
+  {{$:/plugins/linonetwo/source-control-management/FilesSection}}
+  
+  <!-- History Section Separator (Only show when commits loaded) -->
+  <$list filter="[[$:/state/scm/viewing-tiddler]get[text]]" variable="viewingTiddler">
+    <$set name="commitsTitle" value={{{ [[$:/temp/source-control-management/]addsuffix<viewingTiddler>addsuffix[/commits]] }}}>
+      <$list filter="[<commitsTitle>has[list]]" variable="null">
+        <div class="tidgi-scm-history-separator">
+          <hr class="tidgi-scm-divider" />
+          <div class="tidgi-scm-section-title"><<lingo History/SectionTitle>></div>
+        </div>
+        
+        {{$:/plugins/linonetwo/source-control-management/SearchSection}}
+      </$list>
+    </$set>
+  </$list>
   
   {{$:/plugins/linonetwo/source-control-management/CommitListSection}}
 

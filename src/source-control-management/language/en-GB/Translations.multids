@@ -4,6 +4,7 @@ Name: Version History
 Description: View and manage Git version history with commit search and file content inspection.
 SideBarTab/Caption: History
 SideBarTab/Description: View and manage Git version history
+History/SectionTitle: History Commits
 ViewTiddler/Button: View
 Search/Placeholder: Search commits by message...
 Search/Button: Search
@@ -26,6 +27,7 @@ FileContent/ShowDiff: Show Diff
 FileContent/ShowRendered: Rendered View
 FileContent/ShowOtherFiles: View other files
 FileContent/HideOtherFiles: Hide other files
+FileContent/ShowMetadata: Toggle Metadata Display
 Configs/Caption: Settings
 Configs/Debug/Caption: Debug Mode
 Configs/Debug/Description: Enable debug mode to use mock data for testing UI without real Git backend.

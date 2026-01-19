@@ -7,15 +7,17 @@ type: text/vnd.tiddlywiki
 <div class="tidgi-scm-input-section">
   <$edit-text tiddler="$:/state/scm/target-tiddler" default={{$:/temp/focussedTiddler}} tag="input" class="tidgi-scm-tiddler-input tc-edit-texteditor" />
   
-  <$button class="tidgi-scm-view-button">
-    <$list filter="[[$:/state/scm/target-tiddler]has[text]]" variable="ignore">
-      <$action-setfield $tiddler="$:/state/scm/viewing-tiddler" text={{$:/state/scm/target-tiddler}} />
-    </$list>
-    <$list filter="[[$:/state/scm/target-tiddler]!has[text]]" variable="ignore">
-      <$action-setfield $tiddler="$:/state/scm/viewing-tiddler" text={{$:/temp/focussedTiddler}} />
-    </$list>
-    <$action-sendmessage $message="tm-scm-reload" />
-    <$action-sendmessage $message="tm-scm-auto-select-first-commit" />
-    <<lingo ViewTiddler/Button>>
-  </$button>
+  <$wikify name="tooltipView" text="<<lingo ViewTiddler/Button>>">
+    <$button class="tidgi-scm-view-button tc-btn-invisible" tooltip=<<tooltipView>>>
+      <$list filter="[[$:/state/scm/target-tiddler]has[text]]" variable="ignore">
+        <$action-setfield $tiddler="$:/state/scm/viewing-tiddler" text={{$:/state/scm/target-tiddler}} />
+      </$list>
+      <$list filter="[[$:/state/scm/target-tiddler]!has[text]]" variable="ignore">
+        <$action-setfield $tiddler="$:/state/scm/viewing-tiddler" text={{$:/temp/focussedTiddler}} />
+      </$list>
+      <$action-sendmessage $message="tm-scm-reload" />
+      <$action-sendmessage $message="tm-scm-auto-select-first-commit" />
+      {{$:/plugins/linonetwo/source-control-management/images/zoom-in}}
+    </$button>
+  </$wikify>
 </div>

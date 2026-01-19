@@ -5,8 +5,8 @@
   "author": "LinOnetwo",
   "core-version": ">=5.1.22",
   "plugin-type": "plugin",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "stability": "STABILITY_1_EXPERIMENTAL",
   "dependencies": "$:/plugins/Gk0Wk/focused-tiddler",
-  "list": "readme tree startup.js info.js git-commit-list.js"
+  "list": "readme tree"
 }

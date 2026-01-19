@@ -5,17 +5,21 @@ type: text/vnd.tiddlywiki
 
 <!-- Search Section -->
 <div class="tidgi-scm-search-section">
-  <$wikify name="searchPlaceholder" text=<<lingo Search/Placeholder>>>
+  <$wikify name="searchPlaceholder" text="<<lingo Search/Placeholder>>">
     <$edit-text tiddler="$:/state/scm/search" default="" placeholder=<<searchPlaceholder>> tag="input" class="tidgi-scm-search-input tc-edit-texteditor" />
   </$wikify>
   
-  <$button class="tc-btn-invisible" message="tm-scm-reload">
-    <<lingo Search/Button>>
-  </$button>
+  <$wikify name="tooltipSearch" text="<<lingo Search/Button>>">
+    <$button class="tc-btn-invisible" message="tm-scm-reload" tooltip=<<tooltipSearch>>>
+      {{$:/plugins/linonetwo/source-control-management/images/search}}
+    </$button>
+  </$wikify>
   
-  <$button class="tc-btn-invisible">
-    <$action-setfield $tiddler="$:/state/scm/search" text="" />
-    <$action-sendmessage $message="tm-scm-reload" />
-    <<lingo Search/Clear>>
-  </$button>
+  <$wikify name="tooltipClear" text="<<lingo Search/Clear>>">
+    <$button class="tc-btn-invisible" tooltip=<<tooltipClear>>>
+      <$action-setfield $tiddler="$:/state/scm/search" text="" />
+      <$action-sendmessage $message="tm-scm-reload" />
+      {{$:/plugins/linonetwo/source-control-management/images/clear}}
+    </$button>
+  </$wikify>
 </div>
