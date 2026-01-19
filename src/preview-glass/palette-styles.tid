@@ -1,0 +1,68 @@
+title: $:/plugins/linonetwo/preview-glass/palette-styles
+tags: $:/tags/Stylesheet
+type: text/css
+
+/* Preview Glass - Palette-based Styles */
+/* Uses standard TiddlyWiki palette colors for theme compatibility */
+
+.tc-preview-popup {
+	background: <<colour page-background>>;
+	color: <<colour foreground>>;
+	border: 1px solid <<colour table-border>>;
+	box-shadow: 0 10px 40px <<colour dropdown-tab-background-selected>>;
+}
+
+.tc-preview-header {
+	border-bottom: 1px solid <<colour table-border>>;
+}
+
+.tc-preview-title {
+	color: <<colour tiddler-title-foreground>>;
+}
+
+.tc-preview-content {
+	color: <<colour foreground>>;
+}
+
+.tc-preview-excerpt {
+	background: <<colour notification-background>>;
+	border-left: 3px solid <<colour primary>>;
+}
+
+.tc-preview-text::after {
+	background: linear-gradient(to bottom, transparent, <<colour page-background>>);
+}
+
+.tc-preview-backlinks,
+.tc-preview-info {
+	background: <<colour notification-background>>;
+}
+
+.tc-preview-plugin-info {
+	color: <<colour muted-foreground>>;
+}
+
+.tc-preview-fields tr {
+	border-bottom: 1px solid <<colour table-border>>;
+}
+
+.tc-preview-field-name {
+	color: <<colour muted-foreground>>;
+}
+
+.tc-preview-field-value {
+	color: <<colour foreground>>;
+}
+
+/* Scrollbar styling */
+.tc-preview-popup-inner::-webkit-scrollbar-track {
+	background: <<colour notification-background>>;
+}
+
+.tc-preview-popup-inner::-webkit-scrollbar-thumb {
+	background: <<colour muted-foreground>>;
+}
+
+.tc-preview-popup-inner::-webkit-scrollbar-thumb:hover {
+	background: <<colour foreground>>;
+}

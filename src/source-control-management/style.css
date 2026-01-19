@@ -1,3 +1,6 @@
+/* SCM Plugin Styles - Structural CSS */
+/* Colors are defined in palette-styles.tid using TiddlyWiki palette system */
+
 /* History Container */
 .tidgi-scm-history-container {
   display: flex;
@@ -8,10 +11,8 @@
 
 .tidgi-scm-error {
   padding: 0.5rem;
-  background-color: #fee;
-  border: 1px solid #fcc;
+  border: 1px solid;
   border-radius: 4px;
-  color: #c33;
 }
 
 /* Search Section */
@@ -19,7 +20,7 @@
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid;
   align-items: center;
 }
 
@@ -27,7 +28,7 @@
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid;
   align-items: center;
 }
 
@@ -47,12 +48,7 @@
 }
 
 .tidgi-scm-commit-item {
-  border-bottom: 1px solid #eee;
-}
-
-.tidgi-scm-commit-item.selected .tidgi-scm-commit-button {
-  background-color: #e3f2fd;
-  border-left-color: #2196f3;
+  border-bottom: 1px solid;
 }
 
 .tidgi-scm-file-button {
@@ -73,23 +69,7 @@
 .tidgi-scm-commit-message {
   font-weight: 600;
   margin-bottom: 0.2rem;
-  color: #333;
-  /* Ensure long text doesn't break layout */
   word-break: break-word;
-}
-
-
-.tidgi-scm-file-button {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: left;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
 }
 
 /* Use standard button styles or custom if needed */
@@ -100,7 +80,7 @@
 .tidgi-scm-search-input {
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid;
   border-radius: 4px;
 }
 
@@ -108,36 +88,29 @@
 .tidgi-scm-commit-section {
   flex: 1;
   overflow-y: auto;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid;
   max-height: 300px;
 }
 
 /* Uncommitted Changes */
 .tidgi-scm-uncommitted-item {
   padding: 0.5rem 0.75rem 0.5rem 1.75rem;
-  background: #fffbeb;
-  border-bottom: 2px solid #fbbf24;
+  border-bottom: 2px solid;
   cursor: pointer !important;
   transition: background-color 0.15s ease;
   position: relative;
 }
 
 .tidgi-scm-uncommitted-item::before {
-  content: "·";
+  content: "";
   position: absolute;
   left: 0.5rem;
   font-size: 1.5em;
   line-height: 1;
-  color: #f59e0b;
-}
-
-.tidgi-scm-uncommitted-item:hover {
-  background: #fef3c7;
 }
 
 .tidgi-scm-uncommitted-item.selected {
-  background: #fef3c7;
-  border-left: 3px solid #f59e0b;
+  border-left: 3px solid;
   padding-left: calc(1.75rem - 3px);
 }
 
@@ -148,7 +121,6 @@
 .tidgi-scm-uncommitted-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #92400e;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -156,7 +128,7 @@
 div.tidgi-scm-commit-item {
   padding: 0.5rem 0.75rem 0.5rem 1.75rem;
   border: none;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid;
   background: transparent;
   transition: background-color 0.15s ease;
   cursor: pointer !important;
@@ -173,25 +145,19 @@ div.tidgi-scm-commit-item {
 }
 
 div.tidgi-scm-commit-item::before {
-  content: "·";
+  content: "";
   position: absolute;
   left: 0.5rem;
   font-size: 1.5em;
   line-height: 1;
-  color: #9ca3af;
 }
 
 div.tidgi-scm-commit-item:last-child {
   border-bottom: none;
 }
 
-div.tidgi-scm-commit-item:hover {
-  background-color: #f9fafb;
-}
-
 div.tidgi-scm-commit-item.selected {
-  background-color: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid;
   padding-left: calc(1.75rem - 3px);
 }
 
@@ -202,7 +168,6 @@ div.tidgi-scm-commit-item.selected::before {
 .tidgi-scm-commit-message {
   font-size: 0.9em;
   font-weight: 500;
-  color: #1f2937;
   margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -211,7 +176,6 @@ div.tidgi-scm-commit-item.selected::before {
 
 .tidgi-scm-commit-meta {
   font-size: 0.75em;
-  color: #6b7280;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -221,7 +185,6 @@ div.tidgi-scm-commit-item.selected::before {
 .tidgi-scm-empty {
   padding: 2rem;
   text-align: center;
-  color: #999;
 }
 
 .tidgi-scm-load-more {
@@ -229,8 +192,7 @@ div.tidgi-scm-commit-item.selected::before {
   width: 100%;
   padding: 0.5rem;
   text-align: center;
-  color: #2196f3;
-  border-top: 1px solid #eee;
+  border-top: 1px solid;
 }
 
 /* Content Section */
@@ -250,18 +212,14 @@ div.tidgi-scm-commit-item.selected::before {
 }
 
 /* History Section Separator */
-.tidgi-scm-history-separator {
-}
-
 .tidgi-scm-divider {
   border: none;
-  border-top: 2px solid #e5e7eb;
+  border-top: 2px solid;
 }
 
 .tidgi-scm-section-title {
   font-size: 0.9em;
   font-weight: 600;
-  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -269,31 +227,19 @@ div.tidgi-scm-commit-item.selected::before {
 
 .tidgi-scm-btn {
   padding: 5px 14px;
-  background-color: #fff;
-  border: 1px solid #d1d5db;
+  border: 1px solid;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85em;
   font-weight: 500;
-  color: #374151;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .tidgi-scm-btn.tc-btn-invisible {
   padding: 4px 8px;
-  background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid;
   box-shadow: none;
-}
-
-.tidgi-scm-btn.tc-btn-invisible:hover {
-  background-color: #f3f4f6;
-  border-color: #e5e7eb;
-}
-
-.tidgi-scm-btn.tc-btn-invisible:active {
-  background-color: #e5e7eb;
 }
 
 .tidgi-scm-btn svg {
@@ -302,21 +248,13 @@ div.tidgi-scm-commit-item.selected::before {
   fill: currentColor;
 }
 
-.tidgi-scm-btn:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-  color: #111827;
-}
-
 .tidgi-scm-btn:active {
-  background-color: #f3f4f6;
   transform: translateY(1px);
 }
 
 /* Files List Section */
 .tidgi-scm-files-section {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid;
   border-radius: 8px;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -327,11 +265,9 @@ div.tidgi-scm-commit-item.selected::before {
 .tidgi-scm-files-section h4 {
   margin: 0;
   padding: 0.5rem 0.75rem;
-  background: #f9fafb;
   font-size: 0.85em;
   font-weight: 600;
-  color: #4b5563;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -346,7 +282,7 @@ div.tidgi-scm-file-item {
   align-items: center;
   padding: 0.4rem 0.75rem 0.4rem 1.75rem;
   border: none;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid;
   background: transparent;
   cursor: pointer !important;
   transition: background-color 0.15s ease;
@@ -356,7 +292,6 @@ div.tidgi-scm-file-item {
   overflow-y: hidden;
   white-space: nowrap;
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
   gap: 0.75rem;
   font-family: inherit;
   font-size: inherit;
@@ -367,12 +302,11 @@ div.tidgi-scm-file-item {
 }
 
 div.tidgi-scm-file-item::before {
-  content: "·";
+  content: "";
   position: absolute;
   left: 0.5rem;
   font-size: 1.5em;
   line-height: 1;
-  color: #9ca3af;
 }
 
 div.tidgi-scm-file-item::-webkit-scrollbar {
@@ -384,25 +318,15 @@ div.tidgi-scm-file-item::-webkit-scrollbar-track {
 }
 
 div.tidgi-scm-file-item::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
   border-radius: 2px;
-}
-
-div.tidgi-scm-file-item::-webkit-scrollbar-thumb:hover {
-  background-color: #9ca3af;
 }
 
 div.tidgi-scm-file-item:last-child {
   border-bottom: none;
 }
 
-div.tidgi-scm-file-item:hover {
-  background-color: #f9fafb;
-}
-
 div.tidgi-scm-file-item.selected {
-  background-color: #eff6ff;
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid;
   padding-left: calc(1.75rem - 3px);
 }
 
@@ -416,7 +340,6 @@ div.tidgi-scm-file-item.selected::before {
   user-select: none;
   display: flex;
   align-items: center;
-  color: #6b7280;
 }
 
 /* Status Badges */
@@ -429,20 +352,19 @@ div.tidgi-scm-file-item.selected::before {
   font-size: 0.7rem;
   font-weight: 700;
   color: white;
-  min-width: 4.5em; /* Ensure consistent width */
+  min-width: 4.5em;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Status Colors */
-.tidgi-scm-status-modified { background-color: #f59e0b; } /* Amber-500 */
-.tidgi-scm-status-added    { background-color: #10b981; } /* Emerald-500 */
-.tidgi-scm-status-deleted  { background-color: #ef4444; } /* Red-500 */
-.tidgi-scm-status-renamed  { background-color: #3b82f6; } /* Blue-500 */
+/* Status Colors - Keep these as they are semantic */
+.tidgi-scm-status-modified { background-color: #f59e0b; }
+.tidgi-scm-status-added    { background-color: #10b981; }
+.tidgi-scm-status-deleted  { background-color: #ef4444; }
+.tidgi-scm-status-renamed  { background-color: #3b82f6; }
 
 .tidgi-scm-content-preview {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid;
   border-radius: 8px;
   padding: 1rem;
   margin-top: 0.5rem;
@@ -451,7 +373,6 @@ div.tidgi-scm-file-item.selected::before {
   word-wrap: break-word;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.85rem;
-  color: #1f2937;
   max-height: 500px;
   overflow-y: auto;
   line-height: 1.6;
@@ -462,16 +383,14 @@ div.tidgi-scm-file-item.selected::before {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   white-space: normal;
   padding: 1.5rem;
-  background-color: #fafafa;
 }
 
 /* Metadata Section */
 .tidgi-scm-metadata-section {
   margin-bottom: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid;
   border-radius: 6px;
   overflow: hidden;
-  background: white;
 }
 
 .tidgi-scm-metadata-table {
@@ -482,26 +401,20 @@ div.tidgi-scm-file-item.selected::before {
 
 .tidgi-scm-metadata-table td {
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid;
 }
 
 .tidgi-scm-metadata-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.tidgi-scm-metadata-table tbody tr:hover {
-  background: #f9fafb;
-}
-
 .tidgi-scm-field-name {
   font-weight: 500;
-  color: #6b7280;
   width: 120px;
   white-space: nowrap;
 }
 
 .tidgi-scm-field-value {
-  color: #1f2937;
   word-break: break-word;
 }
 
@@ -521,4 +434,3 @@ div.tidgi-scm-file-item.selected::before {
   margin-left: 1.5em;
   margin-bottom: 1em;
 }
-

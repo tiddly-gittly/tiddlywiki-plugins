@@ -1,17 +1,11 @@
 {
   "title": "$:/plugins/linonetwo/preview-glass",
-  "description": "Glassify Modification to the tobibeer/preview plugin, add inverse links, and make it auto-close",
+  "description": "Modern link hover preview with glass effect",
   "author": "LinOnetwo",
-  "version": "0.6.0",
-  "core-version": ">=5.1.22",
-  "list": "readme tree config motivation",
-  "source": "https://github.com/tobibeer/tw5-preview",
-  "documentation": "https://tobibeer.github.io/tw5-preview",
+  "version": "1.0.0",
+  "core-version": ">=5.2.0",
+  "list": "readme changelog tree config",
+  "source": "https://github.com/linonetwo/tiddlywiki-plugins",
   "plugin-type": "plugin",
-  "dependents": [
-    "$:/plugins/tobibeer/appear",
-    "$:/plugins/ooktech/dynamic-tables",
-    "$:/plugins/linonetwo/inverse-link-and-folder"
-  ],
-  "plugin-priority": "1"
+  "stability": "STABILITY_1_EXPERIMENTAL",
 }

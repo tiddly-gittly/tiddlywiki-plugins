@@ -1,0 +1,215 @@
+title: $:/plugins/linonetwo/source-control-management/palette-styles
+tags: $:/tags/Stylesheet
+type: text/css
+
+/* SCM Plugin - Palette-based Styles */
+/* Uses standard TiddlyWiki palette colors for theme compatibility */
+
+/* Error Messages */
+.tidgi-scm-error {
+	background-color: <<colour alert-background>>;
+	border-color: <<colour alert-border>>;
+	color: <<colour alert-muted-foreground>>;
+}
+
+/* Search and Input Sections */
+.tidgi-scm-search-section,
+.tidgi-scm-input-section {
+	border-bottom-color: <<colour table-border>>;
+}
+
+.tidgi-scm-search-input {
+	border-color: <<colour tiddler-editor-border>>;
+	background-color: <<colour tiddler-editor-background>>;
+	color: <<colour foreground>>;
+}
+
+/* Commit Items */
+.tidgi-scm-commit-item {
+	border-bottom-color: <<colour table-border>>;
+}
+
+.tidgi-scm-commit-item.selected .tidgi-scm-commit-button {
+	background-color: <<colour selection-background>>;
+	border-left-color: <<colour primary>>;
+}
+
+.tidgi-scm-commit-message {
+	color: <<colour tiddler-title-foreground>>;
+}
+
+/* Commit Section */
+.tidgi-scm-commit-section {
+	border-bottom-color: <<colour table-border>>;
+}
+
+/* Uncommitted Changes */
+.tidgi-scm-uncommitted-item {
+	background: <<colour message-background>>;
+	border-bottom-color: <<colour message-border>>;
+	color: <<colour message-foreground>>;
+}
+
+.tidgi-scm-uncommitted-item::before {
+	color: <<colour message-border>>;
+}
+
+.tidgi-scm-uncommitted-item:hover {
+	background: <<colour notification-background>>;
+}
+
+.tidgi-scm-uncommitted-item.selected {
+	background: <<colour notification-background>>;
+	border-left-color: <<colour message-border>>;
+}
+
+.tidgi-scm-uncommitted-label {
+	color: <<colour very-muted-foreground>>;
+}
+
+/* Commit Items */
+div.tidgi-scm-commit-item {
+	border-bottom-color: <<colour table-border>>;
+	background: <<colour tiddler-background>>;
+	color: <<colour foreground>>;
+}
+
+div.tidgi-scm-commit-item::before {
+	color: <<colour muted-foreground>>;
+}
+
+div.tidgi-scm-commit-item:hover {
+	background-color: <<colour notification-background>>;
+}
+
+div.tidgi-scm-commit-item.selected {
+	background-color: <<colour selection-background>>;
+	border-left-color: <<colour primary>>;
+}
+
+.tidgi-scm-commit-message {
+	color: <<colour tiddler-title-foreground>>;
+}
+
+.tidgi-scm-commit-meta {
+	color: <<colour muted-foreground>>;
+}
+
+.tidgi-scm-loading,
+.tidgi-scm-empty {
+	color: <<colour muted-foreground>>;
+}
+
+.tidgi-scm-load-more {
+	color: <<colour primary>>;
+	border-top-color: <<colour table-border>>;
+}
+
+/* Buttons */
+.tidgi-scm-btn {
+	background-color: <<colour button-background>>;
+	border-color: <<colour button-border>>;
+	color: <<colour button-foreground>>;
+}
+
+.tidgi-scm-btn.tc-btn-invisible {
+	background: transparent;
+	border-color: transparent;
+}
+
+.tidgi-scm-btn.tc-btn-invisible:hover {
+	background-color: <<colour notification-background>>;
+	border-color: <<colour table-border>>;
+}
+
+.tidgi-scm-btn.tc-btn-invisible:active {
+	background-color: <<colour dropdown-background>>;
+}
+
+.tidgi-scm-btn:hover {
+	background-color: <<colour notification-background>>;
+	border-color: <<colour muted-foreground>>;
+	color: <<colour foreground>>;
+}
+
+.tidgi-scm-btn:active {
+	background-color: <<colour dropdown-background>>;
+}
+
+/* Divider */
+.tidgi-scm-divider {
+	border-top-color: <<colour table-border>>;
+}
+
+.tidgi-scm-section-title {
+	color: <<colour muted-foreground>>;
+}
+
+/* Files Section */
+.tidgi-scm-files-section {
+	background: <<colour tiddler-background>>;
+	border-color: <<colour table-border>>;
+}
+
+.tidgi-scm-files-section h4 {
+	background: <<colour notification-background>>;
+	color: <<colour foreground>>;
+	border-bottom-color: <<colour table-border>>;
+}
+
+/* File Items */
+div.tidgi-scm-file-item {
+	border-bottom-color: <<colour table-border>>;
+	background: transparent;
+	color: <<colour foreground>>;
+}
+
+div.tidgi-scm-file-item::before {
+	color: <<colour muted-foreground>>;
+}
+
+div.tidgi-scm-file-item:hover {
+	background-color: <<colour notification-background>>;
+}
+
+div.tidgi-scm-file-item.selected {
+	background-color: <<colour selection-background>>;
+	border-left-color: <<colour primary>>;
+}
+
+.tidgi-scm-checkbox {
+	color: <<colour muted-foreground>>;
+}
+
+/* Content Preview */
+.tidgi-scm-content-preview {
+	background-color: <<colour code-background>>;
+	border-color: <<colour code-border>>;
+	color: <<colour code-foreground>>;
+}
+
+.tidgi-scm-rendered-content {
+	background-color: <<colour notification-background>>;
+}
+
+/* Metadata Section */
+.tidgi-scm-metadata-section {
+	border-color: <<colour table-border>>;
+	background: <<colour tiddler-background>>;
+}
+
+.tidgi-scm-metadata-table td {
+	border-bottom-color: <<colour table-border>>;
+}
+
+.tidgi-scm-metadata-table tbody tr:hover {
+	background: <<colour notification-background>>;
+}
+
+.tidgi-scm-field-name {
+	color: <<colour muted-foreground>>;
+}
+
+.tidgi-scm-field-value {
+	color: <<colour foreground>>;
+}

@@ -1,0 +1,41 @@
+title: $:/plugins/linonetwo/preview-glass/changelog
+created: 20260120000000000
+modified: 20260120000000000
+type: text/vnd.tiddlywiki
+
+!!! v1.0.0 (2026-01-20)
+
+Complete rewrite of the preview plugin.
+
+Breaking changes:
+
+* Removed dependencies on `tobibeer/appear` and `ooktech/dynamic-tables`
+* Requires TiddlyWiki 5.2.0 or later
+* Simplified configuration options
+
+Technical improvements:
+
+* Replaced widget hijacking with lightweight startup module
+* Uses standard Reveal widget and PageTemplate
+* Integrated with TiddlyWiki palette system for theme compatibility
+* Modern CSS with backdrop-filter glass effect and smooth animations
+* Document-level event delegation for better performance
+* 150ms hover delay to avoid accidental triggers
+
+File changes:
+
+* Added: `startup.js`, `page-template.tid`, `palette-styles.tid`
+* Modified: all style and template files
+* Removed: `link.js`, `keyboard.js`, `popups.tid`
+
+Migration:
+
+Upgrading from 0.6.0 should work automatically. Custom templates remain compatible.
+
+---
+
+!!! v0.6.0 (2020-04-14)
+
+* Fork of tobibeer/preview plugin
+* Added auto-close on mouse leave
+* Added glass effect styling

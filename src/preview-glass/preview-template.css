@@ -1,24 +1,152 @@
-.hover-popup-preview-container {
-	backdrop-filter: blur(10px);
-	background: rgba(255, 255, 255, 0.3) !important;
-	transform: translateY(0px);
+/* Preview Glass Styles - Structural CSS */
+/* Colors are defined in palette-styles.tid using TiddlyWiki palette system */
+
+/* Main preview popup */
+.tc-preview-popup {
+  position: fixed;
+  pointer-events: auto;
+  z-index: 1000;
+  max-width: 500px;
+  min-width: 300px;
+  max-height: 600px;
+  overflow: hidden;
+  border-radius: 12px;
+  animation: preview-fade-in 0.2s ease-out;
+  
+  /* Glass effect */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
-/**
-  Try added a triangle to it, but it seems work not so good with the backdrop-filter glass effect
-*/
-
-/**
-.hover-popup-preview-container::before {
-	content: "";
-	width: 0px;
-	height: 0px;
-	position: absolute;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-top: 10px solid transparent;
-	border-bottom: 10px solid rgba(255, 255, 255, 0.5);
-	right: 95%;
-	top: -20.5px;
+/* Fade-in animation */
+@keyframes preview-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-*/
+
+/* Inner container */
+.tc-preview-popup-inner {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+/* Header section */
+.tc-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.tc-preview-title {
+  font-weight: 600;
+  font-size: 1.1em;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tc-preview-close {
+  flex-shrink: 0;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.tc-preview-close:hover {
+  opacity: 1;
+}
+
+.tc-preview-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Content section */
+.tc-preview-content {
+  line-height: 1.5;
+}
+
+.tc-preview-excerpt {
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.tc-preview-text {
+  font-size: 0.95em;
+  max-height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.tc-preview-text::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+}
+
+/* Info section */
+.tc-preview-info {
+  margin: 12px 0;
+  font-size: 0.9em;
+}
+
+.tc-preview-backlinks {
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.tc-preview-plugin-info {
+  padding: 8px;
+  font-style: italic;
+}
+
+/* Metadata table */
+.tc-preview-metadata {
+  margin-top: 12px;
+  font-size: 0.85em;
+}
+
+.tc-preview-fields {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tc-preview-field-name {
+  padding: 4px 8px;
+  font-weight: 500;
+  white-space: nowrap;
+  width: 80px;
+}
+
+.tc-preview-field-value {
+  padding: 4px 8px;
+}
+
+/* Scrollbar styling */
+.tc-preview-popup-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tc-preview-popup-inner::-webkit-scrollbar-track {
+  border-radius: 3px;
+}
+
+.tc-preview-popup-inner::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+}

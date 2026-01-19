@@ -1,20 +1,68 @@
 title: $:/plugins/linonetwo/preview-glass/config
+caption: Preview Glass Configuration
 
-\define default()
-<dt>$(defaults)$$(option)$</dt>
-<dd>
-//{{$:/plugins/linonetwo/preview-glass/lingo/$(option)$}}<$list
-filter="[[$(option)$]prefix[template]]">
-{{$(defaults)$$(option)$}}</$list>://<br>
-<$edit-text tag=input tiddler="$(defaults)$$(option)$"/>
-</dd>
+\define config-option()
+<div class="tc-config-row">
+  <div class="tc-config-label">
+    <$transclude tiddler="$:/plugins/linonetwo/preview-glass/lingo/$(option)$" mode="inline"/>
+  </div>
+  <div class="tc-config-control">
+    <$list filter="[[$(option)$]prefix[exclude-]]" variable="null">
+      <$checkbox 
+        tiddler="$:/plugins/linonetwo/preview-glass/defaults/$(option)$" 
+        field="text" 
+        checked="yes" 
+        unchecked="no" 
+        default="yes"
+      >
+        Enable
+      </$checkbox>
+    </$list>
+    <$list filter="[[$(option)$]prefix[template]]" variable="null">
+      <$edit-text 
+        tag="input" 
+        tiddler="$:/plugins/linonetwo/preview-glass/defaults/$(option)$"
+        default="$:/plugins/linonetwo/preview-glass/template"
+        class="tc-edit-texteditor"
+      />
+    </$list>
+  </div>
+</div>
 \end
 
-<dl class="preview-defaults">
-<$vars defaults="$:/plugins/linonetwo/preview-glass/defaults/">
-<$list filter="[all[tiddlers+shadows]removeprefix<defaults>sort[title]]" variable="option">
-<<default>>
-</$list>
-</$vars>
-</dl>
-<style>.preview-defaults input {width:90%;}</style>
+<div class="tc-preview-glass-config">
+  <h2>Preview Glass Settings</h2>
+  
+  <$vars defaults="$:/plugins/linonetwo/preview-glass/defaults/">
+    <$list filter="[all[tiddlers+shadows]removeprefix<defaults>sort[title]]" variable="option">
+      <<config-option>>
+    </$list>
+  </$vars>
+</div>
+
+<style>
+.tc-preview-glass-config {
+  max-width: 600px;
+}
+
+.tc-config-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tc-config-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.tc-config-control {
+  flex: 0 0 auto;
+}
+
+.tc-config-control input[type="text"] {
+  width: 300px;
+  padding: 4px 8px;
+}
+</style>

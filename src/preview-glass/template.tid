@@ -1,8 +1,46 @@
 created: 20200413014112868
-modified: 20200415101145651
+modified: 20260119000000000
 title: $:/plugins/linonetwo/preview-glass/template
 type: text/vnd.tiddlywiki
 
-{{||$:/plugins/linonetwo/inverse-link-and-folder/infobar}}
+\define preview-excerpt()
+<$transclude mode="block" />
+\end
 
-<<ColumnTable "[<currentTiddler>]" "modified created">>
+<!-- Preview content structure -->
+<div class="tc-preview-excerpt">
+  <$list filter="[<currentTiddler>has[text]]" variable="null">
+    <$wikify name="excerpt" text={{{ [<currentTiddler>get[text]splitregexp[\n]first[5]join[\n]] }}} output="text">
+      <div class="tc-preview-text">
+        <<excerpt>>
+      </div>
+    </$wikify>
+  </$list>
+</div>
+
+<!-- Info bar with reverse links -->
+<div class="tc-preview-info">
+  <$list filter="[<currentTiddler>plugintiddlers[]limit[1]]" variable="null" emptyMessage="""
+    <div class="tc-preview-backlinks">
+      {{||$:/plugins/linonetwo/inverse-link-and-folder/infobar}}
+    </div>
+  """>
+    <div class="tc-preview-plugin-info">
+      <em>This is a plugin tiddler</em>
+    </div>
+  </$list>
+</div>
+
+<!-- Metadata table -->
+<div class="tc-preview-metadata">
+  <table class="tc-preview-fields">
+    <$list filter="modified created tags" variable="fieldName">
+      <tr>
+        <td class="tc-preview-field-name"><<fieldName>></td>
+        <td class="tc-preview-field-value">
+          <$transclude tiddler=<<currentTiddler>> field=<<fieldName>> mode="inline" />
+        </td>
+      </tr>
+    </$list>
+  </table>
+</div>
