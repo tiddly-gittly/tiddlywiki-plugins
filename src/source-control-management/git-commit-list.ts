@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { widget as Widget } from '$:/core/modules/widgets/widget.js';
-import type { IParseTreeNode, IWidgetInitialiseOptions } from 'tiddlywiki';
+import type { IChangedTiddlers, IParseTreeNode, IWidgetInitialiseOptions } from 'tiddlywiki';
 
 if ($tw.browser) {
   class GitCommitListWidget extends Widget {
@@ -16,21 +16,21 @@ if ($tw.browser) {
 
       const container = this.document.createElement('div');
       container.className = 'tidgi-scm-commit-list-container';
-      
-      this.renderChildren(container, null);
+
+      this.renderChildren(container, nextSibling);
       parent.insertBefore(container, nextSibling);
       this.domNodes.push(container);
     }
 
     execute() {
       // Attributes used for triggering reload via refresh()
-      const tiddler = this.getAttribute('tiddler');
-      const search = this.getAttribute('search');
-      
+      void this.getAttribute('tiddler');
+      void this.getAttribute('search');
+
       this.makeChildWidgets();
     }
 
-    refresh(changedTiddlers: Record<string, any>) {
+    refresh(changedTiddlers: IChangedTiddlers) {
       const changedAttributes = this.computeAttributes();
       if (changedAttributes.tiddler || changedAttributes.search) {
         // Attributes changed, no need to trigger reload automatically
@@ -41,5 +41,6 @@ if ($tw.browser) {
     }
   }
 
-  exports['git-commit-list'] = GitCommitListWidget;
+  const moduleExports = exports as Record<string, unknown>;
+  moduleExports['git-commit-list'] = GitCommitListWidget;
 }

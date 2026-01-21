@@ -1,6 +1,8 @@
 // import type { ModifiedFileList } from 'git-sync-js';
-export type ModifiedFileList = { path: string; status: string }; // Placeholder to avoid missing dependency
-
+export interface ModifiedFileList {
+  path: string;
+  status: string;
+} // Placeholder to avoid missing dependency
 
 declare global {
   interface Window {
@@ -11,12 +13,12 @@ declare global {
         getStorageServiceUserInfo(serviceName: SupportedStorageServices): Promise<IGitUserInfos | undefined>;
       };
       git: {
-        commitAndSync(workspace: IWorkspace, configs: ICommitAndSyncConfigs): Promise<boolean>;
-        getModifiedFileList(wikiFolderPath: string): Promise<ModifiedFileList[]>;
         callGitOp<K extends keyof IGitOperations>(
           method: K,
           ...arguments_: Parameters<IGitOperations[K]>
         ): Promise<Awaited<ReturnType<IGitOperations[K]>>>;
+        commitAndSync(workspace: IWorkspace, configs: ICommitAndSyncConfigs): Promise<boolean>;
+        getModifiedFileList(wikiFolderPath: string): Promise<ModifiedFileList[]>;
       };
       native: {
         openPath(filePath: string, showItemInFolder?: boolean): Promise<void>;
@@ -47,9 +49,9 @@ declare global {
 
 export interface IBrowserViewMetaData {
   isPopup?: boolean;
+  workspace?: IWorkspace;
   /** @deprecated Use workspace instead */
   workspaceID?: string;
-  workspace?: IWorkspace;
 }
 
 interface ISendWikiOperationsToBrowser {
@@ -213,21 +215,21 @@ export enum SupportedStorageServices {
 export type GitFileStatus = 'added' | 'modified' | 'deleted' | 'renamed' | 'copied' | 'untracked' | 'unknown';
 
 export interface IGitLogEntry {
-  hash: string;
-  parents: string[];
-  branch: string;
-  message: string;
-  committerDate: string;
   author?: {
-    name: string;
     email?: string;
+    name: string;
   };
   authorDate?: string;
+  branch: string;
+  committerDate: string;
+  hash: string;
+  message: string;
+  parents: string[];
 }
 
 export interface IGitLogResult {
-  entries: IGitLogEntry[];
   currentBranch: string;
+  entries: IGitLogEntry[];
   totalCount: number;
 }
 
@@ -244,20 +246,20 @@ export interface IFileDiffResult {
 export type GitLogSearchMode = 'message' | 'file' | 'dateRange' | 'none';
 
 export interface IGitLogOptions {
+  filePath?: string;
   page?: number;
   pageSize?: number;
-  searchQuery?: string;
   searchMode?: GitLogSearchMode;
-  filePath?: string;
+  searchQuery?: string;
   since?: string;
   until?: string;
 }
 
 export interface IGitOperations {
-  getGitLog: (repoPath: string, options?: IGitLogOptions) => Promise<IGitLogResult>;
   getCommitFiles: (repoPath: string, commitHash: string) => Promise<IFileWithStatus[]>;
   getFileContent: (repoPath: string, commitHash: string, filePath: string, maxLines?: number, maxChars?: number) => Promise<IFileDiffResult>;
   getFileDiff: (repoPath: string, commitHash: string, filePath: string, maxLines?: number, maxChars?: number) => Promise<IFileDiffResult>;
+  getGitLog: (repoPath: string, options?: IGitLogOptions) => Promise<IGitLogResult>;
 }
 
 export {};

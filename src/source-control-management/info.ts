@@ -1,17 +1,18 @@
 function getInfoTiddlerFields() {
   const infoTiddlerFields: Array<{ text: string; title: string }> = [];
-  
-  if (!$tw.browser || typeof window === 'undefined') return infoTiddlerFields;
-  
+
+  if ($tw.browser === null || typeof window === 'undefined') return infoTiddlerFields;
+
   // Check if Git API is available
-  const isGitAPIAvailable = !!(window?.service?.git?.callGitOp);
-  
+  const isGitAPIAvailable = typeof window?.service?.git?.callGitOp === 'function';
+
   infoTiddlerFields.push({
     title: '$:/info/tidgi/git-api-available',
-    text: isGitAPIAvailable ? 'yes' : 'no'
+    text: isGitAPIAvailable ? 'yes' : 'no',
   });
-  
+
   return infoTiddlerFields;
 }
 
-exports.getInfoTiddlerFields = getInfoTiddlerFields;
+const moduleExports = exports as Record<string, unknown>;
+moduleExports.getInfoTiddlerFields = getInfoTiddlerFields;
