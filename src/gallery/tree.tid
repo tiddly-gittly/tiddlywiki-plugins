@@ -1,0 +1,4 @@
+title: $:/plugins/linonetwo/gallery/tree
+type: text/vnd.tiddlywiki
+
+<<tree prefix:"$:/plugins/linonetwo/gallery/">>

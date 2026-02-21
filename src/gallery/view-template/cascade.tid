@@ -1,0 +1,7 @@
+title: $:/plugins/linonetwo/gallery/view-template/cascade
+type: text/vnd.tiddlywiki
+tags: $:/tags/StoryTiddlerTemplateFilter
+list-before: $:/config/StoryTiddlerTemplateFilters/default
+caption: Gallery View Template
+
+[tag[$:/tags/gallery]then[$:/plugins/linonetwo/gallery/view-template/story]]

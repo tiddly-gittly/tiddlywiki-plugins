@@ -1,0 +1,30 @@
+title: $:/plugins/linonetwo/gallery/readme
+type: text/vnd.tiddlywiki
+
+! Gallery Plugin
+
+A compact gallery plugin for image/content browsing.
+
+!! Features
+
+* `<<gallery>>` macro with masonry layout
+** `filter` parameter: use any TW filter
+** `tag` parameter: list tiddlers tagged with the given tag
+** no params: uses `currentTiddler` as tag
+* Click image to toggle modes:
+** gallery mode (all items)
+** single-image mode (focused item only)
+* Hover toolbar per item:
+** Open in story river
+** Inline tag edit
+* Story template integration via `$:/tags/StoryTiddlerTemplateFilter`
+** Add tag `$:/tags/gallery` to a tiddler to use gallery-first view
+** Default parts are collapsed and use core fold/unfold banner style
+
+!! Usage
+
+```wikitext
+<<gallery>>
+<<gallery tag:"MyPhotos">>
+<<gallery filter:"[tag[Photos]sort[title]]">>
+```

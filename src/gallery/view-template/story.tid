@@ -1,0 +1,41 @@
+title: $:/plugins/linonetwo/gallery/view-template/story
+type: text/vnd.tiddlywiki
+
+\whitespace trim
+\define folded-state()
+$:/state/folded/$(currentTiddler)$
+\end
+
+<$let storyTitle={{{ [<..currentTiddler>!is[blank]else<currentTiddler>] }}}>
+<$tiddler tiddler=<<storyTitle>>>
+<div data-tiddler-title=<<currentTiddler>> data-tags={{!!tags}} class="tc-tiddler-frame tc-tiddler-view-frame lno-gallery-story-frame" role="article">
+
+<$transclude tiddler="$:/core/ui/ViewTemplate/title" />
+
+<div class="lno-gallery-tiddler-view">
+<<gallery>>
+</div>
+
+<div class="tc-reveal">
+  <$reveal tag="div" type="match" stateTitle=<<folded-state>> text="hide" default="hide" retain="yes" animate="yes">
+    <$button tooltip={{$:/language/Buttons/Unfold/Hint}} aria-label={{$:/language/Buttons/Unfold/Caption}} class="tc-unfold-banner">
+      <$action-setfield $tiddler=<<folded-state>> text="show"/>
+      {{$:/core/images/chevron-down}}
+    </$button>
+  </$reveal>
+  <$reveal tag="div" type="nomatch" stateTitle=<<folded-state>> text="hide" default="hide" retain="yes" animate="yes">
+    <$button tooltip={{$:/language/Buttons/Fold/Hint}} aria-label={{$:/language/Buttons/Fold/Caption}} class="tc-fold-banner">
+      <$action-setfield $tiddler=<<folded-state>> text="hide"/>
+      {{$:/core/images/chevron-up}}
+    </$button>
+  </$reveal>
+</div>
+
+<$reveal tag="div" class="lno-gallery-core-content" type="nomatch" stateTitle=<<folded-state>> text="hide" default="hide" retain="yes" animate="yes">
+  <$transclude tiddler="$:/core/ui/ViewTemplate/subtitle" />
+  <$transclude tiddler="$:/core/ui/ViewTemplate/body/default" />
+</$reveal>
+
+</div>
+</$tiddler>
+</$let>

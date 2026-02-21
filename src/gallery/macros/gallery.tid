@@ -1,0 +1,103 @@
+title: $:/plugins/linonetwo/gallery/macros/gallery
+type: text/vnd.tiddlywiki
+tags: $:/tags/Macro
+
+\procedure gallery(filter:"", tag:"", columns:"")
+<%
+  if [<filter>!is[blank]] %>
+    <$macrocall $name="gallery-grid" useFilter="yes" itemFilter=<<filter>> tagName="" />
+<% elseif [<tag>!is[blank]] %>
+    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<tag>> />
+<% else %>
+    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<currentTiddler>> />
+<% endif %>
+\end gallery
+
+\procedure gallery-grid(useFilter:"no", itemFilter:"", tagName:"")
+<$let
+  galleryStateBase={{{ [[$:/state/gallery/]addsuffix<currentTiddler>] }}}
+  expandState={{{ [<galleryStateBase>addsuffix[/expanded]] }}}
+  itemExpanded={{{ [<expandState>get[text]] }}}
+>
+<div class={{{ [<itemExpanded>!is[blank]then[lno-gallery-container lno-gallery-container--single]] ~[[lno-gallery-container]] }}}>
+<%  if [<useFilter>match[yes]] %>
+  <$list filter=<<itemFilter>> variable="galleryItem">
+    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
+  </$list>
+<% else %>
+  <$list filter="[tag<tagName>]" variable="galleryItem">
+    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
+  </$list>
+<% endif %>
+</div>
+</$let>
+\end gallery-grid
+
+\procedure gallery-item(item:"", stateBase:"", itemExpanded:"")
+<$let
+  expandState={{{ [<stateBase>addsuffix[/expanded]] }}}
+>
+<div class={{{ [<itemExpanded>is[blank]then[lno-gallery-item]] ~[<itemExpanded>match<item>then[lno-gallery-item lno-gallery-item--expanded]] ~[[lno-gallery-item lno-gallery-item--hidden]] }}}>
+  <$button class="lno-gallery-item-click-target tc-btn-invisible" actions="""
+    <$list filter="[<item>match<itemExpanded>]" variable="ignore">
+      <$action-setfield $tiddler=<<expandState>> text="" />
+    </$list>
+    <$list filter="[<item>!match<itemExpanded>]" variable="ignore">
+      <$action-setfield $tiddler=<<expandState>> text=<<item>> />
+    </$list>
+  """>
+    <$list filter="[<item>is[image]]" variable="ignore">
+      <$image source=<<item>> class="lno-gallery-img" />
+    </$list>
+    <$list filter="[<item>!is[image]]" variable="ignore">
+      <$list filter="[<item>has[_canonical_uri]]" variable="ignore">
+        <$image source=<<item>> class="lno-gallery-img" />
+      </$list>
+      <$list filter="[<item>!has[_canonical_uri]]" variable="ignore">
+        <div class="lno-gallery-text-content">
+          <$transclude $tiddler=<<item>> $mode="block" />
+        </div>
+      </$list>
+    </$list>
+  </$button>
+
+  <div class="lno-gallery-toolbar">
+    <$button class="lno-gallery-btn tc-btn-invisible" tooltip="Open"
+      actions="""<$action-navigate $to=<<item>> />""">
+      {{$:/core/images/right-arrow}}
+    </$button>
+    <$let
+      tagEditState={{{ [[$:/state/gallery/tag-edit/]addsuffix<item>] }}}
+      tagInputTiddler={{{ [[$:/state/gallery/tag-input/]addsuffix<item>] }}}
+    >
+      <$button class="lno-gallery-btn tc-btn-invisible" tooltip="Edit tags"
+        actions="""<$action-setfield $tiddler=<<tagEditState>> text={{{ [<tagEditState>get[text]match[open]then[closed]] ~[[open]] }}} />""">
+        {{$:/core/images/tag-button}}
+      </$button>
+      <$reveal type="match" state=<<tagEditState>> text="open">
+        <div class="lno-gallery-tag-editor">
+          <$list filter="[<item>tags[]]" variable="thisTag">
+            <span class="lno-gallery-tag-pill">
+              <$text text=<<thisTag>> /><$button class="lno-gallery-tag-remove tc-btn-invisible"
+                tooltip="Remove tag"
+                actions="""<$action-listops $tiddler=<<item>> $field="tags" $subfilter="-[<thisTag>]" />""">&#215;</$button>
+            </span>
+          </$list>
+          <$edit-text tiddler=<<tagInputTiddler>> field="text" tag="input" type="search"
+            placeholder="Add tag..." class="lno-gallery-tag-input" default="" />
+          <$button class="lno-gallery-tag-add-btn"
+            actions="""
+              <$let newTag={{{ [<tagInputTiddler>get[text]] }}}>
+                <$list filter="[<newTag>!is[blank]]" variable="ignore">
+                  <$action-listops $tiddler=<<item>> $field="tags" $subfilter="+[append<newTag>]" />
+                  <$action-setfield $tiddler=<<tagInputTiddler>> text="" />
+                </$list>
+              </$let>
+            """>Add</$button>
+        </div>
+      </$reveal>
+    </$let>
+  </div>
+</div>
+</$let>
+\end gallery-item
