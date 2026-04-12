@@ -3,23 +3,12 @@
   "compilerOptions": {
     "declaration": false,
     "jsx": "react-jsx",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noEmit": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "node_modules/tw5-typed"
-    ],
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
-    "baseUrl": "./"
+    "types": ["node", "tw5-typed"],
+    "lib": ["DOM", "ESNext"]
   },
-  "include": [
-    "src",
-    "*.json",
-    "wiki/*.info",
-    "*.mjs",
-    "*.js",
-    "src/**/*.d.ts"
-  ]
+  "include": ["src", "*.json", "wiki/*.info", "*.mjs", "*.js", "src/**/*.d.ts", "wiki/tiddlers/tests/playwright/**/*.ts"]
 }
+
