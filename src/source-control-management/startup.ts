@@ -1,5 +1,77 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import type { IBrowserViewMetaData, IFileWithStatus, IGitLogEntry } from '../type';
+import type { IBrowserViewMetaData, IFileWithStatus, IGitLogEntry, IWorkspace } from '../type';
+
+const normalizePath = (p: string) => p.replaceAll('\\', '/');
+
+/**
+ * Find which workspace a file belongs to by checking if the file path starts with the workspace folder
+ * Returns the workspace's wikiFolderLocation as the Git repo path
+ */
+const getGitRepoPathForFile = async (
+  currentWorkspace: IWorkspace | undefined,
+  tiddlerFilePath: string | undefined,
+  workspaceService: Window['service']['workspace'] | undefined,
+): Promise<string | undefined> => {
+  if (!currentWorkspace) return undefined;
+
+  // For sub-wiki, always use mainWikiToLink
+  if (currentWorkspace.isSubWiki && currentWorkspace.mainWikiToLink) {
+    return currentWorkspace.mainWikiToLink;
+  }
+
+  // If no file path provided, use current workspace folder
+  if (!tiddlerFilePath) {
+    return currentWorkspace.wikiFolderLocation;
+  }
+
+  const normalizedFilePath = normalizePath(tiddlerFilePath);
+  const normalizedCurrentFolder = normalizePath(currentWorkspace.wikiFolderLocation);
+
+  // If file is in current workspace folder, use it
+  if (normalizedFilePath.startsWith(normalizedCurrentFolder)) {
+    return currentWorkspace.wikiFolderLocation;
+  }
+
+  // File is outside current workspace folder - it might be in a sub-wiki
+  // Get all workspaces and find which one contains this file
+  if (workspaceService) {
+    try {
+      const allWorkspaces = await workspaceService.getWorkspacesAsList();
+
+      // Find the workspace whose folder contains this file
+      // Sort by path length descending to match the most specific folder first
+      const sortedWorkspaces = allWorkspaces
+        .filter(ws => ws.wikiFolderLocation)
+        .sort((a, b) => b.wikiFolderLocation.length - a.wikiFolderLocation.length);
+
+      for (const ws of sortedWorkspaces) {
+        const normalizedWsFolder = normalizePath(ws.wikiFolderLocation);
+        if (normalizedFilePath.startsWith(normalizedWsFolder)) {
+          // Found the workspace that contains this file
+          return ws.wikiFolderLocation;
+        }
+      }
+    } catch {
+      // Silently fail and fallback to current workspace
+    }
+  }
+
+  // Fallback: use current workspace folder
+  return currentWorkspace.wikiFolderLocation;
+};
+
+/**
+ * Convert absolute file path to relative path (relative to repo)
+ */
+const getRelativePath = (absolutePath: string, repoPath: string): string => {
+  const normalizedAbsolute = normalizePath(absolutePath);
+  const normalizedRepo = normalizePath(repoPath);
+
+  if (normalizedAbsolute.startsWith(normalizedRepo)) {
+    return normalizedAbsolute.substring(normalizedRepo.length).replace(/^\/+/, '');
+  }
+  return normalizedAbsolute;
+};
 
 export const startup = () => {
   if (!$tw.browser) return;
@@ -52,12 +124,62 @@ export const startup = () => {
     $tw.wiki.deleteTiddler(commitsTitle);
   };
 
+  // Helper to add commits to wiki
+  const addCommitsToWiki = (tiddlerTitle: string, commits: IGitLogEntry[]) => {
+    const commitsTitle = `$:/temp/source-control-management/${tiddlerTitle}/commits`;
+    $tw.wiki.addTiddler({
+      title: commitsTitle,
+      list: commits.map(c => c.hash),
+    });
+
+    commits.forEach(commit => {
+      const commitTitle = `$:/temp/source-control-management/${tiddlerTitle}/commit/${commit.hash}`;
+      $tw.wiki.addTiddler({
+        title: commitTitle,
+        text: commit.message,
+        author: commit.author?.name,
+        date: commit.committerDate,
+        hash: commit.hash,
+      });
+    });
+  };
+
+  // Helper to create file tiddlers
+  const createFileTiddlers = (viewingTiddler: string, files: IFileWithStatus[]) => {
+    return files.map((file) => {
+      const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
+      return {
+        title: safeTitle,
+        text: file.path,
+        status: file.status,
+        path: file.path,
+      };
+    });
+  };
+
+  // Helper to add file tiddlers to wiki
+  const addFilesToWiki = (viewingTiddler: string, files: IFileWithStatus[]) => {
+    const filesTitle = `$:/temp/source-control-management/${viewingTiddler}/files`;
+    const fileTiddlers = createFileTiddlers(viewingTiddler, files);
+
+    fileTiddlers.forEach((t) => {
+      $tw.wiki.addTiddler(t);
+    });
+
+    $tw.wiki.addTiddler({
+      title: filesTitle,
+      list: fileTiddlers.map((t) => t.title),
+    });
+
+    return fileTiddlers;
+  };
+
   $tw.rootWidget.addEventListener('tm-scm-reload', async (_event) => {
     if (isFetching) return;
 
     // Get viewing tiddler from state
     const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
-    if (!viewingTiddler) return; // No tiddler selected to view
+    if (!viewingTiddler) return;
 
     const searchQuery = $tw.wiki.getTiddlerText('$:/state/scm/search');
 
@@ -66,42 +188,28 @@ export const startup = () => {
 
     const debugMode = isDebugMode();
     const workspace = win.meta?.()?.workspace;
-    currentWikiFolder = workspace?.wikiFolderLocation ?? undefined;
     const gitService = win.service?.git;
     const wikiService = win.service?.wiki;
+    const workspaceService = win.service?.workspace;
+
+    if (!gitService || !wikiService || !workspace) {
+      return;
+    }
 
     if (debugMode) {
       try {
         isFetching = true;
         $tw.wiki.setText('$:/state/scm/loading', 'text', undefined, 'yes');
 
-        const newCommits: IGitLogEntry[] = [];
-        await new Promise(resolve => setTimeout(resolve, 500));
-        newCommits.push(...getMockCommits());
+        currentWikiFolder = await getGitRepoPathForFile(workspace, undefined, workspaceService);
+
+        const newCommits = getMockCommits();
         currentCommits = newCommits;
         currentPage = 1;
 
-        const commitsTitle = `$:/temp/source-control-management/${viewingTiddler}/commits`;
-        const hashList = currentCommits.map(c => c.hash);
-        $tw.wiki.addTiddler({
-          title: commitsTitle,
-          list: hashList,
-        });
-
+        addCommitsToWiki(viewingTiddler, newCommits);
         $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, 'no');
-
-        newCommits.forEach(commit => {
-          const commitTitle = `$:/temp/source-control-management/${viewingTiddler}/commit/${commit.hash}`;
-          $tw.wiki.addTiddler({
-            title: commitTitle,
-            text: commit.message,
-            author: commit.author?.name,
-            date: commit.committerDate,
-            hash: commit.hash,
-          });
-        });
       } catch (error) {
-        console.error('[SCM] Git Log Error:', error);
         $tw.wiki.setText('$:/state/scm/error', 'text', undefined, String(error));
       } finally {
         isFetching = false;
@@ -110,32 +218,37 @@ export const startup = () => {
       return;
     }
 
-    if (!currentWikiFolder || !gitService || !wikiService) {
-      return;
-    }
-
     try {
       isFetching = true;
       $tw.wiki.setText('$:/state/scm/loading', 'text', undefined, 'yes');
 
-      const newCommits: IGitLogEntry[] = [];
-
-      // Resolve file path if tiddlerTitle is present
-
       // Get file path for the viewing tiddler
-      const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler);
+      let absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler, workspace?.id);
+
+      // Fallback: try to get path from $tw.boot.files
+      if (!absoluteFilePath) {
+        const bootFiles = ($tw as { boot?: { files?: Record<string, { filepath?: string }> } }).boot?.files;
+        const fileInfo = bootFiles?.[viewingTiddler];
+        if (fileInfo?.filepath) {
+          absoluteFilePath = fileInfo.filepath;
+        }
+      }
 
       // If tiddler has no file path (e.g., shadow/system tiddler), show nothing
       if (!absoluteFilePath) {
-        // Clear results for non-file tiddlers
         const commitsTitle = `$:/temp/source-control-management/${viewingTiddler}/commits`;
         $tw.wiki.addTiddler({ title: commitsTitle, list: [] });
         return;
       }
 
-      // Convert absolute path to relative path (relative to wiki folder)
-      const filePath = absoluteFilePath.replace(currentWikiFolder, '').replace(/^[/\\]+/, '');
-      // API Call
+      // Determine Git repo path based on file location
+      currentWikiFolder = await getGitRepoPathForFile(workspace, absoluteFilePath, workspaceService);
+      if (!currentWikiFolder) {
+        return;
+      }
+
+      // Convert absolute path to relative path
+      const filePath = getRelativePath(absoluteFilePath, currentWikiFolder);
 
       const result = await gitService.callGitOp('getGitLog', currentWikiFolder, {
         page: currentPage,
@@ -145,53 +258,23 @@ export const startup = () => {
         filePath,
       });
 
-      newCommits.push(...result.entries);
-      // Update internal state
+      const newCommits = result.entries;
       currentCommits = newCommits;
       currentPage += 1;
 
-      // Update Tiddlers with new path structure
-      const commitsTitle = `$:/temp/source-control-management/${viewingTiddler}/commits`;
-      const hashList = currentCommits.map(c => c.hash);
-      $tw.wiki.addTiddler({
-        title: commitsTitle,
-        list: hashList,
-      });
+      addCommitsToWiki(viewingTiddler, newCommits);
 
       // Check if current tiddler file has uncommitted changes
       try {
         const uncommittedFiles = await gitService.callGitOp('getCommitFiles', currentWikiFolder, '');
         const filesList = Array.isArray(uncommittedFiles) ? uncommittedFiles : [];
-        const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler);
-
-        if (absoluteFilePath) {
-          const normalize = (p: string) => p.replaceAll('\\', '/');
-          const folder = normalize(currentWikiFolder);
-          const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
-
-          const hasUncommitted = filesList.some(f => normalize(f.path) === relativePath);
-          $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, hasUncommitted ? 'yes' : 'no');
-        } else {
-          $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, 'no');
-        }
-      } catch (error) {
-        console.error('[SCM] Error checking uncommitted changes:', error);
+        const relativePath = getRelativePath(absoluteFilePath, currentWikiFolder);
+        const hasUncommitted = filesList.some(f => normalizePath(f.path) === relativePath);
+        $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, hasUncommitted ? 'yes' : 'no');
+      } catch {
         $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, 'no');
       }
-
-      // Batch add commit details with new path structure
-      newCommits.forEach(commit => {
-        const commitTitle = `$:/temp/source-control-management/${viewingTiddler}/commit/${commit.hash}`;
-        $tw.wiki.addTiddler({
-          title: commitTitle,
-          text: commit.message,
-          author: commit.author?.name,
-          date: commit.committerDate,
-          hash: commit.hash,
-        });
-      });
     } catch (error) {
-      console.error('[SCM] Git Log Error:', error);
       $tw.wiki.setText('$:/state/scm/error', 'text', undefined, String(error));
     } finally {
       isFetching = false;
@@ -211,31 +294,20 @@ export const startup = () => {
 
     const debugMode = isDebugMode();
     const workspace = win.meta?.()?.workspace;
-    const wikiFolderLocation = workspace?.wikiFolderLocation;
+    const workspaceService = win.service?.workspace;
+    const wikiService = win.service?.wiki;
+    const gitService = win.service?.git;
+
+    if (!wikiService || !gitService) return;
+
+    // Get file path first to determine correct repo path
+    const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler, workspace?.id);
+    const wikiFolderLocation = await getGitRepoPathForFile(workspace, absoluteFilePath, workspaceService);
+
     try {
       if (debugMode) {
-        await new Promise(resolve => setTimeout(resolve, 500));
         const files = getMockFiles();
-
-        const fileTiddlers = files.map((file) => {
-          const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
-          return {
-            title: safeTitle,
-            text: file.path,
-            status: file.status,
-            path: file.path,
-          };
-        });
-
-        fileTiddlers.forEach((t) => {
-          $tw.wiki.addTiddler(t);
-        });
-
-        $tw.wiki.addTiddler({
-          title: filesTitle,
-          list: fileTiddlers.map((t) => t.title),
-        });
-
+        addFilesToWiki(viewingTiddler, files);
         $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, files.length > 0 ? 'yes' : 'no');
         $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, '');
         $tw.wiki.setText('$:/state/scm/show-file-list', 'text', undefined, 'yes');
@@ -243,44 +315,19 @@ export const startup = () => {
       }
 
       if (!wikiFolderLocation) return;
-      const gitService = win.service?.git;
-      const wikiService = win.service?.wiki;
-      if (!gitService || !wikiService) return;
 
       // Get uncommitted files using getCommitFiles with empty commitHash
       const files = await gitService.callGitOp('getCommitFiles', wikiFolderLocation, '');
-
-      const fileTiddlers = files.map((file) => {
-        const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
-        return {
-          title: safeTitle,
-          text: file.path,
-          status: file.status,
-          path: file.path,
-        };
-      });
-
-      fileTiddlers.forEach((t) => {
-        $tw.wiki.addTiddler(t);
-      });
-
-      $tw.wiki.addTiddler({
-        title: filesTitle,
-        list: fileTiddlers.map((t) => t.title),
-      });
+      addFilesToWiki(viewingTiddler, files);
 
       // Store has uncommitted flag
       $tw.wiki.setText('$:/state/scm/has-uncommitted', 'text', undefined, files.length > 0 ? 'yes' : 'no');
 
       // Auto-select the viewing tiddler's file if present
-      const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler);
       let matchFound = false;
       if (absoluteFilePath) {
-        const normalize = (p: string) => p.replaceAll('\\', '/');
-        const folder = normalize(wikiFolderLocation);
-        const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
-
-        const match = files.find(f => normalize(f.path) === relativePath);
+        const relativePath = getRelativePath(absoluteFilePath, wikiFolderLocation);
+        const match = files.find(f => normalizePath(f.path) === relativePath);
 
         if (match) {
           $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, match.path);
@@ -297,12 +344,7 @@ export const startup = () => {
       }
     } catch (error) {
       const errorInfo = error as { message?: string; stack?: string };
-      console.error('[SCM] Error loading uncommitted changes:', error);
-      console.error('[SCM] Error details:', {
-        message: errorInfo.message,
-        stack: errorInfo.stack,
-        wikiFolderLocation,
-      });
+      $tw.wiki.setText('$:/state/scm/error', 'text', undefined, errorInfo.message ?? String(error));
     } finally {
       $tw.wiki.setText('$:/state/scm/loading-files', 'text', undefined, 'no');
     }
@@ -326,72 +368,35 @@ export const startup = () => {
 
     const debugMode = isDebugMode();
     const workspace = win.meta?.()?.workspace;
-    const wikiFolderLocation = workspace?.wikiFolderLocation;
+    const workspaceService = win.service?.workspace;
+    const wikiService = win.service?.wiki;
+    const gitService = win.service?.git;
+
+    if (!wikiService || !gitService) return;
+
+    // Get file path first to determine correct repo path
+    const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler, workspace?.id);
+    const wikiFolderLocation = await getGitRepoPathForFile(workspace, absoluteFilePath, workspaceService);
 
     try {
       if (debugMode) {
-        await new Promise(resolve => setTimeout(resolve, 500));
         const files = getMockFiles();
-
-        const fileTiddlers = files.map((file) => {
-          const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
-          return {
-            title: safeTitle,
-            text: file.path,
-            status: file.status,
-            path: file.path,
-          };
-        });
-
-        fileTiddlers.forEach((t) => {
-          $tw.wiki.addTiddler(t);
-        });
-
-        $tw.wiki.addTiddler({
-          title: filesTitle,
-          list: fileTiddlers.map((t) => t.title),
-        });
-
+        addFilesToWiki(viewingTiddler, files);
         $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, '');
         $tw.wiki.setText('$:/state/scm/show-file-list', 'text', undefined, 'yes');
         return;
       }
 
       if (!wikiFolderLocation) return;
-      const gitService = win.service?.git;
-      const wikiService = win.service?.wiki;
-      if (!gitService || !wikiService) return;
 
       const files = await gitService.callGitOp('getCommitFiles', wikiFolderLocation, commitHash);
+      addFilesToWiki(viewingTiddler, files);
 
-      const fileTiddlers = files.map((file) => {
-        const safeTitle = `$:/temp/source-control-management/${viewingTiddler}/file/${encodeURIComponent(file.path)}`;
-        return {
-          title: safeTitle,
-          text: file.path,
-          status: file.status,
-          path: file.path,
-        };
-      });
-
-      fileTiddlers.forEach((t) => {
-        $tw.wiki.addTiddler(t);
-      });
-
-      $tw.wiki.addTiddler({
-        title: filesTitle,
-        list: fileTiddlers.map((t) => t.title),
-      });
       // Auto-select logic
-      const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler);
       let matchFound = false;
       if (absoluteFilePath) {
-        // Normalize paths to forward slashes for comparison
-        const normalize = (p: string) => p.replaceAll('\\', '/');
-        const folder = normalize(wikiFolderLocation);
-        const relativePath = normalize(absoluteFilePath).replace(folder, '').replace(/^\//, '');
-
-        const match = files.find(f => normalize(f.path) === relativePath);
+        const relativePath = getRelativePath(absoluteFilePath, wikiFolderLocation);
+        const match = files.find(f => normalizePath(f.path) === relativePath);
 
         if (match) {
           $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, match.path);
@@ -408,13 +413,7 @@ export const startup = () => {
       }
     } catch (error) {
       const errorInfo = error as { message?: string; stack?: string };
-      console.error('[SCM] Error loading files:', error);
-      console.error('[SCM] Error details:', {
-        message: errorInfo.message,
-        stack: errorInfo.stack,
-        commitHash,
-        wikiFolderLocation,
-      });
+      $tw.wiki.setText('$:/state/scm/error', 'text', undefined, errorInfo.message ?? String(error));
     } finally {
       $tw.wiki.setText('$:/state/scm/loading-files', 'text', undefined, 'no');
     }
@@ -469,7 +468,7 @@ export const startup = () => {
         'scm-fields': JSON.stringify(fields),
       });
     } catch (error) {
-      console.error('[SCM] Error loading working copy:', error);
+      // Silently handle error
     } finally {
       $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'no');
     }
@@ -481,10 +480,17 @@ export const startup = () => {
     const commitHash = $tw.wiki.getTiddlerText('$:/state/scm/selected-commit');
     const viewingTiddler = $tw.wiki.getTiddlerText('$:/state/scm/viewing-tiddler');
     const workspace = win.meta?.()?.workspace;
-    const wikiFolderLocation = workspace?.wikiFolderLocation;
+    const workspaceService = win.service?.workspace;
+    const wikiService = win.service?.wiki;
     const gitService = win.service?.git;
 
-    if (!filePath || !commitHash || !wikiFolderLocation || !viewingTiddler || !gitService) return;
+    if (!filePath || !commitHash || !viewingTiddler || !gitService || !wikiService) return;
+
+    // Get file path first to determine correct repo path
+    const absoluteFilePath = await wikiService.getTiddlerFilePath(viewingTiddler, workspace?.id);
+    const wikiFolderLocation = await getGitRepoPathForFile(workspace, absoluteFilePath, workspaceService);
+
+    if (!wikiFolderLocation) return;
 
     $tw.wiki.setText('$:/state/scm/selected-file', 'text', undefined, filePath);
     $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'yes');
@@ -534,10 +540,10 @@ export const startup = () => {
         'scm-original-path': filePath,
         'scm-original-title': originalTitle,
         'scm-current-content': currentContent,
-        'scm-fields': JSON.stringify(fields), // Store fields as JSON
+        'scm-fields': JSON.stringify(fields),
       });
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // Silently handle error
     } finally {
       $tw.wiki.setText('$:/state/scm/loading-content', 'text', undefined, 'no');
     }

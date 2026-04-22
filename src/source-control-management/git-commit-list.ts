@@ -17,7 +17,7 @@ if ($tw.browser) {
       const container = this.document.createElement('div');
       container.className = 'tidgi-scm-commit-list-container';
 
-      this.renderChildren(container, nextSibling);
+      this.renderChildren(container, null);
       parent.insertBefore(container, nextSibling);
       this.domNodes.push(container);
     }

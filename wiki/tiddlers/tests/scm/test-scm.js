@@ -61,7 +61,7 @@ describe('SCM Plugin Logic', function() {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     // 5. Assertions
-    expect(mockGetTiddlerFilePath).toHaveBeenCalledWith('TestTiddler');
+    expect(mockGetTiddlerFilePath).toHaveBeenCalledWith('TestTiddler', undefined);
     expect(mockGitOp).toHaveBeenCalledWith('getGitLog', '/path/to/wiki', jasmine.objectContaining({
         filePath: 'tiddlers/TestTiddler.tid'
     }));
@@ -100,6 +100,44 @@ describe('SCM Plugin Logic', function() {
     const file1 = $tw.wiki.getTiddler('$:/temp/source-control-management/TestTiddler/file/tiddlers%2FTestTiddler.tid');
     expect(file1).toBeDefined();
     expect(file1.fields.text).toBe('tiddlers/TestTiddler.tid');
+  });
+
+  it('should use mainWikiToLink for sub-wiki git operations', async function() {
+    // 1. Setup Sub-wiki Workspace
+    const subWikiWorkspace = {
+      wikiFolderLocation: '/path/to/main/tiddlers/subwiki/sub1',
+      isSubWiki: true,
+      mainWikiToLink: '/path/to/main'
+    };
+    $tw.mockWindow.meta = () => ({ workspace: subWikiWorkspace });
+
+    // 2. Setup State
+    $tw.wiki.addTiddler({ title: '$:/state/scm/viewing-tiddler', text: 'TestTiddler' });
+
+    // 3. Mock API Returns (file path is in main wiki)
+    mockGetTiddlerFilePath.and.returnValue(Promise.resolve('/path/to/main/tiddlers/subwiki/sub1/TestTiddler.tid'));
+    mockGitOp.and.returnValue(Promise.resolve({
+      entries: [
+        { hash: 'hash1', message: 'commit 1', author: { name: 'User' }, committerDate: '2023-01-01' }
+      ],
+      totalCount: 1
+    }));
+
+    // 4. Trigger Event
+    $tw.rootWidget.dispatchEvent({ type: 'tm-scm-reload' });
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // 5. Assertions - should use mainWikiToLink as git repo path
+    expect(mockGitOp).toHaveBeenCalledWith('getGitLog', '/path/to/main', jasmine.objectContaining({
+        filePath: 'tiddlers/subwiki/sub1/TestTiddler.tid'
+    }));
+
+    const commitsTiddler = $tw.wiki.getTiddler('$:/temp/source-control-management/TestTiddler/commits');
+    expect(commitsTiddler).toBeDefined();
+    expect(commitsTiddler.fields.list).toEqual(['hash1']);
+
+    // Cleanup
+    $tw.mockWindow.meta = () => ({ workspace: { wikiFolderLocation: '/path/to/wiki' } });
   });
 
   it('Debug Mode should use mock data without calling Git API', async function() {
