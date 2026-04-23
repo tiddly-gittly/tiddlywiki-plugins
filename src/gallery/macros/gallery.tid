@@ -2,36 +2,72 @@ title: $:/plugins/linonetwo/gallery/macros/gallery
 type: text/vnd.tiddlywiki
 tags: $:/tags/Macro
 
-\procedure gallery(filter:"", tag:"", columns:"")
+\procedure gallery(filter:"", tag:"", columns:"", order:"horizontal")
+<$let columnCount={{{ [<columns>trim[]compare:number:gt[0]then<columns>else[3]trunc[]max[1]] }}}>
+<$let itemOrder={{{ [<order>trim[]lowercase[]match[vertical]then[vertical]else[horizontal]] }}}>
 <%
   if [<filter>!is[blank]] %>
-    <$macrocall $name="gallery-grid" useFilter="yes" itemFilter=<<filter>> tagName="" />
+    <$macrocall $name="gallery-grid" useFilter="yes" itemFilter=<<filter>> tagName="" columnCount=<<columnCount>> itemOrder=<<itemOrder>> />
 <% elseif [<tag>!is[blank]] %>
-    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<tag>> />
+    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<tag>> columnCount=<<columnCount>> itemOrder=<<itemOrder>> />
 <% else %>
-    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<currentTiddler>> />
+    <$macrocall $name="gallery-grid" useFilter="no" itemFilter="" tagName=<<currentTiddler>> columnCount=<<columnCount>> itemOrder=<<itemOrder>> />
 <% endif %>
+</$let>
+</$let>
 \end gallery
 
-\procedure gallery-grid(useFilter:"no", itemFilter:"", tagName:"")
+\procedure gallery-grid(useFilter:"no", itemFilter:"", tagName:"", columnCount:"3", itemOrder:"horizontal")
 <$let
   galleryStateBase={{{ [[$:/state/gallery/]addsuffix<currentTiddler>] }}}
   expandState={{{ [<galleryStateBase>addsuffix[/expanded]] }}}
   itemExpanded={{{ [<expandState>get[text]] }}}
 >
-<div class={{{ [<itemExpanded>!is[blank]then[lno-gallery-container lno-gallery-container--single]] ~[[lno-gallery-container]] }}}>
-<%  if [<useFilter>match[yes]] %>
-  <$list filter=<<itemFilter>> variable="galleryItem">
-    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
-  </$list>
+<div class={{{ [<itemExpanded>!is[blank]then[lno-gallery-container lno-gallery-container--single]] ~[<itemOrder>match[vertical]then[lno-gallery-container lno-gallery-container--vertical]] ~[[lno-gallery-container]] }}} style={{{ [<columnCount>addprefix[--lno-gallery-columns:]addsuffix[;]] }}}>
+<% if [<itemExpanded>!is[blank]] %>
+  <$macrocall $name="gallery-grid-items" useFilter=<<useFilter>> itemFilter=<<itemFilter>> tagName=<<tagName>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
+<% elseif [<itemOrder>match[vertical]] %>
+  <$macrocall $name="gallery-grid-items" useFilter=<<useFilter>> itemFilter=<<itemFilter>> tagName=<<tagName>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
 <% else %>
-  <$list filter="[tag<tagName>]" variable="galleryItem">
-    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> />
+  <$list filter="[range[1],<columnCount>]" variable="galleryColumn">
+    <$let columnRemainder={{{ [<galleryColumn>subtract[1]] }}}>
+      <div class="lno-gallery-column">
+        <$macrocall $name="gallery-grid-column-items" useFilter=<<useFilter>> itemFilter=<<itemFilter>> tagName=<<tagName>> stateBase=<<galleryStateBase>> itemExpanded=<<itemExpanded>> columnCount=<<columnCount>> columnRemainder=<<columnRemainder>> />
+      </div>
+    </$let>
   </$list>
 <% endif %>
 </div>
 </$let>
 \end gallery-grid
+
+\procedure gallery-grid-items(useFilter:"no", itemFilter:"", tagName:"", stateBase:"", itemExpanded:"")
+<% if [<useFilter>match[yes]] %>
+  <$list filter=<<itemFilter>> variable="galleryItem">
+    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<stateBase>> itemExpanded=<<itemExpanded>> />
+  </$list>
+<% else %>
+  <$list filter="[tag<tagName>]" variable="galleryItem">
+    <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<stateBase>> itemExpanded=<<itemExpanded>> />
+  </$list>
+<% endif %>
+\end gallery-grid-items
+
+\procedure gallery-grid-column-items(useFilter:"no", itemFilter:"", tagName:"", stateBase:"", itemExpanded:"", columnCount:"3", columnRemainder:"0")
+<% if [<useFilter>match[yes]] %>
+  <$list filter=<<itemFilter>> variable="galleryItem" counter="galleryItemCounter">
+    <$list filter="[<galleryItemCounter>subtract[1]remainder<columnCount>match<columnRemainder>]" variable="ignore">
+      <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<stateBase>> itemExpanded=<<itemExpanded>> />
+    </$list>
+  </$list>
+<% else %>
+  <$list filter="[tag<tagName>]" variable="galleryItem" counter="galleryItemCounter">
+    <$list filter="[<galleryItemCounter>subtract[1]remainder<columnCount>match<columnRemainder>]" variable="ignore">
+      <$macrocall $name="gallery-item" item=<<galleryItem>> stateBase=<<stateBase>> itemExpanded=<<itemExpanded>> />
+    </$list>
+  </$list>
+<% endif %>
+\end gallery-grid-column-items
 
 \procedure gallery-item(item:"", stateBase:"", itemExpanded:"")
 <$let

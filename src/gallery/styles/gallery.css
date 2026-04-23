@@ -1,20 +1,21 @@
 /* ===== Gallery Container ===== */
 .lno-gallery-container {
-  column-count: 3;
-  column-gap: 4px;
+  --lno-gallery-columns: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--lno-gallery-columns), minmax(0, 1fr));
+  gap: 4px;
+  align-items: start;
   padding: 0;
 }
 
-@media (max-width: 900px) {
-  .lno-gallery-container {
-    column-count: 2;
-  }
+.lno-gallery-column {
+  min-width: 0;
 }
 
-@media (max-width: 500px) {
-  .lno-gallery-container {
-    column-count: 1;
-  }
+.lno-gallery-container--vertical {
+  display: block;
+  column-count: var(--lno-gallery-columns);
+  column-gap: 4px;
 }
 
 /* ===== Gallery Item ===== */
@@ -37,7 +38,6 @@
 
 /* Expanded: break out of columns, show full content */
 .lno-gallery-item--expanded {
-  break-inside: avoid;
   column-span: all;
   z-index: 10;
   box-shadow: 0 6px 20px rgba(0,0,0,0.22);
@@ -49,13 +49,14 @@
 }
 
 .lno-gallery-container--single {
-  column-count: 1;
+  display: block;
 }
 
 .lno-gallery-container--single .lno-gallery-item--expanded {
   max-width: min(960px, 100%);
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 0;
 }
 
 /* The invisible click overlay button */
