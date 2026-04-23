@@ -10,6 +10,8 @@ A compact gallery plugin for image/content browsing.
 * `<<gallery>>` macro with masonry layout
 ** `filter` parameter: use any TW filter
 ** `tag` parameter: list tiddlers tagged with the given tag
+** `columns` parameter: set how many columns to render, default is `3`
+** `order` parameter: use `horizontal` for row-first placement, or `vertical` to keep the old column-first placement
 ** no params: uses `currentTiddler` as tag
 * Click image to toggle modes:
 ** gallery mode (all items)
@@ -27,4 +29,14 @@ A compact gallery plugin for image/content browsing.
 <<gallery>>
 <<gallery tag:"MyPhotos">>
 <<gallery filter:"[tag[Photos]sort[title]]">>
+<<gallery filter:"[tag[Photos]sort[title]]" columns:"4">>
+<<gallery filter:"[tag[Photos]sort[title]]" order:"vertical">>
 ```
+
+!! Try out
+
+drag some image import, and use
+
+`<<gallery filter:"[all[]suffix[.jpg]]" columns:"3" order:"horizontal">>`
+
+to load them (Better to use .webp, it works better than jpg in modern browser)
