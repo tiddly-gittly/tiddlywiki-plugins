@@ -1,6 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:8080';
+const proxyPort = process.env.PLAYWRIGHT_PROXY_PORT ?? '13080';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${proxyPort}`;
+const webServer = process.env.PLAYWRIGHT_BASE_URL
+  ? undefined
+  : {
+      command: 'node scripts/playwright-proxy-server.mjs',
+      url: baseURL,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+    };
 
 export default defineConfig({
   testDir: './wiki/tiddlers/tests/playwright',
@@ -15,12 +24,7 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'pnpm dev',
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  webServer,
   projects: [
     {
       name: 'chromium',

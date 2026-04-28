@@ -1,7 +1,14 @@
 title: $:/plugins/linonetwo/preview-glass/changelog
 created: 20260120000000000
-modified: 20260120000000000
+modified: 20260428000000000
 type: text/vnd.tiddlywiki
+
+!!! v1.0.2 (2026-04-28)
+
+* Migrated the startup module from JavaScript to TypeScript
+* Kept the hover preview event delegation behavior unchanged
+
+---
 
 !!! v1.0.0 (2026-01-20)
 
