@@ -8,6 +8,3 @@ defaults/exclude-system: yes
 
 lingo/exclude-shadows: exclude shadow tiddlers from preview
 defaults/exclude-shadows: yes
-
-lingo/exclude-empty: exclude tiddlers without text field from preview
-defaults/exclude-empty: yes

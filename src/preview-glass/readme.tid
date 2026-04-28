@@ -19,8 +19,9 @@ Shows popup on link hover with:
 * Adapts to all themes via TiddlyWiki palette system
 * Lightweight implementation using document-level event listeners
 * Positioned near cursor
-* Configurable exclusions for system/shadow/empty tiddlers
+* Configurable exclusions for system/shadow tiddlers
 * 150ms hover delay to avoid accidental triggers
+* Supports lazy-loaded and metadata-only tiddlers
 
 !! Optional Dependencies
 
@@ -31,7 +32,7 @@ Shows popup on link hover with:
 Visit the [[config panel|$:/plugins/linonetwo/preview-glass/config]] to customize:
 
 * Preview content template
-* Exclusion rules (system/shadow/empty tiddlers)
+* Exclusion rules (system/shadow tiddlers)
 
 !! Implementation
 

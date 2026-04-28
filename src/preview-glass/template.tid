@@ -16,6 +16,11 @@ type: text/vnd.tiddlywiki
       </div>
     </$wikify>
   </$list>
+  <$list filter="[<currentTiddler>has:field[_is_skinny]]" variable="null">
+    <div class="tc-preview-text">
+      Loading preview...
+    </div>
+  </$list>
 </div>
 
 <!-- Info bar with reverse links -->

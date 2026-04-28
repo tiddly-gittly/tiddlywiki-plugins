@@ -1,7 +1,15 @@
 title: $:/plugins/linonetwo/preview-glass/changelog
 created: 20260120000000000
-modified: 20260428000000000
+modified: 20260428010000000
 type: text/vnd.tiddlywiki
+
+!!! v1.0.3 (2026-04-28)
+
+* Fixed lazy-loading support for skinny tiddlers by triggering core lazy loading on hover
+* Preview popups now also show for metadata-only tiddlers without a `text` field
+* Removed the `exclude-empty` option because empty tiddlers should still preview their metadata
+
+---
 
 !!! v1.0.2 (2026-04-28)
 

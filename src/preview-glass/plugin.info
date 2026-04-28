@@ -2,7 +2,7 @@
   "title": "$:/plugins/linonetwo/preview-glass",
   "description": "Modern link hover preview with glass effect",
   "author": "LinOnetwo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "core-version": ">=5.2.0",
   "list": "readme changelog tree config",
   "source": "https://github.com/linonetwo/tiddlywiki-plugins",

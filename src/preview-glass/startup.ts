@@ -14,12 +14,13 @@ let currentPreviewTiddler: string | undefined;
 const getConfig = (name: string, defaultValue: string): string =>
   $tw.wiki.getTiddler(`${DEFAULTS_PREFIX}${name}`)?.fields.text ?? defaultValue;
 
+const isSkinnyTiddler = (title: string): boolean => $tw.wiki.getTiddler(title)?.hasField('_is_skinny') ?? false;
+
 const shouldExclude = (title: string | undefined): boolean => {
   if (title === undefined || title === '') {
     return true;
   }
 
-  const tiddler = $tw.wiki.getTiddler(title);
   if (getConfig('exclude-system', 'yes') === 'yes' && $tw.wiki.isSystemTiddler(title)) {
     return true;
   }
@@ -27,7 +28,7 @@ const shouldExclude = (title: string | undefined): boolean => {
     return true;
   }
 
-  return getConfig('exclude-empty', 'yes') === 'yes' && (tiddler?.fields.text ?? '') === '';
+  return false;
 };
 
 const getTiddlerFromHref = (href: string | null): string | undefined => {
@@ -63,6 +64,10 @@ const showPreview = (title: string, x: number, y: number) => {
   $tw.wiki.setText(PREVIEW_STATE, 'text', undefined, title);
   $tw.wiki.setText(PREVIEW_STATE, 'x', undefined, String(x));
   $tw.wiki.setText(PREVIEW_STATE, 'y', undefined, String(y));
+
+  if (isSkinnyTiddler(title)) {
+    $tw.wiki.getTiddlerText(title);
+  }
 };
 
 const hidePreview = () => {
