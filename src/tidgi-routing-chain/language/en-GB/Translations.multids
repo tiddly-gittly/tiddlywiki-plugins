@@ -1,0 +1,13 @@
+title: $:/plugins/linonetwo/tidgi-routing-chain/language/en-GB/
+
+Name: TidGi Routing Chain Indicator
+Description: Show why a tiddler is routed to a public or private workspace, with the highest-priority tag chain in the toolbar tooltip.
+Button/PublicCaption: Public note
+Button/PrivateCaption: Private note
+Button/MakePrivateCaption: Set as private note
+Button/MakePublicCaption: Set as public note
+Tooltip/Public: Routed to main workspace "{{workspace}}" via: {{chain}}
+Tooltip/Private: Routed to sub-workspace "{{workspace}}" via: {{chain}}
+Tooltip/Filter: Routed to "{{workspace}}" by filter: {{chain}}
+Tooltip/HoverHint: Hover to load the routing chain
+Tooltip/Unavailable: Routing info unavailable outside TidGi Desktop

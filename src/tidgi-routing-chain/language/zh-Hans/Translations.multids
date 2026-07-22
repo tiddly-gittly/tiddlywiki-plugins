@@ -1,0 +1,13 @@
+title: $:/plugins/linonetwo/tidgi-routing-chain/language/zh-Hans/
+
+Name: 太记路由链路指示
+Description: 在工具栏显示条目因哪条标签链路被路由到公开/私有工作区（只显示当前优先级最高的链路）。
+Button/PublicCaption: 公开笔记
+Button/PrivateCaption: 私有笔记
+Button/MakePrivateCaption: 设为私有笔记
+Button/MakePublicCaption: 设为公开笔记
+Tooltip/Public: 按主工作区「{{workspace}}」链路存入公开库：{{chain}}
+Tooltip/Private: 按子工作区「{{workspace}}」链路存入私有库：{{chain}}
+Tooltip/Filter: 按工作区「{{workspace}}」筛选器匹配：{{chain}}
+Tooltip/HoverHint: 悬停以加载路由链路
+Tooltip/Unavailable: 仅在太记桌面版中可查看路由链路

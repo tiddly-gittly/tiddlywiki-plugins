@@ -1,0 +1,50 @@
+tags: $:/tags/ViewToolbar
+title: $:/plugins/linonetwo/tidgi-routing-chain/ViewToolbarButton/RoutingIndicator
+type: text/vnd.tiddlywiki
+list-before: $:/core/ui/Buttons/close
+caption: <<lingo "Button/PublicCaption" "$:/plugins/linonetwo/tidgi-routing-chain/language/">>
+short-caption: <<lingo "Button/PublicCaption" "$:/plugins/linonetwo/tidgi-routing-chain/language/">>
+description: <<lingo "Description" "$:/plugins/linonetwo/tidgi-routing-chain/language/">>
+
+\whitespace trim
+\define lingo-base() $:/plugins/linonetwo/tidgi-routing-chain/language/
+
+<!-- Hover bridge only: fetch on mouseenter, write temp tiddler; UI below is wikitext. -->
+<$tidgi-routing-refresh tiddler=<<currentTiddler>>>
+<%if [[{$:/info/tidgi/routing-chain-available}]match[yes]] %>
+
+<$set name="privateTag" value={{$:/plugins/linonetwo/tidgi-routing-chain/config/private-tag}}>
+<$wikify name="makePublicLabel" text="<<lingo Button/MakePublicCaption>>">
+<$wikify name="makePrivateLabel" text="<<lingo Button/MakePrivateCaption>>">
+<%if [<currentTiddler>addprefix[$:/temp/linonetwo/tidgi-routing-chain/info/]has[chain]] %>
+
+<$let routingInfo=<<condition>>>
+<%if [<routingInfo>get[isSubWiki]match[yes]] %>
+
+<$button tooltip={{{ [<routingInfo>get[tooltip]] }}} aria-label=<<makePublicLabel>> class=<<tv-config-toolbar-class>>>
+<$action-listops $tiddler=<<currentTiddler>> $tags="+[!match<privateTag>]" />
+<%if [<tv-config-toolbar-icons>match[yes]] %>{{$:/core/images/preview-closed}}<%endif%>
+<%if [<tv-config-toolbar-text>match[yes]] %><span class="tc-btn-text"><<lingo Button/PrivateCaption>></span><%endif%>
+</$button>
+<%else%>
+
+<$button tooltip={{{ [<routingInfo>get[tooltip]] }}} aria-label=<<makePrivateLabel>> class=<<tv-config-toolbar-class>>>
+<$action-listops $tiddler=<<currentTiddler>> $tags="+[<privateTag>]" />
+<%if [<tv-config-toolbar-icons>match[yes]] %>{{$:/core/images/preview-open}}<%endif%>
+<%if [<tv-config-toolbar-text>match[yes]] %><span class="tc-btn-text"><<lingo Button/PublicCaption>></span><%endif%>
+</$button>
+<%endif%>
+</$let>
+<%else%>
+
+<!-- Placeholder so the hover host has a target before the first fetch. -->
+<$button tooltip=<<lingo Tooltip/HoverHint>> aria-label=<<makePrivateLabel>> class=<<tv-config-toolbar-class>>>
+<%if [<tv-config-toolbar-icons>match[yes]] %>{{$:/core/images/preview-open}}<%endif%>
+<%if [<tv-config-toolbar-text>match[yes]] %><span class="tc-btn-text"><<lingo Button/PublicCaption>></span><%endif%>
+</$button>
+<%endif%>
+</$wikify>
+</$wikify>
+</$set>
+<%endif%>
+</$tidgi-routing-refresh>

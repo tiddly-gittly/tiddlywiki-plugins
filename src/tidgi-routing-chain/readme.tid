@@ -1,0 +1,30 @@
+title: $:/plugins/linonetwo/tidgi-routing-chain/readme
+type: text/vnd.tiddlywiki
+
+!! TidGi Routing Chain Indicator
+
+Shows a ViewToolbar button in [[TidGi Desktop|https://github.com/tiddly-gittly/TidGi-Desktop/]] that indicates whether the current tiddler is routed to a ''main'' or ''sub-wiki'' workspace.
+
+Hover the button to see the '''highest-priority''' matching tag chain returned by TidGi (same rules as filesystem save routing), for example:
+
+```
+RootTag → MidTag → ChildTiddler
+```
+
+Routing decisions are provided by TidGi (`window.service.wiki.getTiddlerRoutingInfo`). The toolbar widget only asks on hover and writes a temp tiddler; wikitext renders the button from that tiddler. Priority-rule changes stay on the desktop side.
+
+!! Requirements
+
+* '''Next TidGi Desktop release''' (or newer) that exposes `window.service.wiki.getTiddlerRoutingInfo` — this plugin will not activate on older TidGi builds
+* Current wiki has at least one sub-wiki with routing settings enabled (`tagNames` / `includeTagTree` / filters)
+
+!! Usage
+
+# Open a tiddler in the story river
+# Look at the view toolbar button (preview open/closed icons)
+# Hover to inspect the winning routing chain
+# Click to add/remove the configured private tag (default: `私有`)
+
+!! Config
+
+* `$:/plugins/linonetwo/tidgi-routing-chain/config/private-tag` — tag added/removed by the button (default `私有`)

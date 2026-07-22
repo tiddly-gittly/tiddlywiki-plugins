@@ -1,0 +1,23 @@
+title: $:/plugins/linonetwo/tidgi-routing-chain/changelog
+type: text/vnd.tiddlywiki
+
+! Changelog
+
+!! v0.2.1
+
+* '''Requires the next TidGi Desktop release''' that ships `window.service.wiki.getTiddlerRoutingInfo`. Older TidGi builds will keep the feature unavailable.
+* Fetch routing info on toolbar button hover only (no request on every render)
+* Drive the button UI with conditional shortcut syntax (`<%if%>`) instead of nested `$list`
+* Startup only probes feature availability; per-tiddler chains stay hover-driven
+
+!! v0.2.0
+
+* Use TidGi `getTiddlerRoutingInfo` instead of reimplementing routing in the plugin (needs a TidGi build that exposes this API)
+* Enable the feature only when at least one sub-wiki has routing settings
+* Keep UI in wikitext; JS only refreshes temp routing-info tiddlers
+
+!! v0.1.0
+
+* Initial release: TidGi-only ViewToolbar indicator with highest-priority routing chain tooltip
+* i18n: en-GB / zh-Hans
+* Click toggles the configured private tag (default `私有`)

@@ -1,0 +1,12 @@
+{
+  "title": "$:/plugins/linonetwo/tidgi-routing-chain",
+  "name": "TidGi Routing Chain Indicator",
+  "description": "(Requires TidGi) Show why the current tiddler is routed to a public or private workspace, with the highest-priority tag chain in the toolbar tooltip.",
+  "author": "LinOnetwo",
+  "core-version": ">=5.3.2",
+  "plugin-type": "plugin",
+  "stability": "STABILITY_1_EXPERIMENTAL",
+  "version": "0.2.1",
+  "dependents": [],
+  "list": "readme changelog tree"
+}

@@ -28,6 +28,7 @@ declare global {
       };
       wiki: {
         getTiddlerFilePath(title: string, workspaceID?: string): Promise<string | undefined>;
+        getTiddlerRoutingInfo(title: string, workspaceID?: string): Promise<ITiddlerRoutingInfo>;
         wikiOperationInBrowser<OP extends keyof ISendWikiOperationsToBrowser>(
           operationType: OP,
           workspaceID: string,
@@ -52,6 +53,23 @@ export interface IBrowserViewMetaData {
   workspace?: IWorkspace;
   /** @deprecated Use workspace instead */
   workspaceID?: string;
+}
+
+export type TiddlerRoutingMatchKind = 'direct-tag' | 'tag-tree' | 'filter';
+
+export interface ITiddlerRoutingMatch {
+  workspaceId: string;
+  workspaceName: string;
+  isSubWiki: boolean;
+  kind: TiddlerRoutingMatchKind;
+  chain: string;
+  rootTag?: string;
+}
+
+export interface ITiddlerRoutingInfo {
+  /** True when the main wiki has at least one sub-wiki with routing settings enabled */
+  featureAvailable: boolean;
+  match?: ITiddlerRoutingMatch;
 }
 
 interface ISendWikiOperationsToBrowser {
@@ -186,8 +204,25 @@ export interface IWorkspace {
   syncOnStartup: boolean;
   /**
    * Tag name in tiddlywiki's filesystemPath, tiddler with this tag will be save into this subwiki
+   * @deprecated Use tagNames instead
    */
   tagName: string | null;
+  /**
+   * Tag names used for sub-wiki / main-wiki filesystem routing
+   */
+  tagNames?: string[];
+  /**
+   * When enabled, also match tiddlers indirectly tagged under tagNames (tag tree)
+   */
+  includeTagTree?: boolean;
+  /**
+   * When enabled, also match tiddlers with custom TiddlyWiki filter expressions
+   */
+  fileSystemPathFilterEnable?: boolean;
+  /**
+   * Custom filter expressions (one per line) for routing tiddlers
+   */
+  fileSystemPathFilter?: string | null;
   /**
    * Use authenticated-user-header to provide `TIDGI_AUTH_TOKEN_HEADER` as header key to receive a value as username (we use it as token)
    */
