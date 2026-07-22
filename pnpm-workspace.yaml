@@ -1,9 +1,15 @@
 packages:
   - '.'
 
+# pnpm 10 reads onlyBuiltDependencies; pnpm 11+ requires allowBuilds.
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - dprint
   - esbuild
   - svelte-preprocess
 
+allowBuilds:
+  '@parcel/watcher': true
+  dprint: true
+  esbuild: true
+  svelte-preprocess: true

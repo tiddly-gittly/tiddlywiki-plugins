@@ -46,7 +46,9 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 'latest'
+          # Pin major: `latest` jumped to pnpm 11 and breaks install with ERR_PNPM_IGNORED_BUILDS
+          # unless allowBuilds is configured. Keep a stable release path.
+          version: 10
           run_install: false
 
       - name: Cache dependencies
@@ -69,6 +71,18 @@ jobs:
 
       - name: Build Plugins
         run: pnpm run build
+
+      - name: Normalize plugin artifact names
+        # tiddlywiki-plugin-dev emits `$__plugins_*.json`; CPL / download URLs use `__plugins_*.json`.
+        run: |
+          cd dist
+          python3 - <<'PY'
+          from pathlib import Path
+          for path in Path('.').glob('$__plugins_*.json'):
+              path.rename(path.name.removeprefix('$'))
+          for path in sorted(Path('.').glob('*.json')):
+              print(path.name)
+          PY
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
