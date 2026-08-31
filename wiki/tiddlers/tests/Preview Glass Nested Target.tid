@@ -1,0 +1,3 @@
+title: Preview Glass Nested Target
+
+This nested target confirms that hovering links inside an open preview can open a second preview.

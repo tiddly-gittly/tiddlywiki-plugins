@@ -1,0 +1,10 @@
+title: $:/plugins/linonetwo/preview-glass/language/zh-Hans/
+
+Config/Title: 预览放大镜设置
+Config/Enable: 启用
+Config/Option/template: 预览模板
+Config/Option/keep-open-on-popup-hover: 鼠标悬停在预览框上时保持打开
+Config/Option/show-body: 在预览中显示条目正文
+Config/Option/render-body-as-wikitext: 将预览正文按维基文本渲染
+Config/Option/exclude-system: 预览时排除系统条目
+Config/Option/exclude-shadows: 预览时排除影子条目

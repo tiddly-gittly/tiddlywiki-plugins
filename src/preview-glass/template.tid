@@ -9,17 +9,26 @@ type: text/vnd.tiddlywiki
 
 <!-- Preview content structure -->
 <div class="tc-preview-excerpt">
-  <$list filter="[<currentTiddler>has[text]]" variable="null">
-    <$wikify name="excerpt" text={{{ [<currentTiddler>get[text]splitregexp[\n]first[5]join[\n]] }}} output="text">
+  <$list filter="[[$:/plugins/linonetwo/preview-glass/defaults/show-body]get[text]else[yes]match[yes]]" variable="null">
+    <$list filter="[<currentTiddler>has[text]]" variable="null">
+      <$list filter="[[$:/plugins/linonetwo/preview-glass/defaults/render-body-as-wikitext]get[text]else[no]match[yes]]" variable="null">
+        <div class="tc-preview-text">
+          <$transclude tiddler=<<currentTiddler>> field="text" mode="block" />
+        </div>
+      </$list>
+      <$list filter="[[$:/plugins/linonetwo/preview-glass/defaults/render-body-as-wikitext]get[text]else[no]!match[yes]]" variable="null">
+        <$wikify name="excerpt" text={{{ [<currentTiddler>get[text]splitregexp[\n]first[5]join[\n]] }}} output="text">
+          <div class="tc-preview-text">
+            <<excerpt>>
+          </div>
+        </$wikify>
+      </$list>
+    </$list>
+    <$list filter="[<currentTiddler>has:field[_is_skinny]]" variable="null">
       <div class="tc-preview-text">
-        <<excerpt>>
+        Loading preview...
       </div>
-    </$wikify>
-  </$list>
-  <$list filter="[<currentTiddler>has:field[_is_skinny]]" variable="null">
-    <div class="tc-preview-text">
-      Loading preview...
-    </div>
+    </$list>
   </$list>
 </div>
 

@@ -1,3 +1,5 @@
 title: Preview Glass Hover Target
 
 This target tiddler exists so preview-glass can render a popup during automated tests.
+
+It also links onward to [[Preview Glass Nested Target]] so automated tests can open a second popup from inside the first one.

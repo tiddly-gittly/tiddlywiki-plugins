@@ -3,13 +3,13 @@ export const platforms = ['browser'];
 export const after = ['render'];
 export const synchronous = true;
 
-const PREVIEW_STATE = '$:/state/preview-glass/popup';
+const PREVIEW_STATE_PREFIX = '$:/state/preview-glass/popup';
 const DEFAULTS_PREFIX = '$:/plugins/linonetwo/preview-glass/defaults/';
 const SHOW_DELAY = 150;
 const HIDE_DELAY = 100;
 
 let hoverTimeout: number | undefined;
-let currentPreviewTiddler: string | undefined;
+let hideTimeout: number | undefined;
 
 const getConfig = (name: string, defaultValue: string): string =>
   $tw.wiki.getTiddler(`${DEFAULTS_PREFIX}${name}`)?.fields.text ?? defaultValue;
@@ -55,24 +55,53 @@ const clearHoverTimeout = () => {
   }
 };
 
-const showPreview = (title: string, x: number, y: number) => {
+const clearHideTimeout = () => {
+  if (hideTimeout !== undefined) {
+    window.clearTimeout(hideTimeout);
+    hideTimeout = undefined;
+  }
+};
+
+const getPreviewStateTitle = (depth: number) => `${PREVIEW_STATE_PREFIX}/${depth}`;
+
+const getOpenPreviewDepths = (): number[] => {
+  const stateTitles = $tw.wiki.filterTiddlers(`[prefix[${PREVIEW_STATE_PREFIX}/]]`);
+
+  return stateTitles
+    .map((title) => Number.parseInt(title.slice(PREVIEW_STATE_PREFIX.length + 1), 10))
+    .filter((depth) => Number.isFinite(depth))
+    .sort((left, right) => left - right);
+};
+
+const deletePreviewStatesFromDepth = (depth: number) => {
+  for (const openDepth of getOpenPreviewDepths()) {
+    if (openDepth >= depth) {
+      $tw.wiki.deleteTiddler(getPreviewStateTitle(openDepth));
+    }
+  }
+};
+
+const shouldKeepPopupOpenOnHover = (): boolean => getConfig('keep-open-on-popup-hover', 'yes') === 'yes';
+
+const showPreview = (title: string, x: number, y: number, depth: number) => {
   if (shouldExclude(title)) {
     return;
   }
 
-  currentPreviewTiddler = title;
-  $tw.wiki.setText(PREVIEW_STATE, 'text', undefined, title);
-  $tw.wiki.setText(PREVIEW_STATE, 'x', undefined, String(x));
-  $tw.wiki.setText(PREVIEW_STATE, 'y', undefined, String(y));
+  deletePreviewStatesFromDepth(depth + 1);
+
+  const stateTitle = getPreviewStateTitle(depth);
+  $tw.wiki.setText(stateTitle, 'text', undefined, title);
+  $tw.wiki.setText(stateTitle, 'x', undefined, String(x));
+  $tw.wiki.setText(stateTitle, 'y', undefined, String(y));
 
   if (isSkinnyTiddler(title)) {
     $tw.wiki.getTiddlerText(title);
   }
 };
 
-const hidePreview = () => {
-  currentPreviewTiddler = undefined;
-  $tw.wiki.deleteTiddler(PREVIEW_STATE);
+const hidePreview = (depth = 1) => {
+  deletePreviewStatesFromDepth(depth);
 };
 
 const getClosestElement = (target: EventTarget | null, selector: string): HTMLElement | null => {
@@ -90,6 +119,15 @@ const getClosestElement = (target: EventTarget | null, selector: string): HTMLEl
 
 const getClosestLink = (target: EventTarget | null) => getClosestElement(target, '.tc-tiddlylink');
 const getClosestPopup = (target: EventTarget | null) => getClosestElement(target, '.tc-preview-popup');
+const getPopupDepth = (popup: HTMLElement | null): number | undefined => {
+  const value = popup?.dataset.previewDepth;
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const depth = Number.parseInt(value, 10);
+  return Number.isFinite(depth) ? depth : undefined;
+};
 
 export const startup = () => {
   if (!$tw.browser) {
@@ -105,6 +143,7 @@ export const startup = () => {
       }
 
       clearHoverTimeout();
+      clearHideTimeout();
 
       const title = getTiddlerFromHref(link.getAttribute('href'));
       if (title === undefined || shouldExclude(title)) {
@@ -112,8 +151,10 @@ export const startup = () => {
       }
 
       const rect = link.getBoundingClientRect();
+      const popupDepth = getPopupDepth(getClosestPopup(link));
+      const previewDepth = (popupDepth ?? 0) + 1;
       hoverTimeout = window.setTimeout(() => {
-        showPreview(title, rect.left, rect.bottom + 5);
+        showPreview(title, rect.left, rect.bottom + 5, previewDepth);
       }, SHOW_DELAY);
     },
     true,
@@ -127,13 +168,16 @@ export const startup = () => {
         return;
       }
 
-      if (getClosestPopup(event.relatedTarget) !== null) {
+      if (shouldKeepPopupOpenOnHover() && getClosestPopup(event.relatedTarget) !== null) {
         return;
       }
 
       clearHoverTimeout();
-      hoverTimeout = window.setTimeout(() => {
-        hidePreview();
+      clearHideTimeout();
+      const popupDepth = getPopupDepth(getClosestPopup(link));
+      const hideDepth = popupDepth === undefined ? 1 : popupDepth + 1;
+      hideTimeout = window.setTimeout(() => {
+        hidePreview(hideDepth);
       }, HIDE_DELAY);
     },
     true,
@@ -147,15 +191,37 @@ export const startup = () => {
         return;
       }
 
-      const link = getClosestLink(event.relatedTarget);
-      if (link !== null) {
-        const title = getTiddlerFromHref(link.getAttribute('href'));
-        if (title !== undefined && title === currentPreviewTiddler) {
+      if (shouldKeepPopupOpenOnHover()) {
+        const nextPopup = getClosestPopup(event.relatedTarget);
+        if (nextPopup !== null) {
+          return;
+        }
+
+        if (getClosestLink(event.relatedTarget) !== null) {
           return;
         }
       }
 
-      hidePreview();
+      clearHideTimeout();
+
+      const depth = getPopupDepth(popup) ?? 1;
+      hidePreview(depth);
+    },
+    true,
+  );
+
+  document.addEventListener(
+    'mouseenter',
+    (event: MouseEvent) => {
+      if (!shouldKeepPopupOpenOnHover()) {
+        return;
+      }
+
+      if (getClosestPopup(event.target) === null) {
+        return;
+      }
+
+      clearHideTimeout();
     },
     true,
   );

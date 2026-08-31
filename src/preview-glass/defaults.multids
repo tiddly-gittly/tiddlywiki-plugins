@@ -3,6 +3,15 @@ title: $:/plugins/linonetwo/preview-glass/
 lingo/template: the preview template
 defaults/template: $:/plugins/linonetwo/preview-glass/template
 
+lingo/keep-open-on-popup-hover: keep preview open when hovering the popup
+defaults/keep-open-on-popup-hover: yes
+
+lingo/show-body: show tiddler body excerpt in preview
+defaults/show-body: yes
+
+lingo/render-body-as-wikitext: render the preview body as wikitext
+defaults/render-body-as-wikitext: no
+
 lingo/exclude-system: exclude system tiddlers from preview
 defaults/exclude-system: yes
 

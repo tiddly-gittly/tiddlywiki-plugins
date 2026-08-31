@@ -10,6 +10,7 @@ Link hover preview plugin with glass effect. Complete rewrite of [[tobibeer/prev
 Shows popup on link hover with:
 
 * Content excerpt (first few lines)
+* Optional rendered body preview
 * Backlinks (requires inverse-link-and-folder plugin)
 * Metadata (modified, created, tags)
 
@@ -22,6 +23,7 @@ Shows popup on link hover with:
 * Configurable exclusions for system/shadow tiddlers
 * 150ms hover delay to avoid accidental triggers
 * Supports lazy-loaded and metadata-only tiddlers
+* Can stay open while hovering the popup and follow links inside it
 
 !! Optional Dependencies
 
@@ -32,6 +34,9 @@ Shows popup on link hover with:
 Visit the [[config panel|$:/plugins/linonetwo/preview-glass/config]] to customize:
 
 * Preview content template
+* Whether to keep the popup open while hovering it
+* Whether to show the body excerpt
+* Whether the body is rendered as wikitext
 * Exclusion rules (system/shadow tiddlers)
 
 !! Implementation

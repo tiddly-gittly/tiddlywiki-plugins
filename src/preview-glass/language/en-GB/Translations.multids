@@ -1,0 +1,10 @@
+title: $:/plugins/linonetwo/preview-glass/language/en-GB/
+
+Config/Title: Preview Glass Settings
+Config/Enable: Enable
+Config/Option/template: Preview template
+Config/Option/keep-open-on-popup-hover: Keep preview open when hovering the popup
+Config/Option/show-body: Show tiddler body in preview
+Config/Option/render-body-as-wikitext: Render preview body as wikitext
+Config/Option/exclude-system: Exclude system tiddlers from preview
+Config/Option/exclude-shadows: Exclude shadow tiddlers from preview

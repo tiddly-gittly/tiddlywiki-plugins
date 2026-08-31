@@ -1,20 +1,21 @@
 title: $:/plugins/linonetwo/preview-glass/page-template
 tags: $:/tags/PageTemplate
 
-\define preview-state() $:/state/preview-glass/popup
+\define preview-state-prefix() $:/state/preview-glass/popup/
 
 \define handle-close()
-<$action-deletetiddler $tiddler=<<preview-state>> />
+<$action-deletetiddler $tiddler=<<stateTitle>> />
 \end
 
-<!-- The preview popup - shown when state tiddler exists -->
-<$reveal type="nomatch" state=<<preview-state>> text="">
-  <$let previewTiddler={{{ [<preview-state>get[text]] }}}>
+<!-- The preview popup(s) - shown when state tiddlers exist -->
+<$list filter="[all[tiddlers+shadows]prefix<preview-state-prefix>sort[title]]" variable="stateTitle">
+  <$let previewTiddler={{{ [<stateTitle>get[text]] }}} previewDepth={{{ [<stateTitle>removeprefix<preview-state-prefix>] }}}>
     <$list filter="[<previewTiddler>!is[blank]]" variable="null">
       <$tiddler tiddler=<<previewTiddler>>>
         <div 
           class="tc-preview-popup tc-preview-glass"
-          style={{{ [<preview-state>get[x]addprefix[left:]addsuffix[px;]] [<preview-state>get[y]addprefix[top:]addsuffix[px;]] +[join[ ]] }}}
+          data-preview-depth=<<previewDepth>>
+          style={{{ [<stateTitle>get[x]addprefix[left:]addsuffix[px;]] [<stateTitle>get[y]addprefix[top:]addsuffix[px;]] +[join[ ]] }}}
         >
           <div class="tc-preview-popup-inner">
             <div class="tc-preview-header">
@@ -24,9 +25,8 @@ tags: $:/tags/PageTemplate
                 {{$:/core/images/close-button}}
               </$button>
             </div>
-            
+
             <div class="tc-preview-content">
-              <!-- Transclude the custom template -->
               <$transclude 
                 tiddler={{{ [[$:/plugins/linonetwo/preview-glass/defaults/template]get[text]else[$:/plugins/linonetwo/preview-glass/template]] }}}
                 mode="block"
@@ -37,4 +37,4 @@ tags: $:/tags/PageTemplate
       </$tiddler>
     </$list>
   </$let>
-</$reveal>
+</$list>

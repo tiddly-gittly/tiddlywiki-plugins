@@ -4,7 +4,22 @@ caption: Preview Glass Configuration
 \define config-option()
 <div class="tc-config-row">
   <div class="tc-config-label">
-    <$transclude tiddler="$:/plugins/linonetwo/preview-glass/lingo/$(option)$" mode="inline"/>
+    <$list filter="[<isChinese>match[yes]]" variable="null">
+      <$list filter="[[$(option)$]match[template]]" variable="null">预览模板</$list>
+      <$list filter="[[$(option)$]match[keep-open-on-popup-hover]]" variable="null">鼠标悬停在预览框上时保持打开</$list>
+      <$list filter="[[$(option)$]match[show-body]]" variable="null">在预览中显示条目正文</$list>
+      <$list filter="[[$(option)$]match[render-body-as-wikitext]]" variable="null">将预览正文按维基文本渲染</$list>
+      <$list filter="[[$(option)$]match[exclude-system]]" variable="null">预览时排除系统条目</$list>
+      <$list filter="[[$(option)$]match[exclude-shadows]]" variable="null">预览时排除影子条目</$list>
+    </$list>
+    <$list filter="[<isChinese>match[no]]" variable="null">
+      <$list filter="[[$(option)$]match[template]]" variable="null">Preview template</$list>
+      <$list filter="[[$(option)$]match[keep-open-on-popup-hover]]" variable="null">Keep preview open when hovering the popup</$list>
+      <$list filter="[[$(option)$]match[show-body]]" variable="null">Show tiddler body in preview</$list>
+      <$list filter="[[$(option)$]match[render-body-as-wikitext]]" variable="null">Render preview body as wikitext</$list>
+      <$list filter="[[$(option)$]match[exclude-system]]" variable="null">Exclude system tiddlers from preview</$list>
+      <$list filter="[[$(option)$]match[exclude-shadows]]" variable="null">Exclude shadow tiddlers from preview</$list>
+    </$list>
   </div>
   <div class="tc-config-control">
     <$list filter="[[$(option)$]prefix[exclude-]]" variable="null">
@@ -15,7 +30,20 @@ caption: Preview Glass Configuration
         unchecked="no" 
         default="yes"
       >
-        Enable
+        <$list filter="[<isChinese>match[yes]]" variable="null">启用</$list>
+        <$list filter="[<isChinese>match[no]]" variable="null">Enable</$list>
+      </$checkbox>
+    </$list>
+    <$list filter="[[$(option)$]match[keep-open-on-popup-hover]] [[$(option)$]match[show-body]] [[$(option)$]match[render-body-as-wikitext]] +[unique[]]" variable="null">
+      <$checkbox 
+        tiddler="$:/plugins/linonetwo/preview-glass/defaults/$(option)$" 
+        field="text" 
+        checked="yes" 
+        unchecked="no" 
+        default={{{ [[$(option)$]match[render-body-as-wikitext]then[no]else[yes]] }}}
+      >
+        <$list filter="[<isChinese>match[yes]]" variable="null">启用</$list>
+        <$list filter="[<isChinese>match[no]]" variable="null">Enable</$list>
       </$checkbox>
     </$list>
     <$list filter="[[$(option)$]prefix[template]]" variable="null">
@@ -31,13 +59,16 @@ caption: Preview Glass Configuration
 \end
 
 <div class="tc-preview-glass-config">
-  <h2>Preview Glass Settings</h2>
-  
-  <$vars defaults="$:/plugins/linonetwo/preview-glass/defaults/">
-    <$list filter="[all[tiddlers+shadows]removeprefix<defaults>sort[title]]" variable="option">
-      <<config-option>>
-    </$list>
-  </$vars>
+  <$let isChinese={{{ [[$:/language]get[text]removeprefix[$:/languages/]else[en-GB]search[zh]then[yes]else[no]] }}}>
+    <$list filter="[<isChinese>match[yes]]" variable="null"><h2>预览放大镜设置</h2></$list>
+    <$list filter="[<isChinese>match[no]]" variable="null"><h2>Preview Glass Settings</h2></$list>
+
+    <$vars defaults="$:/plugins/linonetwo/preview-glass/defaults/">
+      <$list filter="[all[tiddlers+shadows]removeprefix<defaults>sort[title]]" variable="option">
+        <<config-option>>
+      </$list>
+    </$vars>
+  </$let>
 </div>
 
 <style>

@@ -1,7 +1,15 @@
 title: $:/plugins/linonetwo/preview-glass/changelog
 created: 20260120000000000
-modified: 20260428010000000
+modified: 20260901000000000
 type: text/vnd.tiddlywiki
+
+!!! v1.0.4 (2026-09-01)
+
+* Added a `keep-open-on-popup-hover` option, enabled by default, so previews stay open while the mouse is over the popup
+* Added nested popup support so links inside a preview can open another preview
+* Added `show-body` and `render-body-as-wikitext` options to control body visibility and rendering mode
+
+---
 
 !!! v1.0.3 (2026-04-28)
 
